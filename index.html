@@ -11161,18 +11161,19 @@
 <style id="home-return-style">
   .home-return{
     position:fixed;
-    top:max(14px,env(safe-area-inset-top));
-    left:max(14px,env(safe-area-inset-left));
-    z-index:9999;
+    top:max(12px,env(safe-area-inset-top));
+    left:50%;
+    z-index:2147483647;
     display:inline-flex;
     align-items:center;
+    justify-content:center;
     gap:7px;
     min-height:34px;
     padding:0 12px;
     border:1px solid rgba(255,255,255,.10);
     border-radius:999px;
-    background:rgba(8,10,9,.52);
-    color:rgba(245,248,245,.78);
+    background:rgba(8,10,9,.62);
+    color:rgba(245,248,245,.84);
     backdrop-filter:blur(14px);
     -webkit-backdrop-filter:blur(14px);
     box-shadow:0 10px 30px rgba(0,0,0,.18);
@@ -11180,13 +11181,13 @@
     letter-spacing:.08em;
     text-transform:uppercase;
     text-decoration:none;
-    transition:color .22s ease,border-color .22s ease,background .22s ease,transform .22s ease;
+    transform:translateX(-50%);
+    transition:color .22s ease,border-color .22s ease,background .22s ease;
   }
   .home-return:hover{
     color:#CFE65A;
     border-color:rgba(207,230,90,.28);
-    background:rgba(8,10,9,.72);
-    transform:translateY(-1px);
+    background:rgba(8,10,9,.78);
   }
   .home-return-arrow{
     font-size:14px;
@@ -11195,8 +11196,7 @@
   }
   @media(max-width:720px){
     .home-return{
-      top:max(10px,env(safe-area-inset-top));
-      left:max(10px,env(safe-area-inset-left));
+      top:max(9px,env(safe-area-inset-top));
       min-height:31px;
       padding:0 10px;
       font-size:9px;
