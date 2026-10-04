@@ -11157,9 +11157,56 @@
       .pricing-pack-shared-cta { min-height: 54px; font-size: 13px; }
     }
 </style>
+
+<style id="home-return-style">
+  .home-return{
+    position:fixed;
+    top:max(14px,env(safe-area-inset-top));
+    left:max(14px,env(safe-area-inset-left));
+    z-index:9999;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    min-height:34px;
+    padding:0 12px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:999px;
+    background:rgba(8,10,9,.52);
+    color:rgba(245,248,245,.78);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    box-shadow:0 10px 30px rgba(0,0,0,.18);
+    font:600 10px/1 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    text-decoration:none;
+    transition:color .22s ease,border-color .22s ease,background .22s ease,transform .22s ease;
+  }
+  .home-return:hover{
+    color:#CFE65A;
+    border-color:rgba(207,230,90,.28);
+    background:rgba(8,10,9,.72);
+    transform:translateY(-1px);
+  }
+  .home-return-arrow{
+    font-size:14px;
+    line-height:1;
+    transform:translateY(-.5px);
+  }
+  @media(max-width:720px){
+    .home-return{
+      top:max(10px,env(safe-area-inset-top));
+      left:max(10px,env(safe-area-inset-left));
+      min-height:31px;
+      padding:0 10px;
+      font-size:9px;
+    }
+  }
+</style>
 </head>
 
 <body>
+  <a class="home-return" href="https://patocreando.github.io/inicio/" aria-label="Volver al inicio"><span class="home-return-arrow" aria-hidden="true">←</span><span>Inicio</span></a>
   <div class="progress" aria-hidden="true"><span id="scrollProgress"></span></div>
   <div class="grain" aria-hidden="true"></div>
 
@@ -11230,25 +11277,9 @@
             </p>
           </div>
 
-          <a href="https://patocreando.github.io/web/" target="_blank" rel="noopener noreferrer" class="hero-reveal hero-desktop-link group hero-web-offer" aria-label="Ver servicio de diseño web">
-            <i data-lucide="layout-template" class="w-4 h-4"></i>
-            <span class="hero-web-offer-copy">
-              <strong>Webs para negocios</strong>
-              <small>Express · Pro · Premium</small>
-            </span>
-            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
-          </a>
+          
 
-          <a
-            href="https://patocreando.github.io/web/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="hero-reveal hero-mobile-cta group"
-            aria-label="Ver servicio de diseño web">
-            <i data-lucide="layout-template" class="w-4 h-4"></i>
-            <span>Servicio web</span>
-            <i data-lucide="arrow-up-right" class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
-          </a>
+          
         </div>
 
         <div class="hero-reveal hero-device-wrap" id="heroDeviceWrap">
