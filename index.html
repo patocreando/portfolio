@@ -5125,7 +5125,7 @@
       gap: 6px;
       padding: 0 10px;
       border-radius: 999px;
-      font-size: 8px;
+      font-size: 10px;
       font-weight: 750;
       letter-spacing: .11em;
       text-transform: uppercase;
@@ -5158,7 +5158,7 @@
     .pricing-packs-head > p {
       max-width: 430px;
       color: #969CA4;
-      font-size: 13px;
+      font-size: 15px;
       line-height: 1.7;
     }
 
@@ -5217,7 +5217,7 @@
 
     .pricing-pack-kicker {
       color: #8D949C;
-      font-size: 9px;
+      font-size: 10.5px;
       font-weight: 750;
       letter-spacing: .14em;
       text-transform: uppercase;
@@ -5226,7 +5226,7 @@
     .pricing-pack-top h4 {
       max-width: 290px;
       margin-top: 10px;
-      font-size: 1.45rem;
+      font-size: 1.58rem;
       line-height: 1.06;
       letter-spacing: -.035em;
       font-weight: 600;
@@ -5248,15 +5248,15 @@
 
     .pricing-pack-summary {
       margin-top: 10px;
-      color: #D7DBDF;
-      font-size: 12px;
+      color: #E3E6E9;
+      font-size: 14px;
       font-weight: 650;
     }
 
     .pricing-pack-extra {
       margin-top: 4px;
-      color: #9BA1A8;
-      font-size: 11px;
+      color: #B0B6BC;
+      font-size: 13px;
     }
 
     .pricing-pack-list {
@@ -5271,8 +5271,8 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #AEB4BC;
-      font-size: 10.5px;
+      color: #C3C8CE;
+      font-size: 12.5px;
       line-height: 1.4;
     }
 
@@ -5285,8 +5285,8 @@
 
     .pricing-pack-note {
       margin-top: 18px;
-      color: #737A82;
-      font-size: 10px;
+      color: #A1A8AF;
+      font-size: 12px;
       line-height: 1.55;
     }
 
@@ -5351,8 +5351,8 @@
 
     .pricing-packs-disclaimer {
       margin-top: 18px;
-      color: #5F666E;
-      font-size: 8.5px;
+      color: #858C94;
+      font-size: 10.5px;
       line-height: 1.5;
       text-align: center;
     }
@@ -11087,7 +11087,76 @@
     }
 
   
-  </style>
+  
+
+    /* Readability pass: supporting copy stays legible during scroll */
+    #bottleneck .conversion-tension-copy,
+    #creativePaths .creative-paths-head > p:last-child,
+    #projects .project-intro-copy,
+    #categoryDescription,
+    #services .services-copy,
+    #method .method-intro-copy,
+    #contact .section-reveal > p {
+      color: #B7BDC4;
+      text-shadow: 0 1px 18px rgba(0,0,0,.18);
+    }
+
+    .pricing-pack-shared-cta-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .pricing-pack-shared-cta {
+      width: min(100%, 430px);
+      min-height: 56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 24px;
+      border: 1px solid rgba(207,230,90,.34);
+      border-radius: 17px;
+      background: var(--brand-lime);
+      color: #10140A;
+      box-shadow: 0 18px 42px rgba(0,0,0,.20), 0 0 34px rgba(207,230,90,.09);
+      font-size: 13.5px;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      transition: transform .28s var(--ease), box-shadow .28s ease, filter .28s ease;
+    }
+
+    .pricing-pack-shared-cta svg {
+      width: 16px;
+      height: 16px;
+      transition: transform .28s var(--ease);
+    }
+
+    .pricing-pack-shared-cta:hover,
+    .pricing-pack-shared-cta:focus-visible {
+      transform: translateY(-2px);
+      filter: brightness(1.04);
+      box-shadow: 0 22px 54px rgba(0,0,0,.24), 0 0 40px rgba(207,230,90,.14);
+      outline: none;
+    }
+
+    .pricing-pack-shared-cta:hover svg,
+    .pricing-pack-shared-cta:focus-visible svg {
+      transform: translate(2px,-2px);
+    }
+
+    @media (max-width: 639px) {
+      .pricing-pack-kicker { font-size: 10px; }
+      .pricing-pack-top h4 { font-size: 1.46rem; }
+      .pricing-pack-summary { font-size: 13.5px; }
+      .pricing-pack-extra { font-size: 12.5px; }
+      .pricing-pack-list span { font-size: 12px; line-height: 1.5; }
+      .pricing-pack-note { font-size: 11.5px; }
+      .pricing-packs-disclaimer { font-size: 10px; }
+      .pricing-pack-shared-cta-wrap { margin-top: 20px; padding-inline: 4px; }
+      .pricing-pack-shared-cta { min-height: 54px; font-size: 13px; }
+    }
+</style>
 </head>
 
 <body>
@@ -11810,15 +11879,6 @@
               </div>
 
               <p class="pricing-pack-note">Una primera salida para video y feed.</p>
-
-              <a href="https://ig.me/m/patocreando?ref=w60952078"
-                 target="_blank"
-                 rel="noopener noreferrer"
-                 class="pricing-pack-cta pricing-pack-cta-secondary"
-                 aria-label="Consultar pack Inicio por Instagram">
-                <span>Empezar con Inicio</span>
-                <i data-lucide="arrow-up-right"></i>
-              </a>
             </article>
 
             <article class="pricing-pack pricing-pack-featured" aria-label="Pack Multiformato, opción destacada">
@@ -11844,15 +11904,6 @@
               </div>
 
               <p class="pricing-pack-note">Reels, feed y product ad en un mismo sistema visual.</p>
-
-              <a href="https://ig.me/m/patocreando?ref=w60952216"
-                 target="_blank"
-                 rel="noopener noreferrer"
-                 class="pricing-pack-cta pricing-pack-cta-primary"
-                 aria-label="Consultar pack Multiformato por Instagram">
-                <span>Elegir Multiformato</span>
-                <i data-lucide="arrow-up-right"></i>
-              </a>
             </article>
 
             <article class="pricing-pack">
@@ -11873,16 +11924,18 @@
               </div>
 
               <p class="pricing-pack-note">Para lanzamientos y varias salidas coordinadas.</p>
-
-              <a href="https://ig.me/m/patocreando?ref=w60952262"
-                 target="_blank"
-                 rel="noopener noreferrer"
-                 class="pricing-pack-cta pricing-pack-cta-secondary"
-                 aria-label="Consultar pack Campaña por Instagram">
-                <span>Armar una campaña</span>
-                <i data-lucide="arrow-up-right"></i>
-              </a>
             </article>
+          </div>
+
+          <div class="pricing-pack-shared-cta-wrap">
+            <a href="https://ig.me/m/patocreando"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="pricing-pack-shared-cta magnetic"
+               aria-label="Consultar packs por Instagram">
+              <span>Quiero elegir mi pack</span>
+              <i data-lucide="arrow-up-right"></i>
+            </a>
           </div>
 
           <p class="pricing-packs-disclaimer">Precios de lanzamiento. Alcance sujeto a brief y complejidad.</p>
@@ -14499,14 +14552,14 @@
           gsap.from(element, {
             scrollTrigger: {
               trigger: element,
-              start: fastMobile ? "top 94%" : "top 88%",
+              start: fastMobile ? "top 99%" : "top 96%",
               once: true
             },
-            opacity: 0,
-            y: fastMobile ? 7 : 16,
-            duration: fastMobile ? .26 : .68,
-            ease: fastMobile ? "power1.out" : "power3.out",
-            clearProps: "transform"
+            opacity: fastMobile ? .78 : .62,
+            y: fastMobile ? 3 : 8,
+            duration: fastMobile ? .20 : .46,
+            ease: fastMobile ? "power1.out" : "power2.out",
+            clearProps: "transform,opacity"
           });
         });
 
