@@ -5162,6 +5162,27 @@
       line-height: 1.7;
     }
 
+    .pricing-packs-head-side {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .pricing-packs-head-side > p {
+      max-width: 430px;
+      color: #B7BDC4;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .pricing-packs-head-side .pricing-pack-shared-cta {
+      width: min(100%, 320px);
+      min-height: 50px;
+      margin: 0;
+    }
+
     .pricing-pack-rail {
       display: grid;
       grid-template-columns: repeat(3,minmax(0,1fr));
@@ -5398,6 +5419,21 @@
         max-width: 350px;
         margin-inline: auto;
         text-align: center;
+      }
+
+      .pricing-packs-head-side {
+        align-items: center;
+        text-align: center;
+      }
+
+      .pricing-packs-head-side > p {
+        max-width: 350px;
+        margin-inline: auto;
+        text-align: center;
+      }
+
+      .pricing-packs-head-side .pricing-pack-shared-cta {
+        width: min(100%, 350px);
       }
 
       .pricing-pack-rail {
@@ -11888,9 +11924,21 @@
               </h3>
             </div>
 
-            <p>
-              Tres packs según volumen y formatos.
-            </p>
+            <div class="pricing-packs-head-side">
+              <p>
+                Tres packs según volumen y formatos.
+              </p>
+              <a
+                id="packsBannerCta"
+                href="https://ig.me/m/patocreando"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="pricing-pack-shared-cta magnetic"
+                aria-label="Consultar packs por Instagram">
+                <span>Quiero elegir mi pack</span>
+                <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
           </div>
 
           <div class="pricing-pack-rail" id="pricingPackRail">
