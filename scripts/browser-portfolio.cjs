@@ -47,6 +47,7 @@ async function test() {
         ctaCount:document.querySelectorAll("#launchOffer .pricing-pack-cta").length,
         css:getComputedStyle(document.querySelector(".hero-cta-primary")).backgroundColor,
         heroMuted:document.querySelector(".hero-video").muted,
+        clippedDecisionLabels:[...document.querySelectorAll(".editorial-decisions b")].filter(el=>el.scrollWidth>el.clientWidth+1).length,
         premiumCaseCount:document.querySelectorAll(".editorial-case").length,
         editorialHeadings:[...document.querySelectorAll(".editorial-case h4")].map(n=>n.innerText),
         premiumLinks:[...document.querySelectorAll(".editorial-project-link")].map(n=>n.getAttribute("href")),
@@ -57,6 +58,7 @@ async function test() {
         innerWidth:window.innerWidth
       }));
       assert.equal(await page.locator(".editorial-play-control").count(),2,"Both editorial cases have explicit player controls");
+      assert.equal(state.clippedDecisionLabels,0,"Case decision labels must fit available grid columns");
       assert.equal(state.premiumCaseCount,2,"Two new curated case chapters and My Way must render");
       assert.equal(state.editorialHeadings.length,2,"Curated editorial headings must render");
       assert.ok(state.premiumLinks.every(x=>x==="#projectFilters"),"Curated internal links must resolve");
