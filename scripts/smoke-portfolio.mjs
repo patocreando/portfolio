@@ -56,7 +56,8 @@ assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
 // Compare against main as ground truth for preservation.
 try {
   const baseline = execFileSync("git", ["show", "origin/main:index.html"], {encoding:"utf8"});
-  const missing = [...links(baseline)].filter(url => !links(html).has(url));
+  const intentionallyRemovedUrls = new Set(["https://www.instagram.com/p/Dd24xgrOr5e/?hl=en"]);
+  const missing = [...links(baseline)].filter(url => !intentionallyRemovedUrls.has(url) && !links(html).has(url));
   assert.deepEqual(missing, [], "Original external media/link URLs were dropped");
 } catch (error) {
   if (error?.code !== "ENOENT") throw error;
@@ -78,8 +79,11 @@ has(html,'NOIR 17');
 has(html,'UGC Beauty');
 has(html,'03 / Caso aplicado · My Way');
 assert.equal(occurrences(html,'Workflow aplicado · My Way'),0,"redundant My Way project card should be removed");
-assert.equal(occurrences(html,'https://www.instagram.com/p/Dd24xgrOr5e/?hl=en'),1,"preserve exactly one link to My Way original reference");
-assert.equal(occurrences(html,'class="case-study-reference"'),1,"reference link belongs in canonical My Way case");
+assert.equal(occurrences(html,'https://www.instagram.com/p/Dd24xgrOr5e/?hl=en'),0,"remove requested My Way original reference button");
+assert.equal(occurrences(html,'class="case-study-reference"'),0,"remove requested My Way reference CTA");
+assert.equal(occurrences(html,'Explorar otros formatos'),0,"remove requested duplicate editorial link");
+assert.equal(occurrences(html,'Ver la galería completa'),1,"retain the UGC gallery CTA");
+assert.equal(occurrences(html,'href="#projectFilters"'),1,"retain only curated UGC gallery link");
 assert.equal(occurrences(html,'3fb33f83-1289-4aa6-a48e-d9adeb242cd7.mp4'),1,"My Way video displayed only once");
 assert.equal(occurrences(html,'Muestra autorizada para Shop Online Perfumería.'),1,"disclaimer displayed only once");
 assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow gallery tab or card");

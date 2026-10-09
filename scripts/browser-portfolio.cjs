@@ -93,9 +93,10 @@ async function test() {
       assert.equal(state.noirSources,1,"NOIR video is only present in its featured banner");
       assert.equal(state.ugcPerfumeSources,1,"Beauty perfume UGC video is only present in its featured banner");
       assert.equal(state.editorialHeadings.length,2,"Curated editorial headings must render");
-      assert.ok(state.premiumLinks.every(x=>x==="#projectFilters"),"Curated internal links must resolve");
-      assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),1,"Original My Way reference must be linked from featured case");
-      assert.equal(await page.locator("#caseMyWay .case-study-reference").getAttribute("href"),"https://www.instagram.com/p/Dd24xgrOr5e/?hl=en","Original reference URL must be unchanged");
+      assert.deepEqual(state.premiumLinks,["#projectFilters"],"Only the UGC gallery CTA remains");
+      assert.equal(await page.locator(".editorial-project-link").innerText().then(x=>x.replace(/\s+/g," ").trim()),"Ver la galería completa ↘","Preserve the requested gallery link");
+      assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),0,"Requested original-reference CTA removed");
+      assert.equal(await page.getByText("Explorar otros formatos",{exact:true}).count(),0,"Requested editorial CTA removed");
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
       assert.equal(await page.locator('.tab-btn[data-filter]').count(),2,"UGC and product filters remain");
