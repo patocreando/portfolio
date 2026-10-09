@@ -49,6 +49,10 @@ async function test() {
         heroMuted:document.querySelector(".hero-video").muted,
         clippedDecisionLabels:[...document.querySelectorAll(".editorial-decisions b")].filter(el=>el.scrollWidth>el.clientWidth+1).length,
         premiumCaseCount:document.querySelectorAll(".editorial-case").length,
+        methodSteps:document.querySelectorAll("#method .method-brief-grid > article").length,
+        methodWidth:document.querySelector("#method .method-brief-stage")?.getBoundingClientRect().width,
+        methodContainerWidth:document.querySelector("#method > .site-shell")?.getBoundingClientRect().width,
+        sectionOrder:[...document.querySelectorAll("main section[id]")].map(el=>el.id),
         systemMap:!!document.querySelector("#system .studio-system-map"),
         systemStepCount:document.querySelectorAll("#system .studio-system-sequence li").length,
         systemToolCount:document.querySelectorAll("#system .studio-system-toolgrid > div").length,
@@ -73,6 +77,10 @@ async function test() {
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
       assert.equal(await page.locator('.tab-btn[data-filter]').count(),2,"UGC and product filters remain");
+      assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
+      assert.equal(state.methodSteps,3,"Method simplified to three commercial collaboration steps");
+      assert.ok(state.methodWidth<=state.innerWidth+2,"Method stage fits viewport");
+      assert.ok(state.methodWidth<=state.methodContainerWidth+2,"Method stage fits its container");
       assert.ok(state.systemMap,"Dedicated production system is visible in DOM");
       assert.equal(state.systemStepCount,4,"Four studio system phases");
       assert.equal(state.systemToolCount,3,"Three functional tool groups");
