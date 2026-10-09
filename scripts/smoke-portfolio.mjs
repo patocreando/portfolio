@@ -51,6 +51,16 @@ try {
   console.warn("Git unavailable: external URL baseline check omitted.");
 }
 assert.equal(occurrences(html,'data-editorial-reel'),2,"two additional curated reel previews");
+const archivedProjects = [...html.matchAll(/<article\\b[^>]*class="[^"]*\\bproject-item\\b[^"]*"[^>]*>[\\s\\S]*?<\\/article>/g)].map(match=>match[0]);
+assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
+assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
+assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,2,"two unique campaign cards");
+for (const name of ["cc882a72-3df6-41a3-8398-619e1e7ba9a9.mp4","d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]) {
+  assert.equal(occurrences(html,name),1,"featured video appears only in one editorial banner: "+name);
+  assert.ok(!archivedProjects.some(card=>card.includes(name)),"archive must not repeat featured video: "+name);
+}
+assert.equal(occurrences(html,"Perfume real llevado a una estética cinematográfica."),0,"remove duplicate Perfumería IA copy");
+assert.equal(occurrences(html,"Lenguaje de campaña en clave UGC."),0,"remove duplicate UGC perfume copy");
 assert.equal(occurrences(html,'class="editorial-case"'),2,"two new editorial case chapters");
 has(html,'NOIR 17');
 has(html,'UGC Beauty');
