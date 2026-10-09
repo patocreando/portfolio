@@ -54,6 +54,13 @@ assert.equal(occurrences(html,'class="editorial-case"'),2,"two new editorial cas
 has(html,'NOIR 17');
 has(html,'UGC Beauty');
 has(html,'03 / Caso aplicado · My Way');
+assert.equal(occurrences(html,'Workflow aplicado · My Way'),0,"redundant My Way project card should be removed");
+assert.equal(occurrences(html,'https://www.instagram.com/p/Dd24xgrOr5e/?hl=en'),1,"preserve exactly one link to My Way original reference");
+assert.equal(occurrences(html,'class="case-study-reference"'),1,"reference link belongs in canonical My Way case");
+assert.equal(occurrences(html,'3fb33f83-1289-4aa6-a48e-d9adeb242cd7.mp4'),1,"My Way video displayed only once");
+assert.equal(occurrences(html,'Muestra autorizada para Shop Online Perfumería.'),1,"disclaimer displayed only once");
+has(js,'El caso My Way se desarrolla a continuación.');
+
 has(html,'id="projectFilters"');
 has(html,'aria-labelledby="noirCaseTitle"');
 has(html,'aria-labelledby="ugcCaseTitle"');
