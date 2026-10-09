@@ -153,6 +153,13 @@ async function test() {
       assert.equal(await page.locator('.tab-btn[data-filter]').count(),2,"UGC and product filters remain");
       assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
       assert.equal(state.methodSteps,3,"Method simplified to three commercial collaboration steps");
+      const terms=await page.locator("#method .method-brief-scope").evaluate(el=>{
+        const box=el.getBoundingClientRect();
+        return {text:el.textContent.trim().replace(/\s+/g," "),width:box.width,visible:getComputedStyle(el).display!=="none",boldSections:[...el.querySelectorAll("strong")].map(n=>n.textContent.trim())};
+      });
+      assert.equal(terms.text,"Alcance, revisiones y plazos de entrega: se acuerdan según el proyecto o el pack contratado. Pago: se realiza al momento de la entrega final.","Explicit timeline and payment terms");
+      assert.deepEqual(terms.boldSections,["Alcance, revisiones y plazos de entrega:","Pago:"],"Terms have clear hierarchy");
+      assert.ok(terms.visible&&terms.width<=spec.width+2,"Terms fit on mobile and desktop");
       assert.ok(state.methodWidth<=state.innerWidth+2,"Method stage fits viewport");
       assert.ok(state.methodWidth<=state.methodContainerWidth+2,"Method stage fits its container");
       assert.ok(state.systemMap,"Dedicated production system is visible in DOM");
