@@ -237,3 +237,37 @@ html { scroll-padding-top: 78px; }
   #system .studio-system-tools-head h3,
   #system .studio-system-tools-head p {text-align:left !important}
 }
+
+/* LAB04 — Compact collaboration, not another production-system explanation. */
+#method.method-brief { position:relative; isolation:isolate; overflow:hidden; padding:clamp(72px,8vw,112px) 0; background:#0e1214; border-top:1px solid rgba(255,255,255,.08); }
+#method .method-brief-head { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,.65fr); align-items:end; gap:clamp(22px,4vw,70px); margin-bottom:35px; }
+#method .method-brief-kicker { font-size:11px; text-transform:uppercase; letter-spacing:.20em; color:#CFE65A; font-weight:700; margin:0 0 18px; }
+#method .method-brief-head h2 { font-size:clamp(2.75rem,4.85vw,5.2rem); line-height:1.01; letter-spacing:-.057em; font-weight:700; color:#f0f3ed; margin:0; text-wrap:balance; }
+#method .method-brief-head h2 span { color:#afb8af; }
+#method .method-brief-head > p { color:#bbc6c3; font-size:16px; line-height:1.68; max-width:410px; margin:0; }
+#method .method-brief-stage { isolation:isolate; position:relative; overflow:hidden; padding:clamp(20px,3vw,40px); border:1px solid rgba(255,255,255,.13); border-radius:12px; background:radial-gradient(ellipse at 55% 0%,rgba(207,230,90,.065),transparent 68%),#0e1315; }
+#method .method-brief-stage::before { position:absolute; content:""; inset:0; z-index:0; background:linear-gradient(95deg,rgba(10,15,15,.90),rgba(10,15,15,.74)); pointer-events:none; }
+#method video.method-brief-ambient { position:absolute; z-index:-1; inset:0; width:100%; height:100%; object-fit:cover; opacity:.24; pointer-events:none; }
+#method .method-brief-grid { position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(17px,3vw,38px); }
+#method .method-brief-grid article { min-width:0; padding:12px 7px; text-align:left; }
+#method .method-brief-grid article + article { border-left:1px solid rgba(255,255,255,.14); padding-left:clamp(18px,2.5vw,32px); }
+#method .method-brief-grid article > span { color:#CFE65A; display:block; font-size:10px; letter-spacing:.16em; text-transform:uppercase; font-weight:750; margin-bottom:24px; text-align:left; }
+#method .method-brief-grid h3 { color:#f1f2ed; margin:0 0 14px; font-size:clamp(1.3rem,2.15vw,2.1rem); letter-spacing:-.04em; font-weight:700; line-height:1.16; text-align:left; }
+#method .method-brief-grid p { margin:0; font-size:14px; color:#b8c3bf; line-height:1.68; text-align:left; }
+#method .method-brief-scope { margin:17px 0 0; color:#a7b4b0; font-size:12px; line-height:1.6; text-align:left; }
+@media(max-width:767px) {
+  #method.method-brief { padding:65px 0 80px; }
+  #method .method-brief-head { display:flex; flex-direction:column; align-items:center; gap:18px; margin-bottom:25px; text-align:center; }
+  #method .method-brief-head h2 { font-size:clamp(2.55rem,10vw,3.8rem); text-align:center; }
+  #method .method-brief-head h2 span { display:block; }
+  #method .method-brief-head > p { text-align:center; font-size:15px; }
+  #method .method-brief-stage { padding:17px 20px; }
+  #method .method-brief-grid { grid-template-columns:minmax(0,1fr); gap:0; }
+  #method .method-brief-grid article { padding:19px 0; }
+  #method .method-brief-grid article + article { padding-left:0; border-left:0; border-top:1px solid rgba(255,255,255,.14); }
+  #method .method-brief-grid article > span { margin-bottom:12px; }
+  #method .method-brief-grid h3 { font-size:1.55rem; margin-bottom:8px; }
+  #method .method-brief-grid p { font-size:14px; }
+  #method .method-brief-scope { text-align:center; max-width:360px; margin:18px auto 0; }
+}
+@media(prefers-reduced-motion:reduce) { #method video.method-brief-ambient { display:none; } }
