@@ -1,0 +1,22 @@
+name: Portfolio smoke QA
+on:
+  push:
+    branches:
+      - improve/portfolio-cold-traffic
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify JavaScript syntax
+        run: node --check assets/site.js
+      - name: Verify portfolio invariants
+        run: node scripts/smoke-portfolio.mjs
