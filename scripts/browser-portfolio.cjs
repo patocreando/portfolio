@@ -56,6 +56,7 @@ async function test() {
         mainWidth:document.querySelector("main").getBoundingClientRect().width,
         innerWidth:window.innerWidth
       }));
+      assert.equal(await page.locator(".editorial-play-control").count(),2,"Both editorial cases have explicit player controls");
       assert.equal(state.premiumCaseCount,2,"Two new curated case chapters and My Way must render");
       assert.equal(state.editorialHeadings.length,2,"Curated editorial headings must render");
       assert.ok(state.premiumLinks.every(x=>x==="#projectFilters"),"Curated internal links must resolve");
@@ -75,6 +76,10 @@ async function test() {
         await page.locator("#menuToggle").click();
         assert.ok(await page.locator("#mobileMenu").evaluate(el=>el.classList.contains("is-open")),"Mobile nav must open");
       }
+      const playButton=page.locator(".editorial-play-control").first();
+      await playButton.click();
+      const videoIsMuted=await playButton.evaluate(button=>button.parentElement.querySelector("video").muted);
+      assert.ok(videoIsMuted,"Manual preview must not enable audio");
       await page.locator('[data-filter="product"]').click();
       assert.ok(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count()>0,"Project filter must work");
       // Page-error report is informational: third-party video/CDN failures are tested separately.
