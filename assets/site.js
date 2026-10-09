@@ -933,7 +933,7 @@
       var categoryCopy = {
         ugc: "Avatares y producto en verticales con estética nativa.",
         product: "Campañas de producto con control de forma, escala y materiales.",
-        workflow: "My Way: referencia → digitalización → variación → pieza final."
+        workflow: "Herramientas y decisiones de producción conectadas en un mismo sistema. El caso My Way se desarrolla a continuación."
       };
 
       function getVisibleProjectItems() {
