@@ -223,3 +223,17 @@ html { scroll-padding-top: 78px; }
 .studio-system-cta {width:100%;white-space:normal}
 }
 @media(prefers-reduced-motion:reduce) {.studio-system-cta {transition:none}.studio-system-cta:hover {transform:none}}
+
+/* Final mobile editorial alignment review: avoid inherited centered card headings. */
+@media(max-width:749px) {
+  #system .studio-system-toolgrid strong,
+  #system .studio-system-toolgrid p,
+  #system .studio-system-toolgrid span,
+  #system .studio-system-conversion h3,
+  #system .studio-system-conversion p,
+  #system .studio-system-conversion > div > span {
+    text-align:left !important;
+  }
+  #system .studio-system-tools-head h3,
+  #system .studio-system-tools-head p {text-align:left !important}
+}
