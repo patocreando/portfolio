@@ -1951,7 +1951,7 @@
 (function methodMasterAmbientPlayback() {
       "use strict";
 
-      var video = document.querySelector("#method .method-ambient-master");
+      var video = document.querySelector("#method .method-brief-ambient");
       if (!video) return;
 
       var mobile = window.matchMedia("(max-width: 639px)");
