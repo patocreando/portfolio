@@ -124,14 +124,14 @@ assert.equal(toolCards.length,3,"one card for each stage of production");
 assert.equal(occurrences(html,'class="tool-app"'),8,"eight visible tool icon tiles");
 assert.equal(occurrences(html,'class="studio-system-toolgrid"'),1,"tool stack remains unique");
 assert.equal(occurrences(html,'role="listitem"'),3,"three accessible tool cards");
-for(const name of ["ChatGPT","Nano Banana Pro","Higgsfield Soul","Omni 1.1 Flash","Veo","Python","CapCut","Canva"])has(html,'>'+name+'</span>');
+for(const name of ["ChatGPT","Nano Banana Pro","Higgsfield Soul","Omni 1.1 Flash","Google Flow Labs","Python","CapCut","Canva"])has(html,'>'+name+'</span>');
 const toolBlock=html.slice(html.indexOf('class="studio-system-tools section-reveal"'),html.indexOf('class="studio-system-conversion section-reveal"'));
 for(const removed of ["Seedance","FFmpeg"])assert.ok(!toolBlock.includes(removed),"removed tool is absent from stack: "+removed);
 assert.ok(!toolBlock.includes('title="Higgsfield"'),"generic Higgsfield tile moved to Soul in Direction");
 assert.equal(occurrences(toolBlock,'>Higgsfield Soul</span>'),1,"Soul belongs in Direction only");
 assert.equal(occurrences(toolBlock,'class="tool-apps tool-apps--two"'),1,"generation has two centered tool slots");
 assert.ok(toolBlock.indexOf('title="Higgsfield Soul"')<toolBlock.indexOf('02 / Generación'),"Soul is placed in Direction");
-assert.ok(toolBlock.indexOf('title="Veo"')>toolBlock.indexOf('02 / Generación'),"Veo stays in Generation");
+assert.ok(toolBlock.indexOf('title="Google Flow Labs"')>toolBlock.indexOf('02 / Generación'),"Google Flow Labs stays in Generation");
 assert.equal(occurrences(toolBlock,'class="tool-apps--four"'),0,"finishing no longer uses four columns");
 const toolsBase="assets/tool-icons/";
 const toolFiles=[...html.matchAll(/src="\.\/assets\/tool-icons\/([a-z-]+\.svg)"/g)].map(x=>x[1]);
@@ -149,8 +149,10 @@ for(const icon of ['gemini.svg','veo.svg','python.svg','canva-initial.svg']){
  const src=fs.readFileSync(toolsBase+icon,'utf8');
  assert.ok(src.includes('<path'), 'source-accurate vector exists for '+icon);
 }
-assert.ok(fs.readFileSync(toolsBase+"veo.svg","utf8").includes("Google"), "Veo uses Google-brand geometry, not a made-up V");
+assert.ok(fs.readFileSync(toolsBase+"veo.svg","utf8").includes("Google"), "Flow uses Google-brand geometry, not a made-up identifier");
 has(html,'./assets/tool-icons/veo.svg');
+assert.ok(!toolBlock.includes('title="Veo"'),"Old Veo label removed from the tile");
+assert.equal(occurrences(toolBlock,'>Google Flow Labs</span>'),1,"New label visible exactly once");
 has(premiumCss,'@keyframes tool-pipeline-sweep');
 has(premiumCss,'@media(prefers-reduced-motion:reduce)');
 
