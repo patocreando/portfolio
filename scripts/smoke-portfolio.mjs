@@ -121,14 +121,18 @@ has(premiumCss,'opacity:.78');
 
 const toolCards=[...html.matchAll(/class="tool-pipeline-card tool-pipeline-[^"]+"/g)];
 assert.equal(toolCards.length,3,"one card for each stage of production");
-assert.equal(occurrences(html,'class="tool-app"'),10,"ten recognizable tool icon tiles");
+assert.equal(occurrences(html,'class="tool-app"'),8,"eight visible tool icon tiles");
 assert.equal(occurrences(html,'class="studio-system-toolgrid"'),1,"tool stack remains unique");
 assert.equal(occurrences(html,'role="listitem"'),3,"three accessible tool cards");
-for(const name of ["ChatGPT","Nano Banana Pro","Higgsfield Soul","Omni 1.1 Flash","Seedance","Higgsfield","FFmpeg","Python","CapCut","Canva"])has(html,'>'+name+'</span>');
+for(const name of ["ChatGPT","Nano Banana Pro","Omni 1.1 Flash","Veo","Higgsfield","Python","CapCut","Canva"])has(html,'>'+name+'</span>');
+const toolBlock=html.slice(html.indexOf('class="studio-system-tools section-reveal"'),html.indexOf('class="studio-system-conversion section-reveal"'));
+for(const removed of ["Higgsfield Soul","Seedance","FFmpeg"])assert.ok(!toolBlock.includes(removed),"removed tool is absent from stack: "+removed);
+assert.equal(occurrences(toolBlock,'class="tool-apps tool-apps--two"'),1,"direction has two balanced tool slots");
+assert.equal(occurrences(toolBlock,'class="tool-apps--four"'),0,"finishing no longer uses four columns");
 const toolsBase="assets/tool-icons/";
 const toolFiles=[...html.matchAll(/src="\.\/assets\/tool-icons\/([a-z-]+\.svg)"/g)].map(x=>x[1]);
-assert.equal(toolFiles.length,10,"ten icon placements with local assets");
-assert.equal(new Set(toolFiles).size,9,"nine bundled icon files, Higgsfield correctly reused");
+assert.equal(toolFiles.length,8,"eight icon placements with local assets");
+assert.equal(new Set(toolFiles).size,8,"eight bundled icons, including Veo");
 for(const icon of new Set(toolFiles)){
   assert.ok(fs.existsSync(toolsBase+icon),"tool icon exists: "+icon);
   const source=fs.readFileSync(toolsBase+icon,"utf8");
@@ -136,6 +140,8 @@ for(const icon of new Set(toolFiles)){
   assert.ok(!/<script|<foreignObject|onload\s*=|javascript:/i.test(source),"no active SVG content: "+icon);
 }
 has(premiumCss,'@keyframes tool-pipeline-border-wave');
+has(premiumCss,'#system .tool-apps--two');
+has(html,'./assets/tool-icons/veo.svg');
 has(premiumCss,'@keyframes tool-pipeline-sweep');
 has(premiumCss,'@media(prefers-reduced-motion:reduce)');
 

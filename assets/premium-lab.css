@@ -470,3 +470,9 @@ html { scroll-padding-top: 78px; }
   #system .tool-pipeline-card::after {opacity:0;transform:none;}
   #system .tool-pipeline-card,#system .tool-app {transition:none;}
 }
+
+/* Stack composition after moving to two direction tools and three finishing tools. */
+#system .tool-apps--two {grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
+@media(max-width:749px) {
+  #system .tool-apps--two {grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
+}

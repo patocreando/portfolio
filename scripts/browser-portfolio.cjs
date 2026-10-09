@@ -107,8 +107,8 @@ async function test() {
       assert.equal(state.systemStepCount,4,"Four studio system phases");
       assert.equal(state.systemToolCount,3,"Three functional tool groups");
       assert.equal(state.pipelineCards,3,"Three new functional tool cards");
-      assert.equal(state.toolNames.length,10,"Ten recognizable tool labels");
-      assert.equal(new Set(state.localIconPaths).size,9,"Nine local SVG assets, platform logo reused");
+      assert.deepEqual(state.toolNames,["ChatGPT","Nano Banana Pro","Omni 1.1 Flash","Veo","Higgsfield","Python","CapCut","Canva"],"Exact tool order");
+      assert.equal(new Set(state.localIconPaths).size,8,"Eight unique local SVG assets");
       assert.ok(state.localIconPaths.every(x=>x.startsWith("./assets/tool-icons/")),"Logos self-hosted");
       assert.ok(state.toolCardsWithinViewport,"No tool card horizontally clips");
       assert.ok(state.toolGridWidth<=state.innerWidth+2,"Tool grid fits viewport");
@@ -136,7 +136,7 @@ async function test() {
 
       await page.locator("#system .studio-system-toolgrid").scrollIntoViewIfNeeded();
       await page.waitForFunction(() => [...document.querySelectorAll("#system .tool-app-logo img")].every(el=>el.complete && el.naturalWidth>0),{timeout:12000});
-      assert.equal(await page.locator("#system .tool-app-logo img").count(),10,"Tool logos render in all viewports");
+      assert.equal(await page.locator("#system .tool-app-logo img").count(),8,"Tool logos render in all viewports");
       const disabledWave=await page.locator("#system .tool-pipeline-card").first().evaluate(el=>getComputedStyle(el,"::before").animationName);
       assert.equal(disabledWave,"none","Reduced motion disables RGB wave");
       await page.locator("#system .studio-system-toolgrid").screenshot({path:"artifacts/stack-tools-"+spec.name+".png",animations:"disabled"});

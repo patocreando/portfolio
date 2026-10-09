@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Veo, identificador visual">
+<defs><linearGradient id="veoMark" x1="8" y1="7" x2="52" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#CFE65A"/><stop offset=".55" stop-color="#53CDD3"/><stop offset="1" stop-color="#657AF2"/></linearGradient></defs>
+<rect width="64" height="64" rx="15" fill="#172127"/>
+<path d="M13 17 29 46a4 4 0 0 0 7 0L51 17" fill="none" stroke="url(#veoMark)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="50.5" cy="13" r="4" fill="#CFE65A"/>
+</svg>
