@@ -117,6 +117,39 @@ async function test() {
       assert.ok(state.mainWidth <= state.innerWidth+4,"Main must fit viewport");
       if (spec.isMobile) assert.ok(state.deliveryStepWidth >= 130,"Mobile deliverable steps must be readable");
       await page.screenshot({path:"artifacts/"+spec.name+".png",fullPage:true,animations:"disabled"});
+
+      // An additional real-animation CSS pass: the baseline QA uses reduced motion and
+      // would otherwise hide the video in every screenshot.
+      await page.emulateMedia({reducedMotion:"no-preference"});
+      await page.locator("#system .studio-system-board").scrollIntoViewIfNeeded();
+      await page.waitForTimeout(450);
+      const cinematic=await page.evaluate(() => {
+        const board=document.querySelector("#system .studio-system-board");
+        const video=document.querySelector("#system .studio-system-ambient");
+        const panel=document.querySelector("#system .studio-system-panel");
+        const active=getComputedStyle(video);
+        return {
+          videoDisplay:active.display,
+          videoOpacity:Number(active.opacity),
+          scrim:getComputedStyle(board,"::before").backgroundImage,
+          atmosphere:getComputedStyle(board,"::after").backgroundImage,
+          atmosphereAnimation:getComputedStyle(board,"::after").animationName,
+          panelBackground:getComputedStyle(panel).backgroundColor,
+          border:getComputedStyle(board).borderColor,
+          width:board.getBoundingClientRect().width
+        };
+      });
+      assert.notEqual(cinematic.videoDisplay,"none","Normal motion must reveal the ambient video layer");
+      assert.ok(cinematic.videoOpacity>=.64,"Cinematic layer should be visually perceptible");
+      assert.ok(cinematic.scrim.includes("linear-gradient"),"Readable cinematic scrim must remain");
+      assert.ok(cinematic.atmosphere.includes("radial-gradient"),"Decorative fallback must remain visible without video bytes");
+      assert.ok(cinematic.atmosphereAnimation.includes("studio-system-atmosphere"),"Controlled atmospheric layer active");
+      assert.ok(cinematic.width<=spec.width+2,"Cinematic system card stays inside viewport");
+      await page.locator("#system .studio-system-board").screenshot({path:"artifacts/system-cinematic-"+spec.name+".png",animations:"disabled"});
+      await page.emulateMedia({reducedMotion:"reduce"});
+      assert.equal(await page.locator("#system .studio-system-ambient").evaluate(el=>getComputedStyle(el).display),"none","Reduced motion still hides ambient video");
+      console.log(JSON.stringify({cinematicViewport:spec.name,...cinematic}));
+
       if (spec.isMobile) {
         const first=await page.locator("#pricingPackRail").evaluate(el=>el.scrollLeft);
         await page.waitForTimeout(5000);
