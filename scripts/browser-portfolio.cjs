@@ -49,6 +49,12 @@ async function test() {
         heroMuted:document.querySelector(".hero-video").muted,
         clippedDecisionLabels:[...document.querySelectorAll(".editorial-decisions b")].filter(el=>el.scrollWidth>el.clientWidth+1).length,
         premiumCaseCount:document.querySelectorAll(".editorial-case").length,
+        systemMap:!!document.querySelector("#system .studio-system-map"),
+        systemStepCount:document.querySelectorAll("#system .studio-system-sequence li").length,
+        systemToolCount:document.querySelectorAll("#system .studio-system-toolgrid > div").length,
+        systemBoardWidth:document.querySelector("#system .studio-system-board")?.getBoundingClientRect().width,
+        systemBoardContainer:document.querySelector("#system > .site-shell")?.getBoundingClientRect().width,
+        systemCta:document.querySelector("#system .studio-system-cta")?.getAttribute("href"),
         editorialHeadings:[...document.querySelectorAll(".editorial-case h4")].map(n=>n.innerText),
         premiumLinks:[...document.querySelectorAll(".editorial-project-link")].map(n=>n.getAttribute("href")),
         deliveryStepWidth:document.querySelector(".deliverable-step").getBoundingClientRect().width,
@@ -64,8 +70,15 @@ async function test() {
       assert.ok(state.premiumLinks.every(x=>x==="#projectFilters"),"Curated internal links must resolve");
       assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),1,"Original My Way reference must be linked from featured case");
       assert.equal(await page.locator("#caseMyWay .case-study-reference").getAttribute("href"),"https://www.instagram.com/p/Dd24xgrOr5e/?hl=en","Original reference URL must be unchanged");
-      assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),1,"Only one non-duplicated workflow card remains");
-      assert.equal(await page.locator('.project-item[data-category="workflow"]').first().count(),1,"Workflow project retained");
+      assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
+      assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
+      assert.equal(await page.locator('.tab-btn[data-filter]').count(),2,"UGC and product filters remain");
+      assert.ok(state.systemMap,"Dedicated production system is visible in DOM");
+      assert.equal(state.systemStepCount,4,"Four studio system phases");
+      assert.equal(state.systemToolCount,3,"Three functional tool groups");
+      assert.equal(state.systemCta,"#contact","Contact CTA must stay internal");
+      assert.ok(state.systemBoardWidth <= state.innerWidth+2,"System diagram must fit viewport");
+      assert.ok(state.systemBoardWidth <= state.systemBoardContainer+2,"System diagram must fit site-shell");
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
       assert.ok(state.projects && state.caseStudy,"Projects and featured case must be in DOM");
@@ -86,8 +99,8 @@ async function test() {
       await playButton.click();
       const videoIsMuted=await playButton.evaluate(button=>button.parentElement.querySelector("video").muted);
       assert.ok(videoIsMuted,"Manual preview must not enable audio");
-      await page.locator('[data-filter="workflow"]').click();
-      assert.equal(await page.locator('.project-item[data-category="workflow"]:not(.is-hidden)').count(),1,"Workflow tab renders one independent project");
+      await page.locator('[data-filter="ugc"]').click();
+      assert.ok(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count()>0,"UGC filter remains functional");
       await page.locator('[data-filter="product"]').click();
       assert.ok(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count()>0,"Project filter must work");
       // Page-error report is informational: third-party video/CDN failures are tested separately.
