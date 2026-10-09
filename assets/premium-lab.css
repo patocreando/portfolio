@@ -108,3 +108,10 @@ html { scroll-padding-top: 78px; }
 @media(prefers-reduced-motion:reduce) {
   .editorial-project-link,.hero-edition-label { transition:none; }
 }
+
+/* User-initiated playback fallback for Instagram/in-app browsers. */
+.editorial-play-control { position:absolute; top:17px; right:17px; z-index:4; display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:39px; padding:8px 12px; color:#f2f4ee; background:rgba(7,10,11,.75); border:1px solid rgba(255,255,255,.22); border-radius:6px; backdrop-filter:blur(10px); font:650 11px/1.2 Inter,sans-serif; cursor:pointer; transition:background .2s ease,border-color .2s ease; }
+.editorial-play-control:hover { background:rgba(25,32,32,.92);border-color:#CFE65A; }
+.editorial-play-control:focus-visible { outline:2px solid #CFE65A;outline-offset:3px; }
+.editorial-play-symbol {font-size:11px;color:#CFE65A; }
+@media(prefers-reduced-motion:reduce) {.editorial-play-control{transition:none;}}
