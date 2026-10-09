@@ -113,4 +113,9 @@ assert.equal(occurrences(html,'class="direction-principle"'),0,"no duplicate cre
 has(js,'document.querySelector("#method .method-brief-ambient")');
 assert.ok(!js.includes('methodSlider'),"methodology carousel controller retired");
 assert.ok(premiumCss.includes('LAB04 — Compact collaboration'),"new method CSS loaded");
+has(premiumCss,'Production System: visible cinematography');
+has(premiumCss,'#system .studio-system-board::after');
+has(premiumCss,'@keyframes studio-system-atmosphere');
+has(premiumCss,'opacity:.78');
+
 console.log("Premium LAB smoke OK: chapters, assets, links, pricing and playback invariants.");
