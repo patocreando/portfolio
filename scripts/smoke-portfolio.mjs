@@ -149,7 +149,7 @@ for(const icon of ['gemini.svg','veo.svg','python.svg','canva-initial.svg']){
  const src=fs.readFileSync(toolsBase+icon,'utf8');
  assert.ok(src.includes('<path'), 'source-accurate vector exists for '+icon);
 }
-assert.ok(fs.readFileSync(toolsBase+'veo.svg','utf8').includes('Google'), 'Veo uses Google's recognizable brand, not a made-up V');
+assert.ok(fs.readFileSync(toolsBase+"veo.svg","utf8").includes("Google"), "Veo uses Google-brand geometry, not a made-up V");
 has(html,'./assets/tool-icons/veo.svg');
 has(premiumCss,'@keyframes tool-pipeline-sweep');
 has(premiumCss,'@media(prefers-reduced-motion:reduce)');
