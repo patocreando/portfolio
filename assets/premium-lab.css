@@ -476,3 +476,23 @@ html { scroll-padding-top: 78px; }
 @media(max-width:749px) {
   #system .tool-apps--two {grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
 }
+
+/* Curated identity layout: recognizable icons, balanced three/two/three rhythm. */
+#system .tool-pipeline-direction .tool-apps,
+#system .tool-pipeline-finishing .tool-apps { grid-template-columns:repeat(3,minmax(0,1fr));justify-content:center; }
+#system .tool-pipeline-generation .tool-apps--two {
+  grid-template-columns:repeat(2,minmax(0,104px));
+  justify-content:center;
+  align-content:end;
+  gap:12px;
+}
+#system .tool-pipeline-card .tool-app {justify-content:center;min-height:103px;}
+#system .tool-pipeline-card .tool-app-logo {margin-inline:auto;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.115);}
+#system .tool-pipeline-card .tool-app-logo img {object-fit:contain;}
+@media(max-width:1050px) and (min-width:750px) {
+  #system .tool-pipeline-generation .tool-apps--two {grid-template-columns:repeat(2,minmax(0,96px));gap:8px;}
+}
+@media(max-width:749px) {
+  #system .tool-pipeline-generation .tool-apps--two {grid-template-columns:repeat(2,minmax(0,120px));justify-content:center;gap:12px;}
+  #system .tool-pipeline-card .tool-app {min-height:100px;}
+}
