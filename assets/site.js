@@ -932,8 +932,7 @@
       var activeProjectCategory = "ugc";
       var categoryCopy = {
         ugc: "Avatares y producto en verticales con estética nativa.",
-        product: "Campañas de producto con control de forma, escala y materiales.",
-        workflow: "Herramientas y decisiones de producción conectadas en un mismo sistema. El caso My Way se desarrolla a continuación."
+        product: "Campañas de producto con control de forma, escala y materiales."
       };
 
       function getVisibleProjectItems() {
@@ -950,7 +949,6 @@
         var maxIndex = Math.max(0, visibleItems.length - 2);
 
         projectCarouselIndex = Math.min(Math.max(projectCarouselIndex, 0), maxIndex);
-        projectGrid.classList.toggle("is-workflow", activeProjectCategory === "workflow");
 
         if (!desktopCarousel || visibleItems.length <= 2) {
           projectGrid.style.transform = "";
@@ -1258,122 +1256,6 @@
         projectIntroCard.addEventListener("pointerleave", function () {
           projectIntroCard.style.transform = "";
         });
-      }
-
-      // Workflow code — type once per page load, desktop only
-      var workflowCodeCanvas = document.getElementById("workflowCodeCanvas");
-      var workflowTypingPlayed = false;
-      var workflowDesktopQuery = window.matchMedia("(min-width: 768px)");
-
-      function completeWorkflowCode() {
-        if (!workflowCodeCanvas) return;
-        workflowCodeCanvas.classList.remove("workflow-code-armed");
-        workflowCodeCanvas.classList.add("workflow-code-complete");
-        Array.prototype.forEach.call(workflowCodeCanvas.querySelectorAll(".code-line"), function (line) {
-          var content = line.lastElementChild;
-          line.classList.remove("is-typing");
-          line.classList.add("is-typed");
-          if (content) {
-            content.style.maxWidth = "";
-            content.style.width = "";
-          }
-        });
-      }
-
-      function runWorkflowTypewriterOnce() {
-        if (
-          !workflowCodeCanvas ||
-          workflowTypingPlayed ||
-          !workflowDesktopQuery.matches ||
-          reduceMotion
-        ) {
-          if (workflowCodeCanvas && (!workflowDesktopQuery.matches || reduceMotion)) completeWorkflowCode();
-          return;
-        }
-
-        workflowTypingPlayed = true;
-        var lines = Array.prototype.slice.call(workflowCodeCanvas.querySelectorAll(".code-line"));
-        var index = 0;
-
-        function typeNextLine() {
-          if (index >= lines.length) {
-            window.setTimeout(completeWorkflowCode, 220);
-            return;
-          }
-
-          var line = lines[index++];
-          var content = line.lastElementChild;
-          if (!content) {
-            typeNextLine();
-            return;
-          }
-
-          line.classList.add("is-typing");
-          content.style.opacity = "1";
-          content.style.maxWidth = "none";
-          content.style.width = "auto";
-
-          var targetWidth = Math.ceil(content.scrollWidth);
-          var chars = Math.max(1, (content.textContent || "").length);
-          var duration = Math.max(90, Math.min(390, chars * 10));
-
-          content.style.width = "0px";
-          content.style.maxWidth = "0px";
-
-          var animation;
-          try {
-            animation = content.animate(
-              [
-                { width: "0px", maxWidth: "0px" },
-                { width: targetWidth + "px", maxWidth: targetWidth + "px" }
-              ],
-              {
-                duration: duration,
-                easing: "steps(" + chars + ", end)",
-                fill: "forwards"
-              }
-            );
-          } catch (e) {}
-
-          var finish = function () {
-            line.classList.remove("is-typing");
-            line.classList.add("is-typed");
-            content.style.width = targetWidth + "px";
-            content.style.maxWidth = targetWidth + "px";
-            window.setTimeout(typeNextLine, 42);
-          };
-
-          if (animation && animation.finished && typeof animation.finished.then === "function") {
-            animation.finished.then(finish).catch(finish);
-          } else {
-            window.setTimeout(finish, duration);
-          }
-        }
-
-        typeNextLine();
-      }
-
-      if (workflowCodeCanvas) {
-        if (workflowDesktopQuery.matches && !reduceMotion) {
-          workflowCodeCanvas.classList.add("workflow-code-armed");
-
-          if ("IntersectionObserver" in window) {
-            var workflowCodeObserver = new IntersectionObserver(function (entries, observer) {
-              entries.forEach(function (entry) {
-                if (entry.isIntersecting && entry.intersectionRatio > .24) {
-                  observer.unobserve(workflowCodeCanvas);
-                  runWorkflowTypewriterOnce();
-                }
-              });
-            }, { threshold: [0, .24, .55] });
-
-            workflowCodeObserver.observe(workflowCodeCanvas);
-          } else {
-            runWorkflowTypewriterOnce();
-          }
-        } else {
-          completeWorkflowCode();
-        }
       }
 
       // Interactive workflow funnel — autoplay + neon state
