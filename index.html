@@ -137,7 +137,8 @@
 
       <nav class="hidden md:flex items-center gap-1 text-sm text-zinc-400">
         <a class="px-3 py-2 rounded-full hover:text-white hover:bg-white/5 transition" href="#projects">Proyectos</a>
-        <a class="px-3 py-2 rounded-full hover:text-white hover:bg-white/5 transition" href="#services">Servicios</a>
+        <a class="px-3 py-2 rounded-full hover:text-white hover:bg-white/5 transition" href="#system">Sistema</a>
+          <a class="px-3 py-2 rounded-full hover:text-white hover:bg-white/5 transition" href="#services">Servicios</a>
         <a class="px-3 py-2 rounded-full hover:text-white hover:bg-white/5 transition" href="#launchOffer">Packs</a>
         <a class="ml-1 px-4 py-2 rounded-full bg-white text-black font-semibold hover:bg-butter transition" href="#contact">Hablemos</a>
       </nav>
@@ -152,7 +153,8 @@
     <div id="mobileMenu" class="menu-panel md:hidden absolute inset-x-0 top-[72px] nav-blur border-t border-white/5">
       <div class="site-shell py-4 flex flex-col text-lg">
         <a class="py-4 border-b border-white/5" href="#projects">Proyectos</a>
-        <a class="py-4 border-b border-white/5" href="#services">Servicios</a>
+        <a class="py-4 border-b border-white/5" href="#system">Sistema</a>
+          <a class="py-4 border-b border-white/5" href="#services">Servicios</a>
         <a class="py-4 border-b border-white/5" href="#launchOffer">Packs</a>
         <a class="py-4 font-semibold text-white" href="#contact">Hablemos</a>
       </div>
@@ -324,14 +326,13 @@
         </div>
 
         <div class="editorial-gallery-divider section-reveal" id="projectFilters">
-          <span>Archivo de proyectos</span>
-          <small>Explorá por formato</small>
+          <span>Más trabajos</span>
+          <small>UGC y campañas de producto</small>
         </div>
 
         <div class="section-reveal mt-10 flex flex-wrap gap-2" role="tablist" aria-label="Filtrar proyectos">
           <button class="tab-btn is-active" data-filter="ugc" role="tab" aria-selected="true" type="button" aria-controls="projectGrid">UGC con IA</button>
           <button class="tab-btn" data-filter="product" role="tab" aria-selected="false" type="button" aria-controls="projectGrid">Campañas IA</button>
-          <button class="tab-btn" data-filter="workflow" role="tab" aria-selected="false" type="button" aria-controls="projectGrid">Flujos de trabajo</button>
         </div>
         <div class="project-category-row section-reveal">
           <p id="categoryDescription" class="max-w-2xl text-sm leading-6 text-zinc-500">
@@ -527,62 +528,6 @@
             </div>
           </article>
 
-          <!-- Workflow 01: tools typewriter -->
-          <article class="project-item project-reveal is-hidden" data-category="workflow">
-            <div class="mockup-stage">
-              <div class="desktop-frame">
-                <div class="desktop-top">
-                  <span class="desktop-dot"></span>
-                  <span class="desktop-dot"></span>
-                  <span class="desktop-dot"></span>
-                  <span class="ml-auto text-[9px] tracking-[.12em] uppercase text-zinc-600">workflow.md</span>
-                </div>
-
-                <div class="code-canvas workflow-code-canvas" id="workflowCodeCanvas">
-                  <div class="code-line"><span class="code-n">1</span><span><span class="code-k">#</span> Production_System.md</span></div>
-                  <div class="code-line"><span class="code-n">2</span><span class="code-c">// brief → producto → anclas → movimiento</span></div>
-                  <div class="code-line"><span class="code-n">3</span><span><span class="code-v">objetivo</span>: define(marca, audiencia, hook)</span></div>
-                  <div class="code-line"><span class="code-n">4</span><span><span class="code-v">producto</span>: digitalize(real_reference)</span></div>
-                  <div class="code-line"><span class="code-n">5</span><span><span class="code-v">personaje</span>: identity_lock()</span></div>
-                  <div class="code-line"><span class="code-n">6</span><span><span class="code-v">escena</span>: build_anchor()</span></div>
-                  <div class="code-line"><span class="code-n">7</span><span><span class="code-v">imagen</span>: <span class="code-s">"Nano Banana Pro / GPT Image / Higgsfield Soul"</span></span></div>
-                  <div class="code-line"><span class="code-n">8</span><span><span class="code-v">video</span>: <span class="code-s">"Omni 1.1 Flash / Seedance 2.5 / Minimax / Kling"</span></span></div>
-                  <div class="code-line"><span class="code-n">9</span><span><span class="code-v">labs</span>: <span class="code-s">"Google Labs / Higgsfield"</span></span></div>
-                  <div class="code-line"><span class="code-n">10</span><span><span class="code-v">ideación</span>: <span class="code-s">"ChatGPT / Claude"</span></span></div>
-                  <div class="code-line"><span class="code-n">11</span><span><span class="code-v">diseño</span>: <span class="code-s">"Canva"</span></span></div>
-                  <div class="code-line"><span class="code-n">12</span><span><span class="code-v">automatización</span>: <span class="code-s">"Python"</span></span></div>
-                  <div class="code-line"><span class="code-n">13</span><span><span class="code-v">dirección</span>: load(<span class="code-s">"camera-physics-performance.md"</span>)</span></div>
-                  <div class="code-line"><span class="code-n">14</span><span><span class="code-v">formato</span>: <span class="code-s">"9:16 / short-form"</span></span></div>
-                  <div class="code-line"><span class="code-n">15</span><span></span></div>
-                  <div class="code-line"><span class="code-n">16</span><span><span class="code-k">for</span> clip in sequence:</span></div>
-                  <div class="code-line"><span class="code-n">17</span><span>&nbsp;&nbsp;reuse_last_frame()</span></div>
-                  <div class="code-line"><span class="code-n">18</span><span>&nbsp;&nbsp;generate_variants(2..4)</span></div>
-                  <div class="code-line"><span class="code-n">19</span><span>&nbsp;&nbsp;validate_product()</span></div>
-                  <div class="code-line"><span class="code-n">20</span><span>&nbsp;&nbsp;validate_physics()</span></div>
-                  <div class="code-line"><span class="code-n">21</span><span>&nbsp;&nbsp;validate_identity()</span></div>
-                  <div class="code-line"><span class="code-n">22</span><span>&nbsp;&nbsp;select_best_take()</span></div>
-                  <div class="code-line"><span class="code-n">23</span><span class="code-c">// edición → QA → CapCut → export → deploy</span></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="project-info-card glass">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <p class="text-[9px] tracking-[.16em] uppercase text-zinc-500">Sistema · Herramientas</p>
-                  <h3 class="display mt-2 text-[1.45rem] leading-tight tracking-[-.035em] font-semibold">
-                    Herramientas dentro de un sistema.
-                  </h3>
-                  <p class="project-note">Imagen, video, dirección y edición conectados por reglas reutilizables.</p>
-                </div>
-              </div>
-
-              <div class="mt-5 flex flex-wrap gap-2">
-                <span class="tool-badge tool-badge-primary">WORKFLOW</span>
-              </div>
-            </div>
-          </article>
-
           </div>
         </div>
 
@@ -635,6 +580,65 @@
             <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/3fb33f83-1289-4aa6-a48e-d9adeb242cd7.mp4" type="video/mp4" />
           </video>
           <span class="case-study-media-label">Proceso creativo · Pieza conceptual</span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- System overview for brands and agencies; My Way is only in its applied case. -->
+    <section id="system" class="studio-system" aria-labelledby="systemTitle">
+      <div class="site-shell">
+        <header class="studio-system-head section-reveal">
+          <div>
+            <p class="studio-system-kicker">Sistema creativo / Herramientas</p>
+            <h2 class="display studio-system-title" id="systemTitle">La herramienta cambia. <span>El criterio permanece.</span></h2>
+          </div>
+          <div class="studio-system-head-copy">
+            <p>Parto del brief de tu marca o agencia y organizo la producción para mantener coherencia visual entre piezas, desde la idea hasta el archivo final.</p>
+            <small>Dirección creativa, generación asistida con IA y control técnico.</small>
+          </div>
+        </header>
+        <div class="studio-system-board section-reveal" aria-label="Esquema de trabajo: entradas de marca, sistema creativo y entregables">
+          <div class="studio-system-boardbar"><strong><span class="studio-system-dot" aria-hidden="true"></span> PATO / PRODUCTION SYSTEM</strong><span>Del brief a la entrega</span></div>
+          <div class="studio-system-map">
+            <div class="studio-system-panel studio-system-input">
+              <span class="studio-system-number">01 / Entrada</span>
+              <h3>Material de marca.</h3>
+              <p>Brief, producto, referencias visuales y objetivo.</p>
+              <div class="studio-system-tags"><span>Brief</span><span>Producto</span><span>Referencias</span></div>
+            </div>
+            <div class="studio-system-arrow" aria-hidden="true">→</div>
+            <div class="studio-system-panel studio-system-engine">
+              <span class="studio-system-number">02 / Producción</span>
+              <h3>Un proceso con controles.</h3>
+              <ol class="studio-system-sequence">
+                <li><b>01</b><span>Concepto y dirección<small>Guías de marca</small></span></li>
+                <li><b>02</b><span>Imagen y anclas<small>Identidad y producto</small></span></li>
+                <li><b>03</b><span>Movimiento y variaciones<small>Composición y ritmo</small></span></li>
+                <li><b>04</b><span>Montaje y revisión<small>Edición y QA</small></span></li>
+              </ol>
+            </div>
+            <div class="studio-system-arrow" aria-hidden="true">→</div>
+            <div class="studio-system-panel studio-system-output">
+              <span class="studio-system-number">03 / Entrega</span>
+              <h3>Listo para tu canal.</h3>
+              <p>Archivos preparados para los formatos acordados.</p>
+              <div class="studio-system-outputs"><span>UGC vertical</span><span>Video de producto</span><span>Visuales para feed</span></div>
+            </div>
+          </div>
+          <p class="studio-system-boardnote">No se trata de sumar modelos: se trata de tomar mejores decisiones en cada etapa.</p>
+        </div>
+        <div class="studio-system-tools section-reveal" aria-labelledby="systemToolsTitle">
+          <div class="studio-system-tools-head"><h3 id="systemToolsTitle">Un stack que responde al proyecto.</h3><p>Elijo herramientas según la pieza, no al revés.</p></div>
+          <div class="studio-system-toolgrid">
+            <div><span>01 / Dirección</span><strong>Concepto y base visual</strong><p>ChatGPT · Nano Banana Pro · Higgsfield Soul</p></div>
+            <div><span>02 / Generación</span><strong>Imagen y movimiento</strong><p>Omni 1.1 Flash · Seedance · Higgsfield</p></div>
+            <div><span>03 / Terminación</span><strong>Montaje y QA</strong><p>FFmpeg · Python · CapCut · Canva</p></div>
+          </div>
+        </div>
+        <div class="studio-system-conversion section-reveal">
+          <div><span>Para marcas y agencias</span><h3>¿Tenés un brief o una referencia?</h3><p>Compartime la idea y vemos cómo convertirla en una pieza.</p></div>
+          <a class="studio-system-cta" href="#contact">Contame el proyecto <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
