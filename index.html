@@ -72,6 +72,7 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 
   <link rel="stylesheet" href="./assets/site.css" />
+  <link rel="stylesheet" href="./assets/premium-lab.css" />
 
 <style id="home-return-style">
   .home-return{
@@ -189,7 +190,7 @@
           <div class="hero-reveal hero-summary-minimal">
             <span class="hero-summary-minimal-kicker">AI-native creative</span>
             <p class="hero-summary-minimal-copy">
-              Creo <strong>reels UGC, anuncios de producto y visuales con IA</strong> para marcas y agencias. De la dirección visual a la edición final.
+              <strong>Dirección visual, UGC y campañas de producto con IA.</strong> Desarrollo piezas para marcas y agencias, del concepto al montaje final.
             </p>
           </div>
 
@@ -200,6 +201,7 @@
             <a class="hero-cta hero-cta-primary" href="#projects">Ver proyectos <span aria-hidden="true">↗</span></a>
             <a class="hero-cta hero-cta-secondary" href="#launchOffer">Explorar packs <span aria-hidden="true">↓</span></a>
           </div>
+          <p class="hero-edition-label">Pato Creando / Motion &amp; visual content</p>
         </div>
 
         <div class="hero-reveal hero-device-wrap" id="heroDeviceWrap">
@@ -244,7 +246,7 @@
 
             <div class="hero-stage-caption">
               <span class="hero-stage-caption-line"></span>
-              <span>Base · desarrollo · entrega</span>
+              <span>Dirección · movimiento · edición</span>
             </div>
           </div>
         </div>
@@ -264,6 +266,63 @@
               <span class="block text-zinc-500">Una dirección visual.</span>
             </h2>
           </div>
+        </div>
+
+
+        <!-- LAB 02: curated case studies. All existing project cards remain unchanged below. -->
+        <div class="editorial-intro section-reveal" aria-labelledby="editorialTitle">
+          <div class="editorial-overline">Selección editorial / 2026</div>
+          <h3 class="display" id="editorialTitle">La diferencia está en cómo se cuenta.</h3>
+          <p>Dos lenguajes visuales aplicados al producto: una campaña de fragancia y una pieza UGC. Distintas decisiones, una misma atención al detalle.</p>
+        </div>
+
+        <div class="editorial-showcase" aria-label="Casos seleccionados de producción con IA">
+          <article class="editorial-case" aria-labelledby="noirCaseTitle">
+            <div class="editorial-media">
+              <video data-editorial-reel autoplay muted loop playsinline webkit-playsinline preload="none" aria-label="Concepto audiovisual NOIR 17: pieza de perfumería en estética cinematográfica">
+                <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/cc882a72-3df6-41a3-8398-619e1e7ba9a9.mp4" type="video/mp4" />
+              </video>
+              <span class="editorial-media-note">NOIR 17 · Product film</span>
+            </div>
+            <div class="editorial-content">
+              <span class="editorial-index">01 / Concepto de campaña</span>
+              <h4 class="display" id="noirCaseTitle">Un perfume. Otra atmósfera.</h4>
+              <p>La fragancia como protagonista: una escena cinematográfica construida alrededor de su forma, materiales y presencia en cámara.</p>
+              <ul class="editorial-decisions">
+                <li><b>Dirección</b><span>Contraste, luz y textura como lenguaje de marca.</span></li>
+                <li><b>Producto</b><span>Proporciones y lectura del packaging a lo largo de la pieza.</span></li>
+                <li><b>Entrega</b><span>Video vertical preparado como muestra de campaña.</span></li>
+              </ul>
+              <span class="editorial-footnote">Pieza conceptual de portfolio; no se atribuyen resultados comerciales.</span>
+              <a class="editorial-project-link" href="#projectFilters">Explorar otros formatos <span aria-hidden="true">↘</span></a>
+            </div>
+          </article>
+
+          <article class="editorial-case" aria-labelledby="ugcCaseTitle">
+            <div class="editorial-media">
+              <video data-editorial-reel autoplay muted loop playsinline webkit-playsinline preload="none" aria-label="Caso UGC Beauty: avatar mostrando una fragancia con IA">
+                <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4" type="video/mp4" />
+              </video>
+              <span class="editorial-media-note">UGC Beauty · Vertical</span>
+            </div>
+            <div class="editorial-content">
+              <span class="editorial-index">02 / UGC para producto</span>
+              <h4 class="display" id="ugcCaseTitle">Que el gesto se sienta real.</h4>
+              <p>Un avatar y una fragancia en la misma escena. El foco está en la naturalidad del movimiento y la integración del producto.</p>
+              <ul class="editorial-decisions">
+                <li><b>Interpretación</b><span>Gestualidad contenida y una lectura cercana para feed.</span></li>
+                <li><b>Consistencia</b><span>Control visual de etiqueta, escala y proporciones.</span></li>
+                <li><b>Formato</b><span>Composición y ritmo pensados para reels verticales.</span></li>
+              </ul>
+              <span class="editorial-footnote">Ejemplo de aplicación creativa; no implica métricas de campaña.</span>
+              <a class="editorial-project-link" href="#projectFilters">Ver la galería completa <span aria-hidden="true">↘</span></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="editorial-gallery-divider section-reveal" id="projectFilters">
+          <span>Archivo de proyectos</span>
+          <small>Explorá por formato</small>
         </div>
 
         <div class="section-reveal mt-10 flex flex-wrap gap-2" role="tablist" aria-label="Filtrar proyectos">
@@ -594,8 +653,8 @@
     <section id="caseMyWay" aria-labelledby="caseMyWayTitle">
       <div class="site-shell case-study-wrap">
         <div class="case-study-copy section-reveal">
-          <span class="case-study-kicker">Caso aplicado / 01 · My Way</span>
-          <h2 class="display case-study-title" id="caseMyWayTitle">De la referencia <span>al lenguaje de campaña.</span></h2>
+          <span class="case-study-kicker">03 / Caso aplicado · My Way</span>
+          <h2 class="display case-study-title" id="caseMyWayTitle">La referencia <span>se convierte en una pieza.</span></h2>
           <p class="case-study-description">Un mismo frasco, cuatro decisiones visibles: reconstruir la referencia, definir una base digital, explorar una dirección de arte y cerrar la pieza para pantalla.</p>
           <ol class="case-study-steps" aria-label="Etapas del caso aplicado">
             <li><small>01 / Referencia</small><strong>Forma y detalles del producto</strong></li>
@@ -1438,6 +1497,7 @@
 
 
   <script src="./assets/site.js"></script>
+  <script defer src="./assets/premium-lab.js"></script>
 
   
 
