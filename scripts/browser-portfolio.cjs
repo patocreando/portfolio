@@ -38,14 +38,20 @@ async function test() {
       const pageErrors=[];
       page.on("pageerror",e=>pageErrors.push(e.message));
       await page.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
-      await page.locator(".hero-cta-primary").waitFor({state:"visible",timeout:15000});
+      await page.locator(".hero-summary-minimal-copy").waitFor({state:"visible",timeout:15000});
       const state=await page.evaluate(() => ({
         title:document.querySelector("h1")?.innerText?.replace(/\s+/g," ").trim(),
         projects:!!document.querySelector("#projects"),
         caseStudy:!!document.querySelector("#caseMyWay .case-study-video"),
         packCount:document.querySelectorAll("#launchOffer .pricing-pack").length,
         ctaCount:document.querySelectorAll("#launchOffer .pricing-pack-cta").length,
-        css:getComputedStyle(document.querySelector(".hero-cta-primary")).backgroundColor,
+        css:getComputedStyle(document.querySelector(".studio-system-dot")).backgroundColor,
+        heroActionCount:document.querySelectorAll("#top .hero-actions a").length,
+        systemAmbientCount:document.querySelectorAll("#system .studio-system-ambient").length,
+        systemAmbientMuted:document.querySelector("#system .studio-system-ambient")?.muted,
+        systemAmbientPreload:document.querySelector("#system .studio-system-ambient")?.preload,
+        systemAmbientDisplay:getComputedStyle(document.querySelector("#system .studio-system-ambient")).display,
+        systemScrim:getComputedStyle(document.querySelector("#system .studio-system-board"),"::before").backgroundImage,
         heroMuted:document.querySelector(".hero-video").muted,
         clippedDecisionLabels:[...document.querySelectorAll(".editorial-decisions b")].filter(el=>el.scrollWidth>el.clientWidth+1).length,
         premiumCaseCount:document.querySelectorAll(".editorial-case").length,
@@ -100,7 +106,13 @@ async function test() {
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
       assert.ok(state.projects && state.caseStudy,"Projects and featured case must be in DOM");
-      assert.equal(state.css,"rgb(207, 230, 90)","Accent stylesheet must load");
+      assert.equal(state.css,"rgb(207, 230, 90)","Accent system styling must load");
+      assert.equal(state.heroActionCount,0,"Requested hero CTA pair removed");
+      assert.equal(state.systemAmbientCount,1,"One ambient system backdrop");
+      assert.equal(state.systemAmbientMuted,true,"Ambient system backdrop always muted");
+      assert.ok(state.systemScrim.includes("linear-gradient"),"Dark overlay preserves readable contrast");
+      assert.equal(state.systemAmbientDisplay,"none","Reduced-motion browser should hide background video");
+      assert.equal(state.systemAmbientPreload,"none","Reduced-motion browser should not fetch background video");
       assert.equal(state.heroMuted,true,"Hero is muted by default");
       assert.ok(state.mainWidth <= state.innerWidth+4,"Main must fit viewport");
       if (spec.isMobile) assert.ok(state.deliveryStepWidth >= 130,"Mobile deliverable steps must be readable");

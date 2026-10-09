@@ -271,3 +271,32 @@ html { scroll-padding-top: 78px; }
   #method .method-brief-scope { text-align:center; max-width:360px; margin:18px auto 0; }
 }
 @media(prefers-reduced-motion:reduce) { #method video.method-brief-ambient { display:none; } }
+
+
+/* Premium system treatment: low-contrast moving texture over a reliable static background. */
+#top .hero-edition-label { margin-top:clamp(28px,3vw,39px); }
+#system .studio-system-board { position:relative; isolation:isolate; }
+#system .studio-system-ambient {
+  position:absolute; inset:0; z-index:0;
+  display:block; width:100%; height:100%; object-fit:cover;
+  object-position:50% 42%; opacity:.25; pointer-events:none;
+  filter:saturate(.64) contrast(1.11) brightness(.83);
+}
+#system .studio-system-board::before {
+  content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(112deg,rgba(10,16,18,.79),rgba(9,14,16,.69) 47%,rgba(7,11,13,.83));
+}
+#system .studio-system-boardbar,
+#system .studio-system-map,
+#system .studio-system-boardnote { position:relative; z-index:2; }
+#system .studio-system-boardbar { background:rgba(10,16,17,.22); }
+#system .studio-system-panel { background:rgba(16,24,24,.38); border-color:rgba(255,255,255,.17); }
+#system .studio-system-engine { background:linear-gradient(135deg,rgba(207,230,90,.095),rgba(10,17,19,.44)); border-color:rgba(207,230,90,.40); }
+@media(max-width:749px){
+  #system .studio-system-ambient { opacity:.18; object-position:58% center; }
+  #system .studio-system-board::before {background:linear-gradient(180deg,rgba(8,13,15,.79),rgba(8,13,15,.84));}
+  #system .studio-system-panel {background:rgba(11,18,19,.53);}
+}
+@media(prefers-reduced-motion:reduce){
+  #system .studio-system-ambient {display:none;}
+}
