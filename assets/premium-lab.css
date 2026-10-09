@@ -47,7 +47,7 @@ html { scroll-padding-top: 78px; }
 .editorial-content h4 { color: #f3f4f2; font-size:clamp(2.05rem,3.6vw,4.1rem); font-weight:700; letter-spacing:-.06em; line-height:1.05; margin:18px 0 22px; text-align:left; }
 .editorial-content > p { color:#c2c9c8; font-size:clamp(15px,1.35vw,17px); line-height:1.7; margin:0 0 24px; max-width:480px; text-align:left; }
 .editorial-decisions { margin:0; padding:18px 0 0; list-style:none; width:100%; max-width:480px; border-top:1px solid rgba(255,255,255,.12); }
-.editorial-decisions li { display:grid; grid-template-columns: 100px 1fr; gap:15px; padding:9px 0; line-height:1.5; text-align:left; }
+.editorial-decisions li { display:grid; grid-template-columns: 128px minmax(0,1fr); gap:15px; padding:9px 0; line-height:1.5; text-align:left; }
 .editorial-decisions b { color:#e6e9e5; text-transform:uppercase; letter-spacing:.11em; font-size:10px; font-weight:750; padding-top:4px; }
 .editorial-decisions span { color:#9ea9ac; font-size:13px; }
 .editorial-project-link { display:inline-flex; align-items:center; gap:9px; margin-top:25px; text-decoration:none; color:#CFE65A; font-size:13px; font-weight:650; min-height:42px; border-bottom:1px solid rgba(207,230,90,.4); }
@@ -97,7 +97,7 @@ html { scroll-padding-top: 78px; }
   .editorial-content { align-items:flex-start; text-align:left; padding:24px 3px 16px; }
   .editorial-content h4 { font-size:clamp(2.15rem,9.8vw,3.2rem); margin:10px 0 15px; text-align:left !important; }
   .editorial-content > p { font-size:15px; line-height:1.65; margin-bottom:18px; text-align:left !important; }
-  .editorial-decisions li { grid-template-columns:84px 1fr; gap:10px; }
+  .editorial-decisions li { grid-template-columns:115px minmax(0,1fr); gap:10px; }
   .editorial-decisions li b { font-size:9px; }
   .editorial-decisions li span { font-size:12px; }
   .editorial-index,.editorial-decisions li,.editorial-decisions li b,.editorial-decisions li span,.editorial-content .editorial-footnote { text-align:left !important; }
