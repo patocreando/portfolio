@@ -62,6 +62,10 @@ async function test() {
       assert.equal(state.premiumCaseCount,2,"Two new curated case chapters and My Way must render");
       assert.equal(state.editorialHeadings.length,2,"Curated editorial headings must render");
       assert.ok(state.premiumLinks.every(x=>x==="#projectFilters"),"Curated internal links must resolve");
+      assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),1,"Original My Way reference must be linked from featured case");
+      assert.equal(await page.locator("#caseMyWay .case-study-reference").getAttribute("href"),"https://www.instagram.com/p/Dd24xgrOr5e/?hl=en","Original reference URL must be unchanged");
+      assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),1,"Only one non-duplicated workflow card remains");
+      assert.equal(await page.locator('.project-item[data-category="workflow"]').first().count(),1,"Workflow project retained");
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
       assert.ok(state.projects && state.caseStudy,"Projects and featured case must be in DOM");
@@ -82,6 +86,8 @@ async function test() {
       await playButton.click();
       const videoIsMuted=await playButton.evaluate(button=>button.parentElement.querySelector("video").muted);
       assert.ok(videoIsMuted,"Manual preview must not enable audio");
+      await page.locator('[data-filter="workflow"]').click();
+      assert.equal(await page.locator('.project-item[data-category="workflow"]:not(.is-hidden)').count(),1,"Workflow tab renders one independent project");
       await page.locator('[data-filter="product"]').click();
       assert.ok(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count()>0,"Project filter must work");
       // Page-error report is informational: third-party video/CDN failures are tested separately.
