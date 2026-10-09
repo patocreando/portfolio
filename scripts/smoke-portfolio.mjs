@@ -125,7 +125,13 @@ has(premiumCss,'.editorial-showcase');
 has(premiumCss,'.hero-edition-label');
 has(premiumJs,'IntersectionObserver');
 assert.ok(!premiumJs.includes('video.muted=false'),"editorial videos may never turn on sound");
-assert.equal(occurrences(html,'href="./assets/premium-lab.css"'),1);
+assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261009-navfix-2"'),1);
+assert.equal(occurrences(html,'id="portfolio-nav-critical"'),1,"critical navbar rules embedded in delivered HTML");
+const criticalNavStyle=html.slice(html.indexOf('<style id="portfolio-nav-critical">'),html.indexOf('</style>',html.indexOf('<style id="portfolio-nav-critical">')));
+for(const rule of ['#portfolioHeader .portfolio-nav-layout','#portfolioHeader .portfolio-nav-links','#portfolioHeader .portfolio-mobile-menu.is-open','@media(max-width:1099px)'])has(criticalNavStyle,rule);
+assert.ok(html.indexOf('id="portfolio-nav-critical"') < html.indexOf('</head>'),"critical navbar styles load before any page content");
+assert.ok(criticalNavStyle.includes('position:fixed;inset:0 0 auto;z-index:1000;'),"navbar position does not depend on Tailwind runtime");
+
 assert.equal(occurrences(html,'src="./assets/premium-lab.js"'),1);
 has(html,'class="method-brief-grid"');
 assert.equal(occurrences(html,'class="method-brief-grid"'),1,"single short collaboration timeline");

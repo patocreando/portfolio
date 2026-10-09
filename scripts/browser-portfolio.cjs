@@ -108,6 +108,9 @@ async function test() {
           legacyReturnCount:document.querySelectorAll(".home-return").length
         };
       });
+      assert.equal(await page.locator("#portfolio-nav-critical").count(),1,"Inline critical header styles survive external CSS cache");
+      assert.equal(navState.header.top,0,"Navigation fixed to viewport top");
+      assert.ok(navState.header.width>=spec.width-2,"Navigation spans entire viewport");
       assert.equal(navState.homeCount,1,"One integrated Inicio link");
       assert.equal(navState.brandCount,1,"One brand link");
       assert.equal(navState.legacyReturnCount,0,"No overlapping fixed Inicio overlay");
@@ -256,6 +259,43 @@ async function test() {
       // Page-error report is informational: third-party video/CDN failures are tested separately.
       console.log(JSON.stringify({viewport:spec.name,...state,pageErrors:pageErrors.slice(0,6)}));
       await context.close();
+    }
+
+    // Regression: emulate a browser holding the older premium stylesheet.
+    // The navbar must still be correctly laid out from critical styles in HTML.
+    const cachedPremiumCss=(await fs.readFile("assets/premium-lab.css","utf8")).split("/* Unified navigation / 2026-10-09")[0];
+    assert.ok(cachedPremiumCss.length>20000,"Legacy stylesheet cache fixture must be realistic");
+    for (const staleSpec of [{name:"desktop-stale-css",width:1366,height:900},{name:"mobile-stale-css",width:390,height:844}]) {
+      const staleContext=await browser.newContext({viewport:{width:staleSpec.width,height:staleSpec.height},reducedMotion:"reduce"});
+      await staleContext.route("**/assets/premium-lab.css*",route=>route.fulfill({status:200,contentType:"text/css",body:cachedPremiumCss}));
+      await staleContext.route("**/*.mp4",route=>route.abort());
+      const page=await staleContext.newPage();
+      try {
+        await page.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
+        const freshHeader=await page.evaluate(()=>{
+          const b=document.querySelector("#portfolioHeader"),r=b.getBoundingClientRect();
+          const el=sel=>document.querySelector("#portfolioHeader "+sel).getBoundingClientRect();
+          const center=rect=>rect.left+rect.width/2;
+          const brand=el(".portfolio-nav-brand"),nav=el(".portfolio-nav-links"),home=el(".portfolio-nav-home"),cta=el(".portfolio-nav-contact"),toggle=el(".portfolio-nav-menu-button");
+          return {height:r.height,width:r.width,top:r.top,brandCenter:center(brand),navCenter:center(nav),homeRight:home.right,navLeft:nav.left,navRight:nav.right,ctaLeft:cta.left,toggleLeft:toggle.left,brandLeft:brand.left,brandRight:brand.right};
+        });
+        assert.ok(freshHeader.height>=60&&freshHeader.height<=80,"Old cached stylesheet must not create a tall stacked header");
+        assert.equal(freshHeader.top,0,"Fixed nav remains at top with cached CSS");
+        assert.ok(freshHeader.width>=staleSpec.width-2,"Nav remains full width with cached CSS");
+        if(staleSpec.width>=1100){
+          assert.ok(Math.abs(freshHeader.navCenter-staleSpec.width/2)<3,"Desktop nav centered with stale stylesheet");
+          assert.ok(freshHeader.brandRight+8 < freshHeader.navLeft,"Brand and nav separated despite stale stylesheet");
+          assert.ok(freshHeader.navRight+8 < freshHeader.ctaLeft,"CTA right aligned despite stale stylesheet");
+        } else {
+          assert.ok(Math.abs(freshHeader.brandCenter-staleSpec.width/2)<3,"Mobile brand centered with stale stylesheet");
+          assert.ok(freshHeader.homeRight+5 < freshHeader.brandLeft,"Mobile home does not overlap brand with cached CSS");
+          assert.ok(freshHeader.brandRight+5 < freshHeader.toggleLeft,"Mobile brand does not overlap menu with cached CSS");
+        }
+        await page.locator("#portfolioHeader").screenshot({path:"artifacts/nav-"+staleSpec.name+".png",animations:"disabled"});
+        console.log(JSON.stringify({navbarStaleCss:staleSpec.name,...freshHeader}));
+      } finally {
+        await staleContext.close();
+      }
     }
   } finally {
     await browser.close();
