@@ -6,6 +6,8 @@ import assert from "node:assert/strict";
 const html = fs.readFileSync("index.html", "utf8");
 const css = fs.readFileSync("assets/site.css", "utf8");
 const js = fs.readFileSync("assets/site.js", "utf8");
+const premiumCss = fs.readFileSync("assets/premium-lab.css", "utf8");
+const premiumJs = fs.readFileSync("assets/premium-lab.js", "utf8");
 const has = (text, needle, context) => assert.ok(text.includes(needle), context || needle);
 const occurrences = (text, needle) => text.split(needle).length - 1;
 const links = text => new Set([...text.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)].map(match => match[1]));
@@ -20,7 +22,7 @@ has(html, 'href="#main-content"');
 has(html, 'role="tabpanel"');
 has(html, 'aria-labelledby="caseMyWayTitle"');
 assert.equal(occurrences(html, "aria-controls=\"projectGrid\""), 3);
-for (const file of ["assets/site.css","assets/site.js","assets/favicon.svg","assets/google-meet-logo.png"]) {
+for (const file of ["assets/site.css","assets/site.js","assets/premium-lab.css","assets/premium-lab.js","assets/favicon.svg","assets/google-meet-logo.png"]) {
   assert.ok(fs.existsSync(file), "Missing local asset "+file);
   has(html, "./"+file);
 }
@@ -47,4 +49,18 @@ try {
   if (error?.code !== "ENOENT") throw error;
   console.warn("Git unavailable: external URL baseline check omitted.");
 }
-console.log("Portfolio smoke checks OK: layout, CTAs, local assets, JS behavior and original URLs.");
+assert.equal(occurrences(html,'data-editorial-reel'),2,"two additional curated reel previews");
+assert.equal(occurrences(html,'class="editorial-case"'),2,"two new editorial case chapters");
+has(html,'NOIR 17');
+has(html,'UGC Beauty');
+has(html,'03 / Caso aplicado · My Way');
+has(html,'id="projectFilters"');
+has(html,'aria-labelledby="noirCaseTitle"');
+has(html,'aria-labelledby="ugcCaseTitle"');
+has(premiumCss,'.editorial-showcase');
+has(premiumCss,'.hero-edition-label');
+has(premiumJs,'IntersectionObserver');
+assert.ok(!premiumJs.includes('video.muted=false'),"editorial videos may never turn on sound");
+assert.equal(occurrences(html,'href="./assets/premium-lab.css"'),1);
+assert.equal(occurrences(html,'src="./assets/premium-lab.js"'),1);
+console.log("Premium LAB smoke OK: chapters, assets, links, pricing and playback invariants.");
