@@ -1,0 +1,30 @@
+name: Portfolio browser QA
+on:
+  push:
+    branches:
+      - improve/portfolio-cold-traffic
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Browser smoke checks
+        run: node scripts/browser-portfolio.cjs
+      - name: Save mobile and desktop screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-lab-screenshots
+          path: artifacts/
+          if-no-files-found: ignore

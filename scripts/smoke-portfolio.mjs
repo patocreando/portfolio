@@ -1,0 +1,50 @@
+// Static invariants for the Pato Creando portfolio. No network or dependencies.
+import fs from "node:fs";
+import { execFileSync } from "node:child_process";
+import assert from "node:assert/strict";
+
+const html = fs.readFileSync("index.html", "utf8");
+const css = fs.readFileSync("assets/site.css", "utf8");
+const js = fs.readFileSync("assets/site.js", "utf8");
+const has = (text, needle, context) => assert.ok(text.includes(needle), context || needle);
+const occurrences = (text, needle) => text.split(needle).length - 1;
+const links = text => new Set([...text.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)].map(match => match[1]));
+const sectionIds = [...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(match => match[1]);
+
+assert.deepEqual(sectionIds, ["top","projects","caseMyWay","bottleneck","fit","services","creativePaths","launchOffer","method","contact"], "section order");
+assert.ok(css.length > 260000, "extracted CSS must not lose original rules");
+assert.ok(js.length > 65000, "JS controllers must not be truncated");
+has(css, ".case-study-wrap");
+has(css, ".hero-cta-primary");
+has(html, 'href="#main-content"');
+has(html, 'role="tabpanel"');
+has(html, 'aria-labelledby="caseMyWayTitle"');
+assert.equal(occurrences(html, "aria-controls=\"projectGrid\""), 3);
+for (const file of ["assets/site.css","assets/site.js","assets/favicon.svg","assets/google-meet-logo.png"]) {
+  assert.ok(fs.existsSync(file), "Missing local asset "+file);
+  has(html, "./"+file);
+}
+for (const [ref,price] of [["w60952078","ARS 50.000"],["w60952216","ARS 100.000"],["w60952262","ARS 150.000"]]) {
+  assert.equal(occurrences(html, ref), 1, "Manychat ref: "+ref);
+  assert.equal(occurrences(html, price), 1, "pack price: "+price);
+}
+has(html, 'media="(max-width: 639px)"');
+has(html, 'class="case-study-video"');
+has(html, 'Proyecto conceptual, no campaña publicada por la marca.');
+assert.ok(!js.includes("pricingPackMobileLoop"), "pricing carousel should be manual");
+assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should not autoplay");
+assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
+has(js, 'soundToggle.addEventListener("click", toggleAudio)');
+has(js, 'button.addEventListener("keydown"');
+assert.equal(occurrences(html, 'src="./assets/site.js"'), 1);
+assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
+// Compare against main as ground truth for preservation.
+try {
+  const baseline = execFileSync("git", ["show", "origin/main:index.html"], {encoding:"utf8"});
+  const missing = [...links(baseline)].filter(url => !links(html).has(url));
+  assert.deepEqual(missing, [], "Original external media/link URLs were dropped");
+} catch (error) {
+  if (error?.code !== "ENOENT") throw error;
+  console.warn("Git unavailable: external URL baseline check omitted.");
+}
+console.log("Portfolio smoke checks OK: layout, CTAs, local assets, JS behavior and original URLs.");
