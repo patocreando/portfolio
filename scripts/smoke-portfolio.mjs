@@ -51,7 +51,7 @@ try {
   console.warn("Git unavailable: external URL baseline check omitted.");
 }
 assert.equal(occurrences(html,'data-editorial-reel'),2,"two additional curated reel previews");
-const archivedProjects = [...html.matchAll(/<article\\b[^>]*class="[^"]*\\bproject-item\\b[^"]*"[^>]*>[\\s\\S]*?<\\/article>/g)].map(match=>match[0]);
+const archivedProjects = [...html.matchAll(/<article\b[^>]*class="[^"]*\bproject-item\b[^"]*"[^>]*>[\s\S]*?<\/article>/g)].map(match => match[0]);
 assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,2,"two unique campaign cards");
