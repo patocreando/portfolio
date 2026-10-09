@@ -67,6 +67,12 @@ async function test() {
         systemMap:!!document.querySelector("#system .studio-system-map"),
         systemStepCount:document.querySelectorAll("#system .studio-system-sequence li").length,
         systemToolCount:document.querySelectorAll("#system .studio-system-toolgrid > div").length,
+        toolNames:[...document.querySelectorAll("#system .tool-app-name")].map(e=>e.textContent.trim()),
+        localIconPaths:[...document.querySelectorAll("#system .tool-app-logo img")].map(img=>img.getAttribute("src")),
+        pipelineCards:document.querySelectorAll("#system .tool-pipeline-card").length,
+        toolGridWidth:document.querySelector("#system .studio-system-toolgrid")?.getBoundingClientRect().width,
+        toolCardsWithinViewport:[...document.querySelectorAll("#system .tool-pipeline-card")].every(el=>{const r=el.getBoundingClientRect();return r.left>=-2&&r.right<=innerWidth+2;}),
+
         systemBoardWidth:document.querySelector("#system .studio-system-board")?.getBoundingClientRect().width,
         systemBoardContainer:document.querySelector("#system > .site-shell")?.getBoundingClientRect().width,
         systemCta:document.querySelector("#system .studio-system-cta")?.getAttribute("href"),
@@ -100,6 +106,13 @@ async function test() {
       assert.ok(state.systemMap,"Dedicated production system is visible in DOM");
       assert.equal(state.systemStepCount,4,"Four studio system phases");
       assert.equal(state.systemToolCount,3,"Three functional tool groups");
+      assert.equal(state.pipelineCards,3,"Three new functional tool cards");
+      assert.equal(state.toolNames.length,10,"Ten recognizable tool labels");
+      assert.equal(new Set(state.localIconPaths).size,9,"Nine local SVG assets, platform logo reused");
+      assert.ok(state.localIconPaths.every(x=>x.startsWith("./assets/tool-icons/")),"Logos self-hosted");
+      assert.ok(state.toolCardsWithinViewport,"No tool card horizontally clips");
+      assert.ok(state.toolGridWidth<=state.innerWidth+2,"Tool grid fits viewport");
+
       assert.equal(state.systemCta,"#contact","Contact CTA must stay internal");
       assert.ok(state.systemBoardWidth <= state.innerWidth+2,"System diagram must fit viewport");
       assert.ok(state.systemBoardWidth <= state.systemBoardContainer+2,"System diagram must fit site-shell");
@@ -120,7 +133,16 @@ async function test() {
 
       // An additional real-animation CSS pass: the baseline QA uses reduced motion and
       // would otherwise hide the video in every screenshot.
+
+      await page.locator("#system .studio-system-toolgrid").scrollIntoViewIfNeeded();
+      await page.waitForFunction(() => [...document.querySelectorAll("#system .tool-app-logo img")].every(el=>el.complete && el.naturalWidth>0),{timeout:12000});
+      assert.equal(await page.locator("#system .tool-app-logo img").count(),10,"Tool logos render in all viewports");
+      const disabledWave=await page.locator("#system .tool-pipeline-card").first().evaluate(el=>getComputedStyle(el,"::before").animationName);
+      assert.equal(disabledWave,"none","Reduced motion disables RGB wave");
+      await page.locator("#system .studio-system-toolgrid").screenshot({path:"artifacts/stack-tools-"+spec.name+".png",animations:"disabled"});
       await page.emulateMedia({reducedMotion:"no-preference"});
+      const activeWave=await page.locator("#system .tool-pipeline-card").first().evaluate(el=>getComputedStyle(el,"::before").animationName);
+      assert.ok(activeWave.includes("tool-pipeline-border-wave"),"RGB wave enabled in normal motion");
       await page.locator("#system .studio-system-board").scrollIntoViewIfNeeded();
       await page.waitForTimeout(450);
       const cinematic=await page.evaluate(() => {
