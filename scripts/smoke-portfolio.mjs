@@ -13,15 +13,16 @@ const occurrences = (text, needle) => text.split(needle).length - 1;
 const links = text => new Set([...text.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)].map(match => match[1]));
 const sectionIds = [...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(match => match[1]);
 
-assert.deepEqual(sectionIds, ["top","projects","caseMyWay","bottleneck","fit","services","creativePaths","launchOffer","method","contact"], "section order");
+assert.deepEqual(sectionIds, ["top","projects","caseMyWay","system","bottleneck","fit","services","creativePaths","launchOffer","method","contact"], "section order");
 assert.ok(css.length > 260000, "extracted CSS must not lose original rules");
-assert.ok(js.length > 65000, "JS controllers must not be truncated");
+assert.ok(js.length > 69000, "JS controllers must not be truncated");
+assert.ok(!js.includes("workflowCodeCanvas"),"unused typewriter removed");
 has(css, ".case-study-wrap");
 has(css, ".hero-cta-primary");
 has(html, 'href="#main-content"');
 has(html, 'role="tabpanel"');
 has(html, 'aria-labelledby="caseMyWayTitle"');
-assert.equal(occurrences(html, "aria-controls=\"projectGrid\""), 3);
+assert.equal(occurrences(html, "aria-controls=\"projectGrid\""), 2);
 for (const file of ["assets/site.css","assets/site.js","assets/premium-lab.css","assets/premium-lab.js","assets/favicon.svg","assets/google-meet-logo.png"]) {
   assert.ok(fs.existsSync(file), "Missing local asset "+file);
   has(html, "./"+file);
@@ -59,7 +60,15 @@ assert.equal(occurrences(html,'https://www.instagram.com/p/Dd24xgrOr5e/?hl=en'),
 assert.equal(occurrences(html,'class="case-study-reference"'),1,"reference link belongs in canonical My Way case");
 assert.equal(occurrences(html,'3fb33f83-1289-4aa6-a48e-d9adeb242cd7.mp4'),1,"My Way video displayed only once");
 assert.equal(occurrences(html,'Muestra autorizada para Shop Online Perfumería.'),1,"disclaimer displayed only once");
-has(js,'El caso My Way se desarrolla a continuación.');
+assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow gallery tab or card");
+assert.equal(occurrences(html, 'data-filter="workflow"'),0,"only UGC and product remain");
+assert.equal(occurrences(html, 'id="system"'),1,"system presentation is standalone");
+assert.equal(occurrences(html, 'class="studio-system-conversion section-reveal"'),1,"one contextual conversion call to action");
+has(html,'href="#contact">Contame el proyecto');
+has(premiumCss,'.studio-system-map');
+has(premiumCss,'.studio-system-toolgrid');
+assert.equal(occurrences(html,'href="#system"'),2,"desktop and mobile navigation to system");
+assert.equal(occurrences(html,'social-proof'),0,"no social proof placeholders");
 
 has(html,'id="projectFilters"');
 has(html,'aria-labelledby="noirCaseTitle"');
