@@ -115,3 +115,19 @@ html { scroll-padding-top: 78px; }
 .editorial-play-control:focus-visible { outline:2px solid #CFE65A;outline-offset:3px; }
 .editorial-play-symbol {font-size:11px;color:#CFE65A; }
 @media(prefers-reduced-motion:reduce) {.editorial-play-control{transition:none;}}
+
+/* My Way: one canonical editorial case, with the original reference as a single source link. */
+#caseMyWay .case-study-reference {
+  display: inline-flex; align-items: center; gap: 11px;
+  width: fit-content; min-height: 44px; margin-top: 13px;
+  font-size: 12px; font-weight: 700; letter-spacing: .02em;
+  text-decoration: none; color: #CFE65A;
+  border-bottom: 1px solid rgba(207,230,90,.42);
+  transition: border-color .18s ease, color .18s ease;
+}
+#caseMyWay .case-study-reference:hover { border-color: #CFE65A; color: #f3ffc4; }
+#caseMyWay .case-study-reference:focus-visible { outline: 2px solid #CFE65A; outline-offset: 4px; }
+@media (max-width:719px) {
+  #caseMyWay .case-study-reference { justify-content: center; margin-left: auto; margin-right: auto; }
+}
+@media (prefers-reduced-motion:reduce) { #caseMyWay .case-study-reference { transition:none; } }
