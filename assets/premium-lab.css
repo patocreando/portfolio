@@ -300,3 +300,72 @@ html { scroll-padding-top: 78px; }
 @media(prefers-reduced-motion:reduce){
   #system .studio-system-ambient {display:none;}
 }
+
+
+/* Production System: visible cinematography, readable cards, and a real static fallback.
+   Earlier .25 alpha behind ~.7 scrim yielded <8% perceived source visibility. */
+#system .studio-system-board {
+  background:
+    radial-gradient(ellipse at 79% 23%,rgba(122,161,142,.22),transparent 46%),
+    radial-gradient(ellipse at 10% 90%,rgba(207,230,90,.12),transparent 51%),
+    linear-gradient(140deg,#1a2729,#10191c 48%,#101513);
+  border:1px solid rgba(207,230,90,.36);
+  box-shadow:0 26px 94px rgba(0,0,0,.36),inset 0 1px 0 rgba(238,250,220,.18);
+}
+#system .studio-system-ambient {
+  opacity:.78;
+  object-position:center 43%;
+  filter:saturate(.85) contrast(1.18) brightness(1.06);
+}
+#system .studio-system-board::before {
+  background:linear-gradient(112deg,rgba(7,13,15,.31),rgba(8,14,16,.22) 45%,rgba(6,11,14,.41));
+}
+#system .studio-system-board::after {
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 75% 4%,rgba(207,230,90,.14),transparent 42%),
+    radial-gradient(ellipse at 6% 87%,rgba(63,124,139,.16),transparent 52%);
+  mix-blend-mode:screen;
+  opacity:.93;
+  animation:studio-system-atmosphere 12s ease-in-out infinite alternate;
+}
+#system .studio-system-boardbar {
+  background:rgba(7,13,14,.69);
+  border-bottom-color:rgba(207,230,90,.25);
+  backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
+}
+#system .studio-system-panel {
+  background:rgba(8,14,16,.80);
+  border-color:rgba(229,243,234,.24);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.075),0 12px 28px rgba(0,0,0,.16);
+}
+#system .studio-system-engine {
+  background:linear-gradient(144deg,rgba(31,43,38,.89),rgba(8,14,16,.86));
+  border-color:rgba(207,230,90,.44);
+  box-shadow:inset 0 1px 0 rgba(207,230,90,.13),0 12px 35px rgba(0,0,0,.18);
+}
+#system .studio-system-boardnote {
+  background:rgba(7,13,15,.56);
+  color:#d1dcd6;
+  border-top:1px solid rgba(255,255,255,.12);
+}
+@keyframes studio-system-atmosphere {
+  from {opacity:.72;transform:translate3d(0,0,0) scale(1);}
+  to {opacity:1;transform:translate3d(0,-1.2%,0) scale(1.04);}
+}
+@media(max-width:749px) {
+  #system .studio-system-ambient {opacity:.65;object-position:58% center;}
+  #system .studio-system-board::before {
+    background:linear-gradient(180deg,rgba(7,13,15,.40),rgba(7,13,15,.48));
+  }
+  #system .studio-system-panel {background:rgba(7,13,15,.87);}
+  #system .studio-system-boardbar {backdrop-filter:none;-webkit-backdrop-filter:none;}
+  #system .studio-system-board::after {
+    background:radial-gradient(ellipse at 68% 8%,rgba(207,230,90,.13),transparent 52%),
+               radial-gradient(ellipse at 6% 90%,rgba(63,124,139,.14),transparent 53%);
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  #system .studio-system-board::after {animation:none;transform:none;opacity:.95;}
+}
