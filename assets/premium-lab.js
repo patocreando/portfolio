@@ -7,13 +7,33 @@
   var reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   var visible=new WeakMap();
   function pause(video) { try {video.pause();} catch(error) {} }
-  function play(video) {
-    if(document.hidden||reduced.matches||!visible.get(video)) return;
+  function play(video,manual) {
+    if(!manual && (document.hidden||reduced.matches||!visible.get(video))) return;
     if(video.preload==="none") video.preload="metadata";
     video.muted=true;
     var promise; try {promise=video.play();} catch(error) {}
     if(promise && typeof promise.catch==="function") promise.catch(function(){});
   }
+  reels.forEach(function(video) {
+    var button=video.parentElement && video.parentElement.querySelector(".editorial-play-control");
+    if(!button) return;
+    var originalName=video.getAttribute("aria-label")||"pieza";
+    function sync() {
+      var running=!video.paused && !video.ended;
+      var label=button.querySelector(".editorial-play-label");
+      var symbol=button.querySelector(".editorial-play-symbol");
+      if(label) label.textContent=running?"Pausar":"Reproducir";
+      if(symbol) symbol.textContent=running?"Ⅱ":"▶";
+      button.setAttribute("aria-pressed",String(running));
+      button.setAttribute("aria-label",(running?"Pausar ":"Reproducir ")+originalName);
+    }
+    button.addEventListener("click",function(){if(video.paused) play(video,true);else pause(video);});
+    video.addEventListener("playing",sync);
+    video.addEventListener("pause",sync);
+    video.addEventListener("ended",sync);
+    video.addEventListener("error",sync);
+    sync();
+  });
   if("IntersectionObserver" in window) {
     var observer=new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
