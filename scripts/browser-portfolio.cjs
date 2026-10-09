@@ -107,7 +107,18 @@ async function test() {
       assert.equal(state.systemStepCount,4,"Four studio system phases");
       assert.equal(state.systemToolCount,3,"Three functional tool groups");
       assert.equal(state.pipelineCards,3,"Three new functional tool cards");
-      assert.deepEqual(state.toolNames,["ChatGPT","Nano Banana Pro","Omni 1.1 Flash","Veo","Higgsfield","Python","CapCut","Canva"],"Exact tool order");
+      assert.deepEqual(state.toolNames,["ChatGPT","Nano Banana Pro","Higgsfield Soul","Omni 1.1 Flash","Veo","Python","CapCut","Canva"],"Exact functional tool order");
+      assert.equal(await page.locator("#system .tool-pipeline-direction .tool-app").count(),3,"Direction shows ChatGPT, Nano and Soul");
+      assert.equal(await page.locator("#system .tool-pipeline-generation .tool-app").count(),2,"Generation shows Omni and Veo");
+      assert.equal(await page.locator("#system .tool-pipeline-finishing .tool-app").count(),3,"Finishing has three icons");
+      const alignment=await page.locator("#system .tool-pipeline-generation .tool-apps").evaluate(el=>{
+        const items=[...el.querySelectorAll(".tool-app")].map(x=>x.getBoundingClientRect());
+        const container=el.getBoundingClientRect();
+        const usedLeft=items[0].left-container.left;
+        const usedRight=container.right-items[items.length-1].right;
+        return {usedLeft,usedRight,width:container.width};
+      });
+      assert.ok(Math.abs(alignment.usedLeft-alignment.usedRight)<4,"Two generation logos are horizontally centered");
       assert.equal(new Set(state.localIconPaths).size,8,"Eight unique local SVG assets");
       assert.ok(state.localIconPaths.every(x=>x.startsWith("./assets/tool-icons/")),"Logos self-hosted");
       assert.ok(state.toolCardsWithinViewport,"No tool card horizontally clips");
