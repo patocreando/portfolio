@@ -25,8 +25,10 @@ async function test() {
   await fs.mkdir("artifacts", {recursive:true});
   try {
     for (const spec of [
+      {name:"mobile-375",width:375,height:812,isMobile:true},
       {name:"mobile-390",width:390,height:844,isMobile:true},
-      {name:"desktop-1366",width:1366,height:900,isMobile:false}
+      {name:"desktop-1366",width:1366,height:900,isMobile:false},
+      {name:"desktop-1920",width:1920,height:1080,isMobile:false}
     ]) {
       const context = await browser.newContext({viewport:{width:spec.width,height:spec.height},isMobile:spec.isMobile,hasTouch:spec.isMobile,deviceScaleFactor:1,reducedMotion:"reduce"});
       // Media bytes are unchanged and checked statically. Avoid loading large campaign videos during screenshot QA.
@@ -45,12 +47,18 @@ async function test() {
         ctaCount:document.querySelectorAll("#launchOffer .pricing-pack-cta").length,
         css:getComputedStyle(document.querySelector(".hero-cta-primary")).backgroundColor,
         heroMuted:document.querySelector(".hero-video").muted,
+        premiumCaseCount:document.querySelectorAll(".editorial-case").length,
+        editorialHeadings:[...document.querySelectorAll(".editorial-case h4")].map(n=>n.innerText),
+        premiumLinks:[...document.querySelectorAll(".editorial-project-link")].map(n=>n.getAttribute("href")),
         deliveryStepWidth:document.querySelector(".deliverable-step").getBoundingClientRect().width,
         railWidth:document.querySelector("#pricingPackRail").clientWidth,
         railScroll:document.querySelector("#pricingPackRail").scrollLeft,
         mainWidth:document.querySelector("main").getBoundingClientRect().width,
         innerWidth:window.innerWidth
       }));
+      assert.equal(state.premiumCaseCount,2,"Two new curated case chapters and My Way must render");
+      assert.equal(state.editorialHeadings.length,2,"Curated editorial headings must render");
+      assert.ok(state.premiumLinks.every(x=>x==="#projectFilters"),"Curated internal links must resolve");
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
       assert.ok(state.projects && state.caseStudy,"Projects and featured case must be in DOM");
