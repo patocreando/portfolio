@@ -82,8 +82,10 @@ assert.equal(occurrences(html,'Workflow aplicado · My Way'),0,"redundant My Way
 assert.equal(occurrences(html,'https://www.instagram.com/p/Dd24xgrOr5e/?hl=en'),0,"remove requested My Way original reference button");
 assert.equal(occurrences(html,'class="case-study-reference"'),0,"remove requested My Way reference CTA");
 assert.equal(occurrences(html,'Explorar otros formatos'),0,"remove requested duplicate editorial link");
-assert.equal(occurrences(html,'Ver la galería completa'),1,"retain the UGC gallery CTA");
-assert.equal(occurrences(html,'href="#projectFilters"'),1,"retain only curated UGC gallery link");
+assert.equal(occurrences(html,'Ver la galería completa'),0,"requested UGC gallery CTA removed");
+assert.equal(occurrences(html,'class="editorial-project-link"'),0,"no extra editorial CTA buttons");
+assert.equal(occurrences(html,'href="#projectFilters"'),0,"gallery anchor no longer linked from case");
+assert.equal(occurrences(html,'id="projectFilters"'),1,"retain the gallery filter section");
 assert.equal(occurrences(html,'3fb33f83-1289-4aa6-a48e-d9adeb242cd7.mp4'),1,"My Way video displayed only once");
 assert.equal(occurrences(html,'Muestra autorizada para Shop Online Perfumería.'),1,"disclaimer displayed only once");
 assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow gallery tab or card");

@@ -93,8 +93,9 @@ async function test() {
       assert.equal(state.noirSources,1,"NOIR video is only present in its featured banner");
       assert.equal(state.ugcPerfumeSources,1,"Beauty perfume UGC video is only present in its featured banner");
       assert.equal(state.editorialHeadings.length,2,"Curated editorial headings must render");
-      assert.deepEqual(state.premiumLinks,["#projectFilters"],"Only the UGC gallery CTA remains");
-      assert.equal(await page.locator(".editorial-project-link").innerText().then(x=>x.replace(/\s+/g," ").trim()),"Ver la galería completa ↘","Preserve the requested gallery link");
+      assert.deepEqual(state.premiumLinks,[],"No redundant editorial gallery CTAs remain");
+      assert.equal(await page.locator(".editorial-project-link").count(),0,"Remove the remaining editorial gallery button");
+      assert.equal(await page.locator("#projectFilters").count(),1,"Keep the gallery filters section");
       assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),0,"Requested original-reference CTA removed");
       assert.equal(await page.getByText("Explorar otros formatos",{exact:true}).count(),0,"Requested editorial CTA removed");
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
