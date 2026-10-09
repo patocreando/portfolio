@@ -1055,103 +1055,6 @@
 
       showCategory("ugc");
 
-      // Methodology carousel
-      var methodSlider = document.getElementById("methodSlider");
-      var methodTrack = document.getElementById("methodTrack");
-      var methodPrev = document.getElementById("methodPrev");
-      var methodNext = document.getElementById("methodNext");
-      var methodProgress = document.getElementById("methodProgress");
-      var methodDots = Array.prototype.slice.call(document.querySelectorAll(".method-dot"));
-      var methodSlides = methodTrack ? Array.prototype.slice.call(methodTrack.querySelectorAll(".method-slide")) : [];
-      var methodIndex = 0;
-      var methodTimer = null;
-      var methodDelay = 5500;
-
-      function renderMethodSlide(nextIndex, restart) {
-        if (!methodTrack || !methodSlides.length) return;
-
-        methodIndex = (nextIndex + methodSlides.length) % methodSlides.length;
-        methodTrack.style.transform = "translate3d(-" + (methodIndex * 100) + "%,0,0)";
-
-        methodSlides.forEach(function (slide, index) {
-          slide.classList.remove("is-method-animating");
-          slide.classList.toggle("is-method-active", index === methodIndex);
-        });
-
-        if (!reduceMotion) {
-          var activeMethodSlide = methodSlides[methodIndex];
-          if (activeMethodSlide) {
-            void activeMethodSlide.offsetWidth;
-            activeMethodSlide.classList.add("is-method-animating");
-          }
-        }
-
-        methodDots.forEach(function (dot, index) {
-          dot.classList.toggle("is-active", index === methodIndex);
-          dot.setAttribute("aria-current", index === methodIndex ? "true" : "false");
-        });
-
-        if (methodProgress) {
-          methodProgress.style.transition = "none";
-          methodProgress.style.transform = "scaleX(0)";
-          void methodProgress.offsetWidth;
-
-          if (!reduceMotion) {
-            methodProgress.style.transition = "transform " + methodDelay + "ms linear";
-            methodProgress.style.transform = "scaleX(1)";
-          }
-        }
-
-        if (restart !== false) {
-          startMethodAutoplay();
-        }
-      }
-
-      function stopMethodAutoplay() {
-        if (methodTimer) {
-          window.clearTimeout(methodTimer);
-          methodTimer = null;
-        }
-      }
-
-      function startMethodAutoplay() {
-        stopMethodAutoplay();
-        if (reduceMotion || !methodSlides.length) return;
-
-        methodTimer = window.setTimeout(function () {
-          renderMethodSlide(methodIndex + 1, true);
-        }, methodDelay);
-      }
-
-      if (methodSlides.length) {
-        if (methodPrev) {
-          methodPrev.addEventListener("click", function () {
-            renderMethodSlide(methodIndex - 1, true);
-          });
-        }
-
-        if (methodNext) {
-          methodNext.addEventListener("click", function () {
-            renderMethodSlide(methodIndex + 1, true);
-          });
-        }
-
-        methodDots.forEach(function (dot, index) {
-          dot.addEventListener("click", function () {
-            renderMethodSlide(index, true);
-          });
-        });
-
-        if (methodSlider) {
-          methodSlider.addEventListener("mouseenter", stopMethodAutoplay);
-          methodSlider.addEventListener("mouseleave", startMethodAutoplay);
-          methodSlider.addEventListener("focusin", stopMethodAutoplay);
-          methodSlider.addEventListener("focusout", startMethodAutoplay);
-        }
-
-        renderMethodSlide(0, true);
-      }
-
       // Magnetic pointer effect
       if (finePointer && !reduceMotion) {
         document.querySelectorAll(".magnetic").forEach(function (element) {
@@ -1612,13 +1515,9 @@
 
         var majorTitles = gsap.utils.toArray([
           "#top .hero-lockup-title",
-          "#bottleneck .conversion-tension-title",
-          "#creativePaths .creative-paths-title",
           "#projects h2",
-          "#fit .fit-title",
           "#services .services-title",
           "#pricingTitle",
-          "#method .method-intro-title h2",
           "#contact h2"
         ].join(","));
 
@@ -1664,22 +1563,14 @@
           "#top .hero-summary-minimal",
           "#top .hero-desktop-link",
           "#top .hero-mobile-cta",
-          "#bottleneck .conversion-kicker",
-          "#bottleneck .conversion-tension-copy",
-          "#creativePaths .conversion-kicker",
-          "#creativePaths .creative-paths-head > p:last-child",
           "#projects .project-intro-copy",
           "#projects [role='tablist']",
           "#categoryDescription",
           "#projects .project-meet-cta",
-          "#fit .conversion-kicker",
           "#services .services-label",
           "#services .services-copy",
           ".pricing-packs-meta",
           ".pricing-packs-head > p",
-          "#method .method-intro-label",
-          "#method .method-intro-copy",
-          "#method .method-intro-tools",
           "#contact .section-reveal > p:first-child",
           "#contact .section-reveal > p.mt-7"
         ].join(","));
@@ -1700,15 +1591,12 @@
         });
 
         var revealCards = gsap.utils.toArray([
-          "#creativePaths .creative-path",
           "#projects .project-intro-card",
           "#projectGrid .project-item:not(.is-hidden)",
-          "#fit .fit-card",
           "#services .service-card",
           ".pricing-pack",
           ".deliverables-card",
           ".direction-principle",
-          "#methodSlider",
           "#contact .contact-social-link",
           "#contact form"
         ].join(","));
