@@ -20,6 +20,18 @@ assert.ok(!js.includes("workflowCodeCanvas"),"unused typewriter removed");
 has(css, ".case-study-wrap");
 has(css, ".hero-cta-primary");
 has(html, 'href="#main-content"');
+assert.equal(occurrences(html,'class="hero-reveal hero-actions"'),0,"remove duplicated hero CTAs only");
+assert.equal(occurrences(html,'href="#projects"'),2,"main navigation to projects remains in desktop and mobile");
+assert.equal(occurrences(html,'href="#launchOffer"'),2,"main navigation to packs remains in desktop and mobile");
+assert.equal(occurrences(html,'class="studio-system-ambient"'),1,"one decorative production background");
+assert.equal(occurrences(html,'class="studio-system-board section-reveal"'),1,"production card remains unique");
+assert.equal(occurrences(html,'class="studio-system-sequence"'),1,"retain four system steps");
+assert.equal(occurrences(html,"https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/8ece9361-a363-477c-8a2e-e6d221cdc562.mp4"),2,"reuse method background video in production card");
+has(premiumCss,'.studio-system-board::before');
+has(premiumJs,'systemBackgroundPlayback');
+has(premiumJs,'prefers-reduced-motion: reduce');
+has(premiumJs,'connection.saveData');
+
 has(html, 'role="tabpanel"');
 has(html, 'aria-labelledby="caseMyWayTitle"');
 assert.equal(occurrences(html, "aria-controls=\"projectGrid\""), 2);
