@@ -20,6 +20,26 @@ assert.ok(!js.includes("workflowCodeCanvas"),"unused typewriter removed");
 has(css, ".case-study-wrap");
 has(css, ".hero-cta-primary");
 has(html, 'href="#main-content"');
+
+const headerMarkup=html.slice(html.indexOf('<header id="portfolioHeader"'),html.indexOf('  <main id="main-content">'));
+assert.ok(headerMarkup.startsWith('<header id="portfolioHeader"'),"one unified portfolio header");
+assert.equal(occurrences(html,'id="portfolioHeader"'),1,"single main navigation");
+assert.equal(occurrences(headerMarkup,'https://patocreando.github.io/inicio/'),1,"Inicio link integrated only once");
+assert.equal(occurrences(html,'class="home-return"'),0,"remove independently fixed Inicio pill");
+assert.ok(!html.includes('id="home-return-style"'),"retire legacy overlay style");
+assert.equal(occurrences(headerMarkup,'href="#top"'),1,"brand anchor preserved");
+assert.equal(occurrences(headerMarkup,'href="#projects"'),2,"desktop and mobile project link");
+assert.equal(occurrences(headerMarkup,'href="#system"'),2,"desktop and mobile system link");
+assert.equal(occurrences(headerMarkup,'href="#services"'),2,"desktop and mobile service link");
+assert.equal(occurrences(headerMarkup,'href="#launchOffer"'),2,"desktop and mobile packs link");
+assert.equal(occurrences(headerMarkup,'href="#contact"'),2,"desktop and mobile Hablemos");
+assert.equal(occurrences(headerMarkup,'id="menuToggle"'),1,"one menu controller");
+assert.equal(occurrences(headerMarkup,'id="mobileMenu"'),1,"one mobile menu");
+assert.ok(headerMarkup.includes('aria-controls="mobileMenu"'),"accessible menu control wiring");
+has(premiumCss,"#portfolioHeader .portfolio-nav-layout");
+has(premiumCss,"grid-template-columns:minmax(250px,1fr) auto minmax(130px,1fr)");
+has(premiumCss,"#portfolioHeader .portfolio-mobile-menu.is-open");
+
 assert.equal(occurrences(html,'class="hero-reveal hero-actions"'),0,"remove duplicated hero CTAs only");
 assert.equal(occurrences(html,'href="#projects"'),2,"main navigation to projects remains in desktop and mobile");
 assert.equal(occurrences(html,'href="#launchOffer"'),2,"main navigation to packs remains in desktop and mobile");

@@ -84,6 +84,53 @@ async function test() {
         mainWidth:document.querySelector("main").getBoundingClientRect().width,
         innerWidth:window.innerWidth
       }));
+
+      const navState=await page.evaluate(() => {
+        const $=selector=>document.querySelector(selector);
+        const rect=el=>{const r=el.getBoundingClientRect();return {left:r.left,right:r.right,center:r.left+r.width/2,width:r.width,top:r.top,bottom:r.bottom};};
+        const header=$("#portfolioHeader");
+        const home=header.querySelector(".portfolio-nav-home");
+        const brand=header.querySelector(".portfolio-nav-brand");
+        const nav=header.querySelector(".portfolio-nav-links");
+        const contact=header.querySelector(".portfolio-nav-contact");
+        const toggle=$("#menuToggle");
+        const headerRect=rect(header);
+        return {
+          home:rect(home),brand:rect(brand),nav:rect(nav),contact:rect(contact),toggle:rect(toggle),
+          header:headerRect,
+          viewportWidth:innerWidth,
+          mainLinks:[...nav.querySelectorAll("a")].map(el=>el.getAttribute("href")),
+          navDisplay:getComputedStyle(nav).display,
+          contactDisplay:getComputedStyle(contact).display,
+          toggleDisplay:getComputedStyle(toggle.parentElement).display,
+          homeCount:document.querySelectorAll(".portfolio-nav-home").length,
+          brandCount:document.querySelectorAll(".portfolio-nav-brand").length,
+          legacyReturnCount:document.querySelectorAll(".home-return").length
+        };
+      });
+      assert.equal(navState.homeCount,1,"One integrated Inicio link");
+      assert.equal(navState.brandCount,1,"One brand link");
+      assert.equal(navState.legacyReturnCount,0,"No overlapping fixed Inicio overlay");
+      assert.deepEqual(navState.mainLinks,["#projects","#system","#services","#launchOffer"],"All central links preserved");
+      if(spec.width>=1100){
+        assert.notEqual(navState.navDisplay,"none","Desktop displays the centered section links");
+        assert.notEqual(navState.contactDisplay,"none","Desktop displays the Hablemos CTA");
+        assert.equal(navState.toggleDisplay,"none","Desktop hides hamburger");
+        assert.ok(Math.abs(navState.nav.center-spec.width/2)<3,"Desktop section links exactly centered in viewport");
+        assert.ok(navState.home.right < navState.brand.left,"Inicio and brand have clear spacing");
+        assert.ok(navState.brand.right+8 < navState.nav.left,"Brand does not overlap links");
+        assert.ok(navState.nav.right+8 < navState.contact.left,"Links do not overlap the CTA");
+      } else {
+        assert.equal(navState.navDisplay,"none","Mobile/tablet hides desktop section links");
+        assert.equal(navState.contactDisplay,"none","Mobile/tablet keeps CTA inside the menu");
+        assert.notEqual(navState.toggleDisplay,"none","Mobile/tablet displays menu toggle");
+        assert.ok(Math.abs(navState.brand.center-spec.width/2)<3,"Mobile brand mathematically centered");
+        assert.ok(navState.home.right+5 < navState.brand.left,"Inicio and centered brand do not overlap");
+        assert.ok(navState.brand.right+5 < navState.toggle.left,"Brand and hamburger do not overlap");
+        assert.equal(await page.locator("#mobileMenu").evaluate(el=>getComputedStyle(el).visibility),"hidden","Mobile menu links are not focusable while closed");
+      }
+      await page.locator("#portfolioHeader").screenshot({path:"artifacts/nav-"+spec.name+".png",animations:"disabled"});
+
       assert.equal(await page.locator(".editorial-play-control").count(),2,"Both editorial cases have explicit player controls");
       assert.equal(state.clippedDecisionLabels,0,"Case decision labels must fit available grid columns");
       assert.equal(state.premiumCaseCount,2,"Two new curated case chapters and My Way must render");
@@ -192,6 +239,11 @@ async function test() {
         assert.ok(Math.abs(first-second)<3,"Mobile pricing must not advance automatically");
         await page.locator("#menuToggle").click();
         assert.ok(await page.locator("#mobileMenu").evaluate(el=>el.classList.contains("is-open")),"Mobile nav must open");
+        assert.equal(await page.locator("#mobileMenu").evaluate(el=>getComputedStyle(el).visibility),"visible","Menu becomes accessible when open");
+        assert.deepEqual(await page.locator("#mobileMenu a").evaluateAll(nodes=>nodes.map(el=>el.getAttribute("href"))),["#projects","#system","#services","#launchOffer","#contact"],"Mobile links preserved");
+        await page.locator('#mobileMenu a[href="#system"]').click();
+        assert.ok(!(await page.locator("#mobileMenu").evaluate(el=>el.classList.contains("is-open"))),"Menu closes after navigation");
+
       }
       const playButton=page.locator(".editorial-play-control").first();
       await playButton.click();
