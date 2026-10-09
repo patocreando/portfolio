@@ -49,6 +49,11 @@ async function test() {
         heroMuted:document.querySelector(".hero-video").muted,
         clippedDecisionLabels:[...document.querySelectorAll(".editorial-decisions b")].filter(el=>el.scrollWidth>el.clientWidth+1).length,
         premiumCaseCount:document.querySelectorAll(".editorial-case").length,
+        archiveTotal:document.querySelectorAll("#projectGrid .project-item").length,
+        archiveUGC:document.querySelectorAll('#projectGrid .project-item[data-category="ugc"]').length,
+        archiveProduct:document.querySelectorAll('#projectGrid .project-item[data-category="product"]').length,
+        noirSources:document.querySelectorAll('source[src*="cc882a72-3df6-41a3-8398-619e1e7ba9a9.mp4"]').length,
+        ugcPerfumeSources:document.querySelectorAll('source[src*="d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]').length,
         methodSteps:document.querySelectorAll("#method .method-brief-grid > article").length,
         methodWidth:document.querySelector("#method .method-brief-stage")?.getBoundingClientRect().width,
         methodContainerWidth:document.querySelector("#method > .site-shell")?.getBoundingClientRect().width,
@@ -70,6 +75,11 @@ async function test() {
       assert.equal(await page.locator(".editorial-play-control").count(),2,"Both editorial cases have explicit player controls");
       assert.equal(state.clippedDecisionLabels,0,"Case decision labels must fit available grid columns");
       assert.equal(state.premiumCaseCount,2,"Two new curated case chapters and My Way must render");
+      assert.equal(state.archiveTotal,4,"Archive contains four non-duplicated projects");
+      assert.equal(state.archiveUGC,2,"UGC archive retains two distinct pieces");
+      assert.equal(state.archiveProduct,2,"Campaign archive retains two distinct pieces");
+      assert.equal(state.noirSources,1,"NOIR video is only present in its featured banner");
+      assert.equal(state.ugcPerfumeSources,1,"Beauty perfume UGC video is only present in its featured banner");
       assert.equal(state.editorialHeadings.length,2,"Curated editorial headings must render");
       assert.ok(state.premiumLinks.every(x=>x==="#projectFilters"),"Curated internal links must resolve");
       assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),1,"Original My Way reference must be linked from featured case");
@@ -108,9 +118,9 @@ async function test() {
       const videoIsMuted=await playButton.evaluate(button=>button.parentElement.querySelector("video").muted);
       assert.ok(videoIsMuted,"Manual preview must not enable audio");
       await page.locator('[data-filter="ugc"]').click();
-      assert.ok(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count()>0,"UGC filter remains functional");
+      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),2,"UGC filter displays the two unique cards");
       await page.locator('[data-filter="product"]').click();
-      assert.ok(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count()>0,"Project filter must work");
+      assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),2,"Campaign filter displays the two unique cards");
       // Page-error report is informational: third-party video/CDN failures are tested separately.
       console.log(JSON.stringify({viewport:spec.name,...state,pageErrors:pageErrors.slice(0,6)}));
       await context.close();
