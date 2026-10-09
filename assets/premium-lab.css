@@ -369,3 +369,104 @@ html { scroll-padding-top: 78px; }
 @media(prefers-reduced-motion:reduce) {
   #system .studio-system-board::after {animation:none;transform:none;opacity:.95;}
 }
+
+
+/* TOOL STACK V1 — editorial cards with a restrained, staggered RGB-light wave. */
+#system .studio-system-tools-head { align-items:end; gap:clamp(20px,5vw,75px); margin-bottom:27px; }
+#system .studio-system-tools-head > div { min-width:0; max-width:680px; }
+#system .studio-system-tools-head > p { max-width:330px; font-size:14px; line-height:1.68; color:#bac5c2; }
+#system .tool-pipeline-overline { display:block; margin:0 0 14px; font-size:10px; font-weight:800; letter-spacing:.20em; color:#CFE65A; }
+#system .studio-system-toolgrid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:13px; border:0; }
+#system .studio-system-toolgrid > .tool-pipeline-card {
+  position:relative; isolation:isolate; display:flex; flex-direction:column;
+  min-width:0; min-height:352px; overflow:hidden;
+  padding:clamp(22px,2.35vw,31px);
+  border:1px solid rgba(235,247,242,.14); border-radius:13px;
+  background:radial-gradient(ellipse at 90% -20%,rgba(122,147,140,.10),transparent 55%),linear-gradient(147deg,#171e20 0%,#101517 65%,#111717 100%);
+  box-shadow:0 19px 54px rgba(0,0,0,.13), inset 0 1px 0 rgba(255,255,255,.045);
+  transition:border-color .35s ease, transform .4s cubic-bezier(.2,.75,.2,1), box-shadow .4s ease;
+}
+#system .studio-system-toolgrid > .tool-pipeline-card + .tool-pipeline-card {padding-left:clamp(22px,2.35vw,31px); border-left:1px solid rgba(235,247,242,.14);}
+#system .tool-pipeline-card > * {position:relative;z-index:2;}
+#system .tool-pipeline-card::before {
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.74;
+  padding:1px;border-radius:inherit;
+  background:linear-gradient(115deg,rgba(207,230,90,.17),rgba(92,200,214,.70),rgba(179,120,218,.57),rgba(207,230,90,.62),rgba(92,200,214,.22));
+  background-size:280% 100%;
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;
+  animation:tool-pipeline-border-wave 16s linear infinite;
+  animation-delay:var(--wave-stagger,0s);
+}
+#system .tool-pipeline-card::after {
+  content:"";position:absolute;top:-22%;bottom:-22%;left:0;width:63%;z-index:0;
+  pointer-events:none;opacity:.40;filter:blur(20px);
+  background:linear-gradient(90deg,transparent,rgba(207,230,90,.055),rgba(81,180,212,.085),rgba(186,122,229,.06),transparent);
+  transform:translateX(-180%);
+  animation:tool-pipeline-sweep 16s ease-in-out infinite;
+  animation-delay:var(--wave-stagger,0s);
+}
+#system .tool-pipeline-card-heading { display:flex;align-items:center;justify-content:space-between;gap:12px; }
+#system .studio-system-toolgrid .tool-pipeline-number {
+  color:#CFE65A;font-size:10px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;margin:0;line-height:1.4;
+}
+#system .studio-system-toolgrid .tool-pipeline-corner {font-size:21px;font-weight:300;color:#71827d;line-height:1; margin:0;}
+#system .studio-system-toolgrid .tool-pipeline-card h4 {font-size:clamp(1.52rem,2.08vw,2.04rem);font-weight:700;letter-spacing:-.052em;line-height:1.08;color:#f1f3ec;text-wrap:balance;margin:23px 0 11px;text-align:left;}
+#system .studio-system-toolgrid .tool-pipeline-description {
+  color:#b3c1bc; font-size:13px;line-height:1.63;max-width:320px;
+  min-height:62px;margin:0 0 27px;overflow-wrap:normal;text-align:left;
+}
+#system .tool-apps {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:auto;}
+#system .tool-apps--four {grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
+#system .tool-app {display:flex;align-items:center;flex-direction:column;gap:9px;min-width:0;padding:12px 4px 9px;
+  border-radius:8px;border:1px solid rgba(255,255,255,.075);background:rgba(6,11,13,.42);
+  transition:background .35s ease,border-color .35s ease,box-shadow .35s ease;}
+#system .tool-app-logo {display:grid;place-items:center;width:43px;height:43px;min-width:43px;margin:0;border-radius:11px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);}
+#system .tool-app-logo img {display:block;width:31px;height:31px;max-width:none;object-fit:contain;}
+#system .tool-app-logo--mono img {filter:brightness(0) invert(1);opacity:.91;}
+#system .tool-app-logo--color {background:rgba(255,255,255,.045);}
+#system .tool-app-logo--color img[src$="higgsfield.svg"] {border-radius:7px;}
+#system .studio-system-toolgrid .tool-app-name {display:block;min-width:0;max-width:100%;margin:0;
+  color:#d5dfda;font-size:clamp(10px,.83vw,12px);font-weight:600;letter-spacing:-.01em;text-align:center;
+  line-height:1.35;overflow-wrap:normal;hyphens:none;text-transform:none;}
+#system .tool-pipeline-caption {margin:17px 0 0;color:#93a4a0;font-size:12px;text-align:right;letter-spacing:.01em;}
+@media(hover:hover) and (pointer:fine){
+  #system .tool-pipeline-card:hover {transform:translateY(-4px);border-color:rgba(207,230,90,.32);box-shadow:0 27px 72px rgba(0,0,0,.24),0 0 30px rgba(96,201,210,.04);}
+  #system .tool-pipeline-card:hover::before {opacity:1;}
+  #system .tool-app:hover {background:rgba(207,230,90,.07);border-color:rgba(207,230,90,.22);box-shadow:inset 0 0 19px rgba(207,230,90,.035);}
+}
+@keyframes tool-pipeline-border-wave {0%{background-position:0% 50%}100%{background-position:280% 50%}}
+@keyframes tool-pipeline-sweep {0%,8%{transform:translateX(-190%);opacity:0}35%{opacity:.42}59%,100%{transform:translateX(245%);opacity:0}}
+@media(max-width:1050px) and (min-width:750px){
+  #system .studio-system-toolgrid {gap:10px;}
+  #system .studio-system-toolgrid > .tool-pipeline-card,
+  #system .studio-system-toolgrid > .tool-pipeline-card + .tool-pipeline-card {padding:19px;}
+  #system .studio-system-toolgrid .tool-pipeline-card h4 {font-size:1.49rem;}
+  #system .studio-system-toolgrid .tool-app-name {font-size:10px;}
+  #system .tool-app {padding-inline:1px;}
+  #system .tool-app-logo {width:39px;height:39px;min-width:39px;}
+  #system .tool-app-logo img {width:29px;height:29px;}
+}
+@media(max-width:749px) {
+  #system .studio-system-tools-head {gap:12px;margin-bottom:19px;}
+  #system .studio-system-tools-head > p {max-width:510px;font-size:14px;}
+  #system .studio-system-toolgrid {grid-template-columns:minmax(0,1fr);gap:13px;}
+  #system .studio-system-toolgrid > .tool-pipeline-card,
+  #system .studio-system-toolgrid > .tool-pipeline-card + .tool-pipeline-card {
+    padding:23px 20px 22px !important;min-height:unset;
+    border:1px solid rgba(235,247,242,.15) !important;
+  }
+  #system .studio-system-toolgrid .tool-pipeline-card h4 {font-size:clamp(1.5rem,6vw,1.9rem);margin:17px 0 9px;}
+  #system .studio-system-toolgrid .tool-pipeline-description {margin:0 0 18px;min-height:0;}
+  #system .tool-app {padding:12px 3px 10px;}
+  #system .studio-system-toolgrid .tool-app-name {font-size:11px;}
+  #system .tool-pipeline-caption {text-align:left;margin-top:16px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  #system .tool-pipeline-card::before,#system .tool-pipeline-card::after {animation:none !important;}
+  #system .tool-pipeline-card::before {background-position:35% 50%;opacity:.33;}
+  #system .tool-pipeline-card::after {opacity:0;transform:none;}
+  #system .tool-pipeline-card,#system .tool-app {transition:none;}
+}
