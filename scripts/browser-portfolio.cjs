@@ -45,6 +45,7 @@ async function test() {
         ctaCount:document.querySelectorAll("#launchOffer .pricing-pack-cta").length,
         css:getComputedStyle(document.querySelector(".hero-cta-primary")).backgroundColor,
         heroMuted:document.querySelector(".hero-video").muted,
+        deliveryStepWidth:document.querySelector(".deliverable-step").getBoundingClientRect().width,
         railWidth:document.querySelector("#pricingPackRail").clientWidth,
         railScroll:document.querySelector("#pricingPackRail").scrollLeft,
         mainWidth:document.querySelector("main").getBoundingClientRect().width,
@@ -56,6 +57,7 @@ async function test() {
       assert.equal(state.css,"rgb(207, 230, 90)","Accent stylesheet must load");
       assert.equal(state.heroMuted,true,"Hero is muted by default");
       assert.ok(state.mainWidth <= state.innerWidth+4,"Main must fit viewport");
+      if (spec.isMobile) assert.ok(state.deliveryStepWidth >= 130,"Mobile deliverable steps must be readable");
       await page.screenshot({path:"artifacts/"+spec.name+".png",fullPage:true,animations:"disabled"});
       if (spec.isMobile) {
         const first=await page.locator("#pricingPackRail").evaluate(el=>el.scrollLeft);
