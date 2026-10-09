@@ -74,91 +74,52 @@
   <link rel="stylesheet" href="./assets/site.css" />
   <link rel="stylesheet" href="./assets/premium-lab.css" />
 
-<style id="home-return-style">
-  .home-return{
-    position:fixed;
-    top:max(12px,env(safe-area-inset-top));
-    left:50%;
-    z-index:2147483647;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:7px;
-    min-height:34px;
-    padding:0 12px;
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:999px;
-    background:rgba(8,10,9,.62);
-    color:rgba(245,248,245,.84);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    box-shadow:0 10px 30px rgba(0,0,0,.18);
-    font:600 10px/1 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    letter-spacing:.08em;
-    text-transform:uppercase;
-    text-decoration:none;
-    transform:translateX(-50%);
-    transition:color .22s ease,border-color .22s ease,background .22s ease;
-  }
-  .home-return:hover{
-    color:#CFE65A;
-    border-color:rgba(207,230,90,.28);
-    background:rgba(8,10,9,.78);
-  }
-  .home-return-arrow{
-    font-size:14px;
-    line-height:1;
-    transform:translateY(-.5px);
-  }
-  @media(max-width:720px){
-    .home-return{
-      top:max(9px,env(safe-area-inset-top));
-      min-height:31px;
-      padding:0 10px;
-      font-size:9px;
-    }
-  }
-</style>
+
 </head>
 
 <body>
   <a class="skip-link" href="#main-content">Saltar al contenido</a>
-  <a class="home-return" href="https://patocreando.github.io/inicio/" aria-label="Volver al inicio"><span class="home-return-arrow" aria-hidden="true">←</span><span>Inicio</span></a>
   <div class="progress" aria-hidden="true"><span id="scrollProgress"></span></div>
   <div class="grain" aria-hidden="true"></div>
 
-  <!-- Navigation -->
-  <header class="fixed inset-x-0 top-0 z-[1000] nav-blur">
-    <div class="site-shell h-[72px] flex items-center justify-between gap-5">
-      <a href="#top" class="inline-flex items-center gap-3 display font-bold tracking-[-0.03em]">
-        <span class="w-2.5 h-2.5 rounded-full bg-butter shadow-[0_0_22px_rgba(207,230,90,.45)]"></span>
-        <span>Pato Creando</span>
-      </a>
+  <!-- Unified navigation: a single hierarchy for Inicio, brand, sections and contact. -->
+  <header id="portfolioHeader" class="fixed inset-x-0 top-0 z-[1000] nav-blur">
+    <div class="site-shell portfolio-nav-layout">
+      <div class="portfolio-nav-left">
+        <a class="portfolio-nav-home" href="https://patocreando.github.io/inicio/" aria-label="Volver al inicio">
+          <span aria-hidden="true">←</span><span>Inicio</span>
+        </a>
+        <a class="portfolio-nav-brand display" href="#top" aria-label="Pato Creando, volver al principio">
+          <span class="portfolio-nav-brand-dot" aria-hidden="true"></span>
+          <span>Pato Creando</span>
+        </a>
+      </div>
 
-      <nav class="hidden md:flex items-center gap-1 text-sm text-zinc-400">
-        <a class="px-3 py-2 rounded-full hover:text-white hover:bg-white/5 transition" href="#projects">Proyectos</a>
-        <a class="px-3 py-2 rounded-full hover:text-white hover:bg-white/5 transition" href="#system">Sistema</a>
-          <a class="px-3 py-2 rounded-full hover:text-white hover:bg-white/5 transition" href="#services">Servicios</a>
-        <a class="px-3 py-2 rounded-full hover:text-white hover:bg-white/5 transition" href="#launchOffer">Packs</a>
-        <a class="ml-1 px-4 py-2 rounded-full bg-white text-black font-semibold hover:bg-butter transition" href="#contact">Hablemos</a>
+      <nav class="portfolio-nav-links" aria-label="Secciones del portfolio">
+        <a href="#projects">Proyectos</a>
+        <a href="#system">Sistema</a>
+        <a href="#services">Servicios</a>
+        <a href="#launchOffer">Packs</a>
       </nav>
 
-      <div class="md:hidden flex items-center gap-2">
-        <button id="menuToggle" class="w-10 h-10 grid place-items-center rounded-full border border-white/10 bg-white/[.03]" aria-label="Abrir menú" aria-expanded="false">
-        <i data-lucide="menu" class="w-4 h-4"></i>
+      <a class="portfolio-nav-contact" href="#contact">Hablemos <span aria-hidden="true">↗</span></a>
+
+      <div class="portfolio-nav-mobile">
+        <button id="menuToggle" class="portfolio-nav-menu-button" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-4 h-4" aria-hidden="true"></i>
         </button>
       </div>
     </div>
 
-    <div id="mobileMenu" class="menu-panel md:hidden absolute inset-x-0 top-[72px] nav-blur border-t border-white/5">
-      <div class="site-shell py-4 flex flex-col text-lg">
-        <a class="py-4 border-b border-white/5" href="#projects">Proyectos</a>
-        <a class="py-4 border-b border-white/5" href="#system">Sistema</a>
-          <a class="py-4 border-b border-white/5" href="#services">Servicios</a>
-        <a class="py-4 border-b border-white/5" href="#launchOffer">Packs</a>
-        <a class="py-4 font-semibold text-white" href="#contact">Hablemos</a>
+    <nav id="mobileMenu" class="menu-panel portfolio-mobile-menu" aria-label="Secciones del portfolio en móvil">
+      <div class="portfolio-mobile-menu-links">
+        <a href="#projects">Proyectos</a>
+        <a href="#system">Sistema</a>
+        <a href="#services">Servicios</a>
+        <a href="#launchOffer">Packs</a>
+        <a class="portfolio-mobile-menu-contact" href="#contact">Hablemos <span aria-hidden="true">↗</span></a>
       </div>
-    </div>
+    </nav>
   </header>
 
   <main id="main-content">
