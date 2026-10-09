@@ -118,4 +118,25 @@ has(premiumCss,'#system .studio-system-board::after');
 has(premiumCss,'@keyframes studio-system-atmosphere');
 has(premiumCss,'opacity:.78');
 
+
+const toolCards=[...html.matchAll(/class="tool-pipeline-card tool-pipeline-[^"]+"/g)];
+assert.equal(toolCards.length,3,"one card for each stage of production");
+assert.equal(occurrences(html,'class="tool-app"'),10,"ten recognizable tool icon tiles");
+assert.equal(occurrences(html,'class="studio-system-toolgrid"'),1,"tool stack remains unique");
+assert.equal(occurrences(html,'role="listitem"'),3,"three accessible tool cards");
+for(const name of ["ChatGPT","Nano Banana Pro","Higgsfield Soul","Omni 1.1 Flash","Seedance","Higgsfield","FFmpeg","Python","CapCut","Canva"])has(html,'>'+name+'</span>');
+const toolsBase="assets/tool-icons/";
+const toolFiles=[...html.matchAll(/src="\.\/assets\/tool-icons\/([a-z-]+\.svg)"/g)].map(x=>x[1]);
+assert.equal(toolFiles.length,10,"ten icon placements with local assets");
+assert.equal(new Set(toolFiles).size,9,"nine bundled icon files, Higgsfield correctly reused");
+for(const icon of new Set(toolFiles)){
+  assert.ok(fs.existsSync(toolsBase+icon),"tool icon exists: "+icon);
+  const source=fs.readFileSync(toolsBase+icon,"utf8");
+  assert.ok(source.startsWith("<svg")&&source.includes("</svg>"),"valid SVG: "+icon);
+  assert.ok(!/<script|<foreignObject|onload\s*=|javascript:/i.test(source),"no active SVG content: "+icon);
+}
+has(premiumCss,'@keyframes tool-pipeline-border-wave');
+has(premiumCss,'@keyframes tool-pipeline-sweep');
+has(premiumCss,'@media(prefers-reduced-motion:reduce)');
+
 console.log("Premium LAB smoke OK: chapters, assets, links, pricing and playback invariants.");
