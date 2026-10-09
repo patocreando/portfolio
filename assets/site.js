@@ -932,8 +932,7 @@
       var activeProjectCategory = "ugc";
       var categoryCopy = {
         ugc: "Avatares y producto en verticales con estética nativa.",
-        product: "Campañas de producto con control de forma, escala y materiales.",
-        workflow: "My Way: referencia → digitalización → variación → pieza final."
+        product: "Campañas de producto con control de forma, escala y materiales."
       };
 
       function getVisibleProjectItems() {
@@ -950,7 +949,6 @@
         var maxIndex = Math.max(0, visibleItems.length - 2);
 
         projectCarouselIndex = Math.min(Math.max(projectCarouselIndex, 0), maxIndex);
-        projectGrid.classList.toggle("is-workflow", activeProjectCategory === "workflow");
 
         if (!desktopCarousel || visibleItems.length <= 2) {
           projectGrid.style.transform = "";
@@ -1057,103 +1055,6 @@
 
       showCategory("ugc");
 
-      // Methodology carousel
-      var methodSlider = document.getElementById("methodSlider");
-      var methodTrack = document.getElementById("methodTrack");
-      var methodPrev = document.getElementById("methodPrev");
-      var methodNext = document.getElementById("methodNext");
-      var methodProgress = document.getElementById("methodProgress");
-      var methodDots = Array.prototype.slice.call(document.querySelectorAll(".method-dot"));
-      var methodSlides = methodTrack ? Array.prototype.slice.call(methodTrack.querySelectorAll(".method-slide")) : [];
-      var methodIndex = 0;
-      var methodTimer = null;
-      var methodDelay = 5500;
-
-      function renderMethodSlide(nextIndex, restart) {
-        if (!methodTrack || !methodSlides.length) return;
-
-        methodIndex = (nextIndex + methodSlides.length) % methodSlides.length;
-        methodTrack.style.transform = "translate3d(-" + (methodIndex * 100) + "%,0,0)";
-
-        methodSlides.forEach(function (slide, index) {
-          slide.classList.remove("is-method-animating");
-          slide.classList.toggle("is-method-active", index === methodIndex);
-        });
-
-        if (!reduceMotion) {
-          var activeMethodSlide = methodSlides[methodIndex];
-          if (activeMethodSlide) {
-            void activeMethodSlide.offsetWidth;
-            activeMethodSlide.classList.add("is-method-animating");
-          }
-        }
-
-        methodDots.forEach(function (dot, index) {
-          dot.classList.toggle("is-active", index === methodIndex);
-          dot.setAttribute("aria-current", index === methodIndex ? "true" : "false");
-        });
-
-        if (methodProgress) {
-          methodProgress.style.transition = "none";
-          methodProgress.style.transform = "scaleX(0)";
-          void methodProgress.offsetWidth;
-
-          if (!reduceMotion) {
-            methodProgress.style.transition = "transform " + methodDelay + "ms linear";
-            methodProgress.style.transform = "scaleX(1)";
-          }
-        }
-
-        if (restart !== false) {
-          startMethodAutoplay();
-        }
-      }
-
-      function stopMethodAutoplay() {
-        if (methodTimer) {
-          window.clearTimeout(methodTimer);
-          methodTimer = null;
-        }
-      }
-
-      function startMethodAutoplay() {
-        stopMethodAutoplay();
-        if (reduceMotion || !methodSlides.length) return;
-
-        methodTimer = window.setTimeout(function () {
-          renderMethodSlide(methodIndex + 1, true);
-        }, methodDelay);
-      }
-
-      if (methodSlides.length) {
-        if (methodPrev) {
-          methodPrev.addEventListener("click", function () {
-            renderMethodSlide(methodIndex - 1, true);
-          });
-        }
-
-        if (methodNext) {
-          methodNext.addEventListener("click", function () {
-            renderMethodSlide(methodIndex + 1, true);
-          });
-        }
-
-        methodDots.forEach(function (dot, index) {
-          dot.addEventListener("click", function () {
-            renderMethodSlide(index, true);
-          });
-        });
-
-        if (methodSlider) {
-          methodSlider.addEventListener("mouseenter", stopMethodAutoplay);
-          methodSlider.addEventListener("mouseleave", startMethodAutoplay);
-          methodSlider.addEventListener("focusin", stopMethodAutoplay);
-          methodSlider.addEventListener("focusout", startMethodAutoplay);
-        }
-
-        renderMethodSlide(0, true);
-      }
-
       // Magnetic pointer effect
       if (finePointer && !reduceMotion) {
         document.querySelectorAll(".magnetic").forEach(function (element) {
@@ -1258,122 +1159,6 @@
         projectIntroCard.addEventListener("pointerleave", function () {
           projectIntroCard.style.transform = "";
         });
-      }
-
-      // Workflow code — type once per page load, desktop only
-      var workflowCodeCanvas = document.getElementById("workflowCodeCanvas");
-      var workflowTypingPlayed = false;
-      var workflowDesktopQuery = window.matchMedia("(min-width: 768px)");
-
-      function completeWorkflowCode() {
-        if (!workflowCodeCanvas) return;
-        workflowCodeCanvas.classList.remove("workflow-code-armed");
-        workflowCodeCanvas.classList.add("workflow-code-complete");
-        Array.prototype.forEach.call(workflowCodeCanvas.querySelectorAll(".code-line"), function (line) {
-          var content = line.lastElementChild;
-          line.classList.remove("is-typing");
-          line.classList.add("is-typed");
-          if (content) {
-            content.style.maxWidth = "";
-            content.style.width = "";
-          }
-        });
-      }
-
-      function runWorkflowTypewriterOnce() {
-        if (
-          !workflowCodeCanvas ||
-          workflowTypingPlayed ||
-          !workflowDesktopQuery.matches ||
-          reduceMotion
-        ) {
-          if (workflowCodeCanvas && (!workflowDesktopQuery.matches || reduceMotion)) completeWorkflowCode();
-          return;
-        }
-
-        workflowTypingPlayed = true;
-        var lines = Array.prototype.slice.call(workflowCodeCanvas.querySelectorAll(".code-line"));
-        var index = 0;
-
-        function typeNextLine() {
-          if (index >= lines.length) {
-            window.setTimeout(completeWorkflowCode, 220);
-            return;
-          }
-
-          var line = lines[index++];
-          var content = line.lastElementChild;
-          if (!content) {
-            typeNextLine();
-            return;
-          }
-
-          line.classList.add("is-typing");
-          content.style.opacity = "1";
-          content.style.maxWidth = "none";
-          content.style.width = "auto";
-
-          var targetWidth = Math.ceil(content.scrollWidth);
-          var chars = Math.max(1, (content.textContent || "").length);
-          var duration = Math.max(90, Math.min(390, chars * 10));
-
-          content.style.width = "0px";
-          content.style.maxWidth = "0px";
-
-          var animation;
-          try {
-            animation = content.animate(
-              [
-                { width: "0px", maxWidth: "0px" },
-                { width: targetWidth + "px", maxWidth: targetWidth + "px" }
-              ],
-              {
-                duration: duration,
-                easing: "steps(" + chars + ", end)",
-                fill: "forwards"
-              }
-            );
-          } catch (e) {}
-
-          var finish = function () {
-            line.classList.remove("is-typing");
-            line.classList.add("is-typed");
-            content.style.width = targetWidth + "px";
-            content.style.maxWidth = targetWidth + "px";
-            window.setTimeout(typeNextLine, 42);
-          };
-
-          if (animation && animation.finished && typeof animation.finished.then === "function") {
-            animation.finished.then(finish).catch(finish);
-          } else {
-            window.setTimeout(finish, duration);
-          }
-        }
-
-        typeNextLine();
-      }
-
-      if (workflowCodeCanvas) {
-        if (workflowDesktopQuery.matches && !reduceMotion) {
-          workflowCodeCanvas.classList.add("workflow-code-armed");
-
-          if ("IntersectionObserver" in window) {
-            var workflowCodeObserver = new IntersectionObserver(function (entries, observer) {
-              entries.forEach(function (entry) {
-                if (entry.isIntersecting && entry.intersectionRatio > .24) {
-                  observer.unobserve(workflowCodeCanvas);
-                  runWorkflowTypewriterOnce();
-                }
-              });
-            }, { threshold: [0, .24, .55] });
-
-            workflowCodeObserver.observe(workflowCodeCanvas);
-          } else {
-            runWorkflowTypewriterOnce();
-          }
-        } else {
-          completeWorkflowCode();
-        }
       }
 
       // Interactive workflow funnel — autoplay + neon state
@@ -1730,13 +1515,9 @@
 
         var majorTitles = gsap.utils.toArray([
           "#top .hero-lockup-title",
-          "#bottleneck .conversion-tension-title",
-          "#creativePaths .creative-paths-title",
           "#projects h2",
-          "#fit .fit-title",
           "#services .services-title",
           "#pricingTitle",
-          "#method .method-intro-title h2",
           "#contact h2"
         ].join(","));
 
@@ -1782,22 +1563,14 @@
           "#top .hero-summary-minimal",
           "#top .hero-desktop-link",
           "#top .hero-mobile-cta",
-          "#bottleneck .conversion-kicker",
-          "#bottleneck .conversion-tension-copy",
-          "#creativePaths .conversion-kicker",
-          "#creativePaths .creative-paths-head > p:last-child",
           "#projects .project-intro-copy",
           "#projects [role='tablist']",
           "#categoryDescription",
           "#projects .project-meet-cta",
-          "#fit .conversion-kicker",
           "#services .services-label",
           "#services .services-copy",
           ".pricing-packs-meta",
           ".pricing-packs-head > p",
-          "#method .method-intro-label",
-          "#method .method-intro-copy",
-          "#method .method-intro-tools",
           "#contact .section-reveal > p:first-child",
           "#contact .section-reveal > p.mt-7"
         ].join(","));
@@ -1818,15 +1591,12 @@
         });
 
         var revealCards = gsap.utils.toArray([
-          "#creativePaths .creative-path",
           "#projects .project-intro-card",
           "#projectGrid .project-item:not(.is-hidden)",
-          "#fit .fit-card",
           "#services .service-card",
           ".pricing-pack",
           ".deliverables-card",
           ".direction-principle",
-          "#methodSlider",
           "#contact .contact-social-link",
           "#contact form"
         ].join(","));
@@ -2181,7 +1951,7 @@
 (function methodMasterAmbientPlayback() {
       "use strict";
 
-      var video = document.querySelector("#method .method-ambient-master");
+      var video = document.querySelector("#method .method-brief-ambient");
       if (!video) return;
 
       var mobile = window.matchMedia("(max-width: 639px)");
