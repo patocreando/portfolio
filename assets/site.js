@@ -1618,6 +1618,24 @@
           });
         });
 
+        // PERFUME_01 process board: reveal each file stage in reading order.
+        var perfumeStages = gsap.utils.toArray("#caseMyWay .perfume-stage-card");
+        if (perfumeStages.length) {
+          gsap.from(perfumeStages, {
+            scrollTrigger: {
+              trigger: "#caseMyWay .perfume-process-track",
+              start: fastMobile ? "top 94%" : "top 88%",
+              once: true
+            },
+            opacity: 0,
+            y: fastMobile ? 12 : 24,
+            stagger: fastMobile ? .08 : .12,
+            duration: fastMobile ? .3 : .52,
+            ease: "power3.out",
+            clearProps: "transform,opacity"
+          });
+        }
+
         gsap.utils.toArray("[data-orb]").forEach(function (orb, index) {
           gsap.to(orb, {
             x: index % 2 === 0 ? 55 : -45,

@@ -1,0 +1,59 @@
+{
+  "project": "PERFUME_01",
+  "view": "portfolio process board",
+  "status": "review draft; not published",
+  "final_master": {
+    "file": "../../videos/perfume-concept-v2-1.mp4",
+    "sha256": "AC93CA773D260205CA9011FB3A202839E730EFE39D5344720507EF21591603A2",
+    "frames": 293,
+    "fps": "24/1",
+    "duration_seconds": 12.208333,
+    "dimensions": "720x1280",
+    "audio": "silent"
+  },
+  "timeline": [
+    {
+      "order": 1,
+      "file": "anchor-01.jpg",
+      "sha256": "D73F4A3BFB312610B9B2CDCF8CCABDA29584F28359D078379C95B5B1E2090E35",
+      "role": "initial visual anchor",
+      "included_in_final": false,
+      "note": "Explored as a still; excluded from v2.1."
+    },
+    {
+      "order": 2,
+      "file": "omni-01.mp4",
+      "sha256": "DA0D48067FE8AAC2749D579A63EB90203073DE419F1FDF75B012EA2D447149DA",
+      "role": "Omni animation",
+      "source_frames": 168,
+      "used_source_range": "[0,168)",
+      "output_frames": "[0,168)",
+      "included_in_final": true
+    },
+    {
+      "order": 3,
+      "file": "flow-01.mp4",
+      "sha256": "EEE2D9DD52FF40443F1EAB07D234959C6C6FE1F802196C1F44611BDAC437C0C4",
+      "role": "Flow animation",
+      "source_frames": 240,
+      "used_source_range": "[0,125)",
+      "output_frames": "[168,293)",
+      "included_in_final": true
+    },
+    {
+      "order": 4,
+      "file": "anchor-02.jpg",
+      "sha256": "CA03A37E4D8C0E0C0C553AB9483FEFBCAB2055284492332D9EA94AD953A11721",
+      "role": "explored closing anchor",
+      "included_in_final": false,
+      "note": "The final v2.1 ends on the last valid frame of the second animation."
+    },
+    {
+      "order": 5,
+      "file": "../../videos/perfume-concept-v2-1.mp4",
+      "sha256": "AC93CA773D260205CA9011FB3A202839E730EFE39D5344720507EF21591603A2",
+      "role": "PATO Editor final assembly",
+      "included_in_final": true
+    }
+  ]
+}
