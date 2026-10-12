@@ -44,7 +44,8 @@ assert.equal(occurrences(html,'class="hero-reveal hero-actions"'),0,"remove dupl
 assert.equal(occurrences(html,'href="#projects"'),2,"main navigation to projects remains in desktop and mobile");
 assert.equal(occurrences(headerMarkup,'href="#launchOffer"'),2,"desktop and mobile packs link in header");
 assert.equal(occurrences(html,'href="#launchOffer"'),3,"header navigation (desktop + mobile) plus hero discrete CTA to packs");
-has(html,'class="hero-cta-packs inline-flex items-center gap-2',"hero discrete CTA element is present");
+has(html,'class="hero-cta-packs inline-flex items-center gap-2 text-[13px] font-semibold text-zinc-300 hover:text-butter transition-colors"',"hero discrete CTA element is present with exact styling classes");
+has(html,'<span>Ver packs de trabajo</span>',"hero discrete CTA label is present");
 const methodScopeMatch=html.match(/<p class="method-brief-scope section-reveal">([\s\S]*?)<\/p>/);
 assert.ok(methodScopeMatch,"method terms remain in a single disclosure");
 assert.ok(methodScopeMatch[1].includes("<strong>Alcance, revisiones y plazos de entrega:</strong>"),"scope, review and timelines explicitly disclosed");
