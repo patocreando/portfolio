@@ -690,3 +690,9 @@ html { scroll-padding-top: 78px; }
 @media(max-width:1099px) {
   #top,#projects,#system,#services,#launchOffer,#contact {scroll-margin-top:78px;}
 }
+
+/* CRO 02: one compact, keyboard-accessible packs link; preserve the device grid. */
+#top .hero-packs-link { display:inline-flex; align-items:center; gap:8px; min-height:44px; color:var(--brand-lime,#CFE65A); font-size:13px; font-weight:600; text-decoration:underline; text-underline-offset:5px; }
+#top .hero-packs-link:hover { color:var(--premium-paper); }
+#top .hero-packs-link:focus-visible { outline:2px solid #CFE65A; outline-offset:4px; border-radius:3px; }
+#top .hero-edition-label { margin-top:12px; }
