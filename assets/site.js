@@ -1335,6 +1335,9 @@
       var formStatusTitle = document.getElementById("formStatusTitle");
       var formStatusCopy = document.getElementById("formStatusCopy");
       var pendingMail = null;
+      var formSending = false;
+      var submitButton = contactForm && contactForm.querySelector('button[type="submit"]');
+      var submitLabelTimer = null;
       var destinationEmail = "ulisesjgonzalez2045@gmail.com";
       var formSubmitEndpoint = "https://formsubmit.co/ajax/" + destinationEmail;
 
@@ -1385,12 +1388,7 @@
           if (window.lucide) lucide.createIcons();
         }
 
-        if (type === "error") {
-          formStatusTimer = window.setTimeout(function () {
-            formStatus.hidden = true;
-            formStatusTimer = null;
-          }, 4200);
-        }
+        // Keep errors visible until the next attempt so recovery remains readable.
       }
 
       function openMailProvider(provider, mail) {
@@ -1425,56 +1423,86 @@
         contactForm.addEventListener("submit", function (event) {
           event.preventDefault();
 
-          if (!contactForm.reportValidity()) return;
+          if (formSending || !contactForm.reportValidity()) return;
 
-          pendingMail = buildMailPayload();
+          formSending = true;
+          if (submitButton) submitButton.disabled = true;
+          contactForm.setAttribute("aria-busy", "true");
+          if (submitLabelTimer) window.clearTimeout(submitLabelTimer);
+          var submittedMail = buildMailPayload();
+          pendingMail = submittedMail;
+          var controller = typeof AbortController === "function" ? new AbortController() : null;
+          var requestTimer;
+          var timeout = new Promise(function (_, reject) {
+            requestTimer = window.setTimeout(function () {
+              reject(new Error("submit_timeout"));
+              if (controller) controller.abort();
+            }, 15000);
+          });
 
           if (submitLabel) submitLabel.textContent = "Enviando…";
           if (formStatus) formStatus.hidden = true;
 
-          fetch(formSubmitEndpoint, {
+          var request = Promise.resolve().then(function () {
+            return fetch(formSubmitEndpoint, {
             method: "POST",
+            signal: controller ? controller.signal : undefined,
             headers: {
               "Content-Type": "application/json",
               "Accept": "application/json"
             },
             body: JSON.stringify({
-              name: pendingMail.name,
-              email: pendingMail.email,
-              project: pendingMail.projectType,
-              message: pendingMail.message,
-              _subject: pendingMail.subject,
+              name: submittedMail.name,
+              email: submittedMail.email,
+              project: submittedMail.projectType,
+              message: submittedMail.message,
+              _subject: submittedMail.subject,
               _template: "table"
             })
-          })
-          .then(function (response) {
+            });
+          }).then(function (response) {
             if (!response.ok) throw new Error("submit_failed");
             return response.json();
-          })
-          .then(function () {
+          });
+          Promise.race([request, timeout])
+          .then(function (result) {
+            if (!result || (result.success !== true && result.success !== "true")) {
+              throw new Error("submit_rejected");
+            }
             showFormStatus(
               "success",
               "Propuesta enviada",
-              "Recibí tu mensaje. Te respondo al correo que dejaste."
+              "Tu consulta fue aceptada para envío. Te respondo al correo que dejaste."
             );
 
             if (submitLabel) submitLabel.textContent = "Propuesta enviada";
-            contactForm.reset();
+            // Do not erase edits made while the submitted snapshot was in flight.
+            if (JSON.stringify(buildMailPayload()) === JSON.stringify(submittedMail)) contactForm.reset();
+            pendingMail = null;
             toggleMailProviderPicker(false);
 
-            window.setTimeout(function () {
+            submitLabelTimer = window.setTimeout(function () {
               if (submitLabel) submitLabel.textContent = "Enviar propuesta";
+              submitLabelTimer = null;
             }, 2800);
           })
-          .catch(function () {
+          .catch(function (error) {
             showFormStatus(
               "error",
-              "No pude enviarla directamente",
-              "Podés abrir la propuesta en Gmail, Outlook o Yahoo y enviarla desde tu cuenta."
+              "No pude confirmar el envío",
+              error.message === "submit_timeout"
+                ? "La respuesta tardó demasiado. El envío podría haberse procesado. Podés usar tu correo; si lo reenviás, aclaralo para evitar duplicados."
+                : "Tus datos siguen acá. Podés reintentar o abrir la propuesta en Gmail, Outlook o Yahoo."
             );
 
             if (submitLabel) submitLabel.textContent = "Enviar propuesta";
             toggleMailProviderPicker(true);
+          })
+          .finally(function () {
+            window.clearTimeout(requestTimer);
+            formSending = false;
+            if (submitButton) submitButton.disabled = false;
+            contactForm.setAttribute("aria-busy", "false");
           });
         });
       }
@@ -1488,7 +1516,7 @@
 
       mailProviderButtons.forEach(function (button) {
         button.addEventListener("click", function () {
-          openMailProvider(button.getAttribute("data-mail-provider"), pendingMail || buildMailPayload());
+          openMailProvider(button.getAttribute("data-mail-provider"), buildMailPayload());
         });
       });
 
