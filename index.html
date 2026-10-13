@@ -108,6 +108,7 @@
   transition:background .22s ease,border-color .22s ease,color .22s ease;
 }
 #portfolioHeader .portfolio-nav-home span:first-child {font-size:16px;line-height:1;transform:translateY(-1px);}
+#portfolioHeader .portfolio-nav-home-extra {display:inline;}
 #portfolioHeader .portfolio-nav-brand {
   display:inline-flex;align-items:center;justify-content:center;gap:10px;
   min-width:0;color:#f0f3ec;font-size:15px;font-weight:740;
@@ -208,6 +209,7 @@
 @media(max-width:639px) {
   #portfolioHeader .portfolio-nav-layout {height:64px;min-height:64px;}
   #portfolioHeader .portfolio-nav-home {font-size:10px;min-height:34px;padding-inline:10px;gap:5px;}
+  #portfolioHeader .portfolio-nav-home-extra {display:none;}
   #portfolioHeader .portfolio-nav-brand {font-size:14px;}
   #portfolioHeader .portfolio-nav-menu-button {width:40px;height:40px;}
 }
@@ -238,7 +240,7 @@
     <div class="site-shell portfolio-nav-layout">
       <div class="portfolio-nav-left">
         <a class="portfolio-nav-home" href="https://patocreando.github.io/inicio/" aria-label="Ir a la web principal de Pato Creando">
-          <span aria-hidden="true">←</span><span>Web principal</span>
+          <span aria-hidden="true">←</span><span>Web<span class="portfolio-nav-home-extra"> principal</span></span>
         </a>
         <a class="portfolio-nav-brand display" href="#top" aria-label="Pato Creando, volver al principio">
           <span class="portfolio-nav-brand-dot" aria-hidden="true"></span>
