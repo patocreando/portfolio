@@ -42,7 +42,8 @@ async function test() {
       const state=await page.evaluate(() => ({
         title:document.querySelector("h1")?.innerText?.replace(/\s+/g," ").trim(),
         projects:!!document.querySelector("#projects"),
-        caseStudy:!!document.querySelector("#caseMyWay .case-study-video"),
+        caseStudy:!!document.querySelector("#caseMyWay .perfume-process-track"),
+        perfumeStageCount:document.querySelectorAll("#caseMyWay .perfume-stage-card").length,
         packCount:document.querySelectorAll("#launchOffer .pricing-pack").length,
         ctaCount:document.querySelectorAll("#launchOffer .pricing-pack-cta").length,
         css:getComputedStyle(document.querySelector(".studio-system-dot")).backgroundColor,
@@ -120,7 +121,7 @@ async function test() {
         assert.notEqual(navState.contactDisplay,"none","Desktop displays the Hablemos CTA");
         assert.equal(navState.toggleDisplay,"none","Desktop hides hamburger");
         assert.ok(Math.abs(navState.nav.center-spec.width/2)<3,"Desktop section links exactly centered in viewport");
-        assert.ok(navState.home.right < navState.brand.left,"Inicio and brand have clear spacing");
+        assert.ok(navState.home.right+8 <= navState.brand.left,"Home and brand have clear spacing (>= 8px)");
         assert.ok(navState.brand.right+8 < navState.nav.left,"Brand does not overlap links");
         assert.ok(navState.nav.right+8 < navState.contact.left,"Links do not overlap the CTA");
       } else {
@@ -128,8 +129,8 @@ async function test() {
         assert.equal(navState.contactDisplay,"none","Mobile/tablet keeps CTA inside the menu");
         assert.notEqual(navState.toggleDisplay,"none","Mobile/tablet displays menu toggle");
         assert.ok(Math.abs(navState.brand.center-spec.width/2)<3,"Mobile brand mathematically centered");
-        assert.ok(navState.home.right+5 < navState.brand.left,"Inicio and centered brand do not overlap");
-        assert.ok(navState.brand.right+5 < navState.toggle.left,"Brand and hamburger do not overlap");
+        assert.ok(navState.home.right+8 <= navState.brand.left,"Mobile home and centered brand maintain minimum 8px separation");
+        assert.ok(navState.brand.right+8 <= navState.toggle.left,"Mobile brand and menu toggle maintain minimum 8px separation");
         assert.equal(await page.locator("#mobileMenu").evaluate(el=>getComputedStyle(el).visibility),"hidden","Mobile menu links are not focusable while closed");
       }
       await page.locator("#portfolioHeader").screenshot({path:"artifacts/nav-"+spec.name+".png",animations:"disabled"});
@@ -147,6 +148,9 @@ async function test() {
       assert.equal(await page.locator(".editorial-project-link").count(),0,"Remove the remaining editorial gallery button");
       assert.equal(await page.locator("#projectFilters").count(),1,"Keep the gallery filters section");
       assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),0,"Requested original-reference CTA removed");
+      assert.equal(await page.locator("#caseMyWay .perfume-stage-card").count(),5,"PERFUME_01 board contains all five stages");
+      assert.equal(await page.locator("#caseMyWay .perfume-stage-card video").count(),3,"Three video stages in PERFUME_01 track");
+      assert.equal(await page.locator("#caseMyWay .perfume-stage-card img").count(),2,"Two anchor image stages in PERFUME_01 track");
       assert.equal(await page.getByText("Explorar otros formatos",{exact:true}).count(),0,"Requested editorial CTA removed");
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
@@ -188,7 +192,8 @@ async function test() {
       assert.ok(state.systemBoardWidth <= state.systemBoardContainer+2,"System diagram must fit site-shell");
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
-      assert.ok(state.projects && state.caseStudy,"Projects and featured case must be in DOM");
+      assert.ok(state.projects && state.caseStudy,"Projects and PERFUME_01 process track must be in DOM");
+      assert.equal(state.perfumeStageCount,5,"PERFUME_01 process board contains five stages");
       assert.equal(state.css,"rgb(207, 230, 90)","Accent system styling must load");
       assert.equal(state.heroActionCount,0,"Requested hero CTA pair removed");
       assert.equal(state.systemAmbientCount,1,"One ambient system backdrop");
@@ -295,8 +300,8 @@ async function test() {
           assert.ok(freshHeader.navRight+8 < freshHeader.ctaLeft,"CTA right aligned despite stale stylesheet");
         } else {
           assert.ok(Math.abs(freshHeader.brandCenter-staleSpec.width/2)<3,"Mobile brand centered with stale stylesheet");
-          assert.ok(freshHeader.homeRight+5 < freshHeader.brandLeft,"Mobile home does not overlap brand with cached CSS");
-          assert.ok(freshHeader.brandRight+5 < freshHeader.toggleLeft,"Mobile brand does not overlap menu with cached CSS");
+          assert.ok(freshHeader.homeRight+8 <= freshHeader.brandLeft,"Mobile home does not overlap brand with cached CSS (>= 8px)");
+          assert.ok(freshHeader.brandRight+8 <= freshHeader.toggleLeft,"Mobile brand does not overlap menu with cached CSS (>= 8px)");
         }
         await page.locator("#portfolioHeader").screenshot({path:"artifacts/nav-"+staleSpec.name+".png",animations:"disabled"});
         console.log(JSON.stringify({navbarStaleCss:staleSpec.name,...freshHeader}));
