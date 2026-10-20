@@ -148,8 +148,15 @@ assert.equal(occurrences(html,'class="case-study-reference"'),0,"remove requeste
 assert.equal(occurrences(html,'Explorar otros formatos'),0,"remove requested duplicate editorial link");
 assert.equal(occurrences(html,'Ver la galería completa'),0,"requested UGC gallery CTA removed");
 assert.equal(occurrences(html,'class="editorial-project-link"'),0,"no extra editorial CTA buttons");
-assert.equal(occurrences(html,'href="#projectFilters"'),0,"gallery anchor no longer linked from case");
+assert.equal(occurrences(html,'href="#projectFilters"'),2,"two service examples lead to gallery filters");
 assert.equal(occurrences(html,'id="projectFilters"'),1,"retain the gallery filter section");
+assert.equal(occurrences(html,'class="service-cta service-example-link"'),3,"each service has one useful next step");
+has(html,'data-service-filter="ugc" href="#projectFilters"');
+has(html,'data-service-filter="product" href="#projectFilters"');
+has(html,'class="service-cta service-example-link" href="#caseMyWay"');
+has(html,'Versiones de hooks, planos y relatos');
+has(js,'document.querySelectorAll(".service-example-link[data-service-filter]")');
+
 assert.equal(occurrences(html,'perfume-concept-v2-1.mp4'),1,"perfume master retained only in process board");
 assert.equal(occurrences(html,'Muestra autorizada para Shop Online Perfumería; no es una campaña publicada por la marca.'),1,"disclaimer displayed only once");
 assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow gallery tab or card");
