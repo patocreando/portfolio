@@ -31,3 +31,10 @@
 .independent-sample-card .independent-sample-disclaimer{font-size:11px;color:#9eaaa6;border-top:1px solid rgba(255,255,255,.10);padding-top:14px}
 .independent-samples-footnote{color:#929f99;font-size:11px;line-height:1.6;margin:20px 0 0;max-width:880px}
 @media(max-width:760px){.pricing-preproduction{grid-template-columns:1fr}.independent-samples-grid{grid-template-columns:1fr}.independent-sample-stage video{height:min(110vw,510px)}.independent-sample-stage .independent-sample-placeholder{min-height:240px}}
+/* Identidad visual extraída de los reels originales (sin generación de nuevas imágenes). */
+.editorial-case-ls2 .editorial-media{background:radial-gradient(circle at 65% 32%,rgba(231,151,79,.19),transparent 50%),#090b0c}
+.editorial-case-ls2 .editorial-index{color:#e5b17a}
+.editorial-case-ls2 .editorial-decisions b{color:#e5b17a}
+.project-item-piero .mockup-stage{background:radial-gradient(circle at 56% 18%,rgba(236,214,185,.2),transparent 58%),#292b2b}
+.project-item-piero .project-info-card{border-color:rgba(214,197,177,.23)}
+.project-item-piero .project-sample-legal{margin-top:14px;padding-top:12px;border-top:1px solid rgba(214,197,177,.18);color:#afb8b2;font-size:11px;line-height:1.55}
