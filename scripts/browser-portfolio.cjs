@@ -290,6 +290,15 @@ async function test() {
       assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),2,"UGC filter displays the two unique cards");
       await page.locator('[data-filter="product"]').click();
       assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),2,"Campaign filter displays the two unique cards");
+      assert.equal(await page.locator("#services .service-example-link").count(),3,"All services have contextual next steps");
+      await page.locator("#services .service-card-ugc .service-example-link").click();
+      assert.equal(await page.locator('[data-filter="ugc"]').getAttribute("aria-selected"),"true","UGC example shortcut selects the UGC projects");
+      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),2,"UGC projects visible after shortcut");
+      await page.locator("#services .service-card-product .service-example-link").click();
+      assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product example shortcut selects product campaign projects");
+      assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),2,"Product projects visible after shortcut");
+      assert.equal(await page.locator("#services .service-card-testing .service-example-link").getAttribute("href"),"#caseMyWay","Variant service points to actual process example");
+      await page.locator("#services .services-grid").screenshot({path:"artifacts/services-"+spec.name+".png",animations:"disabled"});
       // Page-error report is informational: third-party video/CDN failures are tested separately.
       console.log(JSON.stringify({viewport:spec.name,...state,pageErrors:pageErrors.slice(0,6)}));
       await context.close();
