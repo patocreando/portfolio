@@ -10,27 +10,6 @@
 .pricing-preproduction-tags span{padding:7px 11px;color:#d7e3d6;font-size:10px;border:1px solid rgba(255,255,255,.16);border-radius:5px;background:rgba(255,255,255,.025)}
 .pricing-packs-disclaimer{max-width:1000px;line-height:1.7}
 @media(max-width:760px){.pricing-preproduction{grid-template-columns:1fr}}
-/* Identidad visual extraída de los reels originales (sin generación de nuevas imágenes). */
-.editorial-case-ls2 .editorial-media{background:radial-gradient(circle at 65% 32%,rgba(231,151,79,.19),transparent 50%),#090b0c}
-.editorial-case-ls2 .editorial-index{color:#e5b17a}
-.editorial-case-ls2 .editorial-decisions b{color:#e5b17a}
-.project-item-piero .mockup-stage{background:radial-gradient(circle at 56% 18%,rgba(236,214,185,.2),transparent 58%),#292b2b}
-.project-item-piero .project-info-card{border-color:rgba(214,197,177,.23)}
-.project-item-piero .project-sample-legal{margin-top:14px;padding-top:12px;border-top:1px solid rgba(214,197,177,.18);color:#afb8b2;font-size:11px;line-height:1.55}
-
-/* Frames extraídos de los dos reels: el póster mantiene la identidad mientras carga el video. */
-.editorial-case-ls2 .editorial-media video,.project-item-piero .project-video{background-color:#0d1112}
-
-/* Lote 02 · disclosure de spec ads: visible al primer vistazo, también en mobile. */
-.editorial-case-ls2 .editorial-media,.project-item-piero .clean-media-frame{position:relative;isolation:isolate}
-.spec-ad-media-note{position:absolute;top:15px;left:15px;z-index:8;display:inline-flex;align-items:center;min-height:29px;padding:7px 10px;max-width:calc(100% - 30px);background:rgba(9,12,14,.86);border:1px solid rgba(255,255,255,.28);border-radius:5px;box-shadow:0 5px 22px rgba(0,0,0,.30);color:#eef1e7;font-size:10px;font-weight:750;letter-spacing:.10em;line-height:1.35;text-transform:uppercase;pointer-events:none}
-.project-item-piero .spec-ad-media-note{border-color:rgba(232,215,189,.4);color:#f1e2ca}
-.spec-ad-disclaimer{border-left:2px solid rgba(207,230,90,.56);padding-left:12px;max-width:530px}
-.spec-ad-disclaimer strong{color:#e9eece;font-weight:730}
-.project-item-piero .spec-ad-disclaimer{border-color:rgba(232,215,189,.62)}
-.project-item-piero .spec-ad-disclaimer strong{color:#efdfc8}
-@media(max-width:719px){.spec-ad-media-note{top:12px;left:12px;max-width:calc(100% - 24px);font-size:9px;min-height:28px}.spec-ad-disclaimer{font-size:12px;line-height:1.6}}
-
 /* Lote 02: alternativa al DM y orientación para una consulta útil. */
 .pricing-secondary-contact{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px;padding:17px 20px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(255,255,255,.018)}
 .pricing-secondary-contact span{font-size:13px;line-height:1.6;color:#aab5b1}
