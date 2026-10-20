@@ -193,6 +193,10 @@ async function test() {
       assert.equal(await page.locator(".editorial-case-ls2").count(),1,"LS2 featured video exists");
       await page.locator(".editorial-case-ls2").screenshot({path:"artifacts/ls2-editorial-"+spec.name+".png",animations:"disabled"});
       assert.equal(await page.locator(".project-item-piero").count(),1,"Piero product gallery card exists");
+      assert.equal(await page.locator(".editorial-case-ls2 .spec-ad-media-note").innerText(),"SPEC AD · FICTICIO","LS2 fictional status always visible");
+      assert.equal(await page.locator(".project-item-piero .spec-ad-media-note").innerText(),"SPEC AD · FICTICIO","Piero fictional status always visible");
+      assert.equal(await page.locator(".editorial-case-ls2 .spec-ad-disclaimer").count(),1,"LS2 non-official disclosure");
+      assert.equal(await page.locator(".project-item-piero .spec-ad-disclaimer").count(),1,"Piero non-official disclosure");
       await page.locator('[data-filter="product"]').click();
       assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product filter is announced as selected");
       assert.equal(await page.locator(".project-item-piero").evaluate(el=>el.classList.contains("is-hidden")),false,"Piero card becomes accessible after selecting Campañas IA");
