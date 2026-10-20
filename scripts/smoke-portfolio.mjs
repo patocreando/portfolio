@@ -111,7 +111,8 @@ assert.equal((html.match(/class="perfume-viewer-tab(?: is-active)?"/g)||[]).leng
 assert.equal(occurrences(html,'class="perfume-viewer-panel"'),5,"five original media panels");
 assert.equal(occurrences(html,'class="perfume-viewer-media"'),5,"five original media wrappers");
 assert.equal(occurrences(html,'class="perfume-stage-card'),0,"obsolete cards removed");
-assert.equal(occurrences(html,'aria-selected="true"'),1,"one selected process tab");
+const perfumeMarkup=html.slice(html.indexOf('data-perfume-viewer'),html.indexOf('class="perfume-viewer-takeaway'));
+assert.equal(occurrences(perfumeMarkup,'aria-selected="true"'),1,"one selected process tab");
 assert.equal(occurrences(html,'aria-controls="perfume-panel-'),5,"five tab-panel bindings");
 for(const name of ["anchor-01.jpg","omni-01.mp4","flow-01.mp4","anchor-02.jpg","perfume-concept-v2-1.mp4"])has(html,name);
 has(html,'Qué entra al master v2.1');
