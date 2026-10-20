@@ -209,6 +209,10 @@ async function test() {
       assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),1,"Visual dashboard stage is present");
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
+      assert.equal(await page.title(),"Pato Creando | Reels UGC y anuncios de producto con IA","Spanish title fits content strategy");
+      assert.equal(await page.locator("#launchOffer .pricing-secondary-contact a[href='#contact']").count(),1,"Visitor can use contact form instead of Instagram");
+      assert.equal(await page.locator("#submitLabel").textContent(),"Enviar consulta","Contact button invites a consultation");
+      assert.equal(await page.locator("#contactForm .contact-brief-hint").count(),1,"Brief helper appears above form");
       await page.locator("#launchOffer").screenshot({path:"artifacts/packs-"+spec.name+".png",animations:"disabled"});
       assert.ok(state.projects && state.caseStudy,"Projects and PERFUME_01 process track must be in DOM");
       assert.equal(state.perfumeStageCount,5,"PERFUME_01 process board contains five stages");
