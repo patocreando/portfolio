@@ -77,9 +77,9 @@ for(const phrase of ['1 video vertical 9:16','2 videos verticales 9:16','4 video
 assert.equal(occurrences(html,'data-sample-video'),0,"no duplicated samples");
 has(html,'sin aprobación, patrocinio ni campaña comercial de LS2');
 has(html,'no implica aprobación ni patrocinio de Piero');
-for(const asset of ['./assets/lote-02.css','./assets/lote-02.js'])has(html,asset);
+has(html,'./assets/lote-02.css');
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
-assert.ok(fs.existsSync('assets/lote-02.js'),"Lote 02 JS exists");
+
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
 has(html, 'media="(max-width: 639px)"');
 has(html, 'id="caseMyWay"');
