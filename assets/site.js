@@ -1454,26 +1454,26 @@
           .then(function () {
             showFormStatus(
               "success",
-              "Propuesta enviada",
+              "Consulta enviada",
               "Recibí tu mensaje. Te respondo al correo que dejaste."
             );
 
-            if (submitLabel) submitLabel.textContent = "Propuesta enviada";
+            if (submitLabel) submitLabel.textContent = "Consulta enviada";
             contactForm.reset();
             toggleMailProviderPicker(false);
 
             window.setTimeout(function () {
-              if (submitLabel) submitLabel.textContent = "Enviar propuesta";
+              if (submitLabel) submitLabel.textContent = "Enviar consulta";
             }, 2800);
           })
           .catch(function () {
             showFormStatus(
               "error",
-              "No pude enviarla directamente",
-              "Podés abrir la propuesta en Gmail, Outlook o Yahoo y enviarla desde tu cuenta."
+              "No pude enviar la consulta",
+              "Podés abrir el mensaje en Gmail, Outlook o Yahoo y enviarlo desde tu cuenta."
             );
 
-            if (submitLabel) submitLabel.textContent = "Enviar propuesta";
+            if (submitLabel) submitLabel.textContent = "Enviar consulta";
             toggleMailProviderPicker(true);
           });
         });
