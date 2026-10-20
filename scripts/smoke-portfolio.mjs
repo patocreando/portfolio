@@ -75,6 +75,11 @@ for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 
 assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed");
 for(const phrase of ['1 video vertical 9:16','2 videos verticales 9:16','4 videos verticales 9:16','dashboard visual personalizado','Antes de generar','Piero · Dream Tech','El ritual de salir.'])has(html,phrase);
 assert.equal(occurrences(html,'data-sample-video'),0,"no duplicated samples");
+for(const [brand,poster] of [["LS2","https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/14f3aeaf-2fec-404d-a933-eccebdee65b6.jpg"],["Piero","https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/0ed1f999-93ee-402b-bcf0-a646ff90879f.jpg"]]){
+ assert.equal(occurrences(html,'poster="'+poster+'"'),1,brand+" has exactly one verified original-video poster");
+}
+assert.equal(occurrences(html,'class="editorial-case editorial-case-ls2"'),1,"LS2 featured only once");
+assert.equal(occurrences(html,'project-item-piero'),1,"Piero product card only once");
 has(html,'sin aprobación, patrocinio ni campaña comercial de LS2');
 has(html,'no implica aprobación ni patrocinio de Piero');
 has(html,'./assets/lote-02.css');
