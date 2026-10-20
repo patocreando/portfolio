@@ -39,3 +39,9 @@
 .pricing-secondary-contact a:hover,.pricing-secondary-contact a:focus-visible{color:#efffa5;text-decoration:underline;text-underline-offset:4px}
 .contact-brief-hint{margin:0 0 5px;color:#c3cdca;font-size:13px;line-height:1.6;max-width:570px}
 @media(max-width:719px){.pricing-secondary-contact{align-items:flex-start;padding:15px}.contact-brief-hint{font-size:12px}}
+
+/* Lote 02 · Servicios enlazados a ejemplos, reutilizando el sistema visual existente. */
+.service-card > .service-example-link{position:relative;z-index:2;text-decoration:none;min-height:44px;border-radius:11px}
+.service-example-link svg{flex-shrink:0;width:16px;height:16px}
+.service-example-link:focus-visible{outline:2px solid #cfe65a;outline-offset:3px}
+@media(max-width:719px){.service-example-link{font-size:12px}}
