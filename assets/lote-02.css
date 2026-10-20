@@ -1,0 +1,47 @@
+/* Lote 02: preproducción, claridad comercial y reels demostrativos */
+.pricing-preproduction{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);align-items:center;gap:clamp(22px,4vw,56px);margin:24px 0 27px;padding:clamp(22px,3.2vw,36px);border:1px solid rgba(207,230,90,.24);border-radius:16px;background:linear-gradient(110deg,rgba(207,230,90,.06),rgba(255,255,255,.022))}
+.pricing-preproduction-kicker{display:inline-flex;align-items:center;gap:8px;color:#CFE65A;font-size:11px;font-weight:740;letter-spacing:.14em;text-transform:uppercase}
+.pricing-preproduction-kicker svg{width:17px;height:17px}
+.pricing-preproduction h4{margin:15px 0 0;color:#f2f4ef;font-size:clamp(25px,2.65vw,38px);line-height:1.1;letter-spacing:-.045em}
+.pricing-preproduction h4 span{color:#aeb6b0}
+.pricing-preproduction-detail p{margin:0;color:#c1cbc5;font-size:clamp(13px,1.15vw,15px);line-height:1.75}
+.pricing-preproduction-detail strong,.pricing-packs-disclaimer strong{color:#eef2d9}
+.pricing-preproduction-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.pricing-preproduction-tags span{padding:7px 11px;color:#d7e3d6;font-size:10px;border:1px solid rgba(255,255,255,.16);border-radius:5px;background:rgba(255,255,255,.025)}
+.pricing-packs-disclaimer{max-width:1000px;line-height:1.7}
+@media(max-width:760px){.pricing-preproduction{grid-template-columns:1fr}}
+/* Identidad visual extraída de los reels originales (sin generación de nuevas imágenes). */
+.editorial-case-ls2 .editorial-media{background:radial-gradient(circle at 65% 32%,rgba(231,151,79,.19),transparent 50%),#090b0c}
+.editorial-case-ls2 .editorial-index{color:#e5b17a}
+.editorial-case-ls2 .editorial-decisions b{color:#e5b17a}
+.project-item-piero .mockup-stage{background:radial-gradient(circle at 56% 18%,rgba(236,214,185,.2),transparent 58%),#292b2b}
+.project-item-piero .project-info-card{border-color:rgba(214,197,177,.23)}
+.project-item-piero .project-sample-legal{margin-top:14px;padding-top:12px;border-top:1px solid rgba(214,197,177,.18);color:#afb8b2;font-size:11px;line-height:1.55}
+
+/* Frames extraídos de los dos reels: el póster mantiene la identidad mientras carga el video. */
+.editorial-case-ls2 .editorial-media video,.project-item-piero .project-video{background-color:#0d1112}
+
+/* Lote 02 · disclosure de spec ads: visible al primer vistazo, también en mobile. */
+.editorial-case-ls2 .editorial-media,.project-item-piero .clean-media-frame{position:relative;isolation:isolate}
+.spec-ad-media-note{position:absolute;top:15px;left:15px;z-index:8;display:inline-flex;align-items:center;min-height:29px;padding:7px 10px;max-width:calc(100% - 30px);background:rgba(9,12,14,.86);border:1px solid rgba(255,255,255,.28);border-radius:5px;box-shadow:0 5px 22px rgba(0,0,0,.30);color:#eef1e7;font-size:10px;font-weight:750;letter-spacing:.10em;line-height:1.35;text-transform:uppercase;pointer-events:none}
+.project-item-piero .spec-ad-media-note{border-color:rgba(232,215,189,.4);color:#f1e2ca}
+.spec-ad-disclaimer{border-left:2px solid rgba(207,230,90,.56);padding-left:12px;max-width:530px}
+.spec-ad-disclaimer strong{color:#e9eece;font-weight:730}
+.project-item-piero .spec-ad-disclaimer{border-color:rgba(232,215,189,.62)}
+.project-item-piero .spec-ad-disclaimer strong{color:#efdfc8}
+@media(max-width:719px){.spec-ad-media-note{top:12px;left:12px;max-width:calc(100% - 24px);font-size:9px;min-height:28px}.spec-ad-disclaimer{font-size:12px;line-height:1.6}}
+
+/* Lote 02: alternativa al DM y orientación para una consulta útil. */
+.pricing-secondary-contact{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px;padding:17px 20px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(255,255,255,.018)}
+.pricing-secondary-contact span{font-size:13px;line-height:1.6;color:#aab5b1}
+.pricing-secondary-contact a{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:#cfe65a;font-size:13px;font-weight:740;text-decoration:none}
+.pricing-secondary-contact a svg{width:16px;height:16px}
+.pricing-secondary-contact a:hover,.pricing-secondary-contact a:focus-visible{color:#efffa5;text-decoration:underline;text-underline-offset:4px}
+.contact-brief-hint{margin:0 0 5px;color:#c3cdca;font-size:13px;line-height:1.6;max-width:570px}
+@media(max-width:719px){.pricing-secondary-contact{align-items:flex-start;padding:15px}.contact-brief-hint{font-size:12px}}
+
+/* Lote 02 · Servicios enlazados a ejemplos, reutilizando el sistema visual existente. */
+.service-card > .service-example-link{position:relative;z-index:2;text-decoration:none;min-height:44px;border-radius:11px}
+.service-example-link svg{flex-shrink:0;width:16px;height:16px}
+.service-example-link:focus-visible{outline:2px solid #cfe65a;outline-offset:3px}
+@media(max-width:719px){.service-example-link{font-size:12px}}

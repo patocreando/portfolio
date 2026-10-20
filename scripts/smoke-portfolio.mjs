@@ -42,7 +42,10 @@ has(premiumCss,"#portfolioHeader .portfolio-mobile-menu.is-open");
 
 assert.equal(occurrences(html,'class="hero-reveal hero-actions"'),0,"remove duplicated hero CTAs only");
 assert.equal(occurrences(html,'href="#projects"'),2,"main navigation to projects remains in desktop and mobile");
-assert.equal(occurrences(html,'href="#launchOffer"'),2,"main navigation to packs remains in desktop and mobile");
+assert.equal(occurrences(headerMarkup,'href="#launchOffer"'),2,"desktop and mobile packs link in header");
+assert.equal(occurrences(html,'href="#launchOffer"'),3,"header navigation (desktop + mobile) plus hero discrete CTA to packs");
+has(html,'class="hero-cta-packs inline-flex items-center gap-2 text-[13px] font-semibold text-zinc-300 hover:text-butter transition-colors"',"hero discrete CTA element is present with exact styling classes");
+has(html,'<span>Ver packs de trabajo</span>',"hero discrete CTA label is present");
 const methodScopeMatch=html.match(/<p class="method-brief-scope section-reveal">([\s\S]*?)<\/p>/);
 assert.ok(methodScopeMatch,"method terms remain in a single disclosure");
 assert.ok(methodScopeMatch[1].includes("<strong>Alcance, revisiones y plazos de entrega:</strong>"),"scope, review and timelines explicitly disclosed");
@@ -60,17 +63,52 @@ has(premiumJs,'connection.saveData');
 has(html, 'role="tabpanel"');
 has(html, 'aria-labelledby="caseMyWayTitle"');
 assert.equal(occurrences(html, "aria-controls=\"projectGrid\""), 2);
-for (const file of ["assets/site.css","assets/site.js","assets/premium-lab.css","assets/premium-lab.js","assets/favicon.svg","assets/google-meet-logo.png"]) {
+for (const file of ["assets/site.css","assets/site.js","assets/premium-lab.css","assets/premium-lab.js","assets/favicon.svg"]) {
   assert.ok(fs.existsSync(file), "Missing local asset "+file);
   has(html, "./"+file);
 }
-for (const [ref,price] of [["w60952078","ARS 50.000"],["w60952216","ARS 100.000"],["w60952262","ARS 150.000"]]) {
+assert.ok(fs.existsSync("assets/google-meet-logo.png"), "Asset google-meet-logo.png retained in repository for backward compatibility");
+for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 200.000",1]]) {
   assert.equal(occurrences(html, ref), 1, "Manychat ref: "+ref);
-  assert.equal(occurrences(html, price), 1, "pack price: "+price);
+  assert.equal(occurrences(html, price), count, "pack price and base disclosures: "+price);
 }
+assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed");
+for(const phrase of ['1 video vertical 9:16','2 videos verticales 9:16','4 videos verticales 9:16','dashboard visual personalizado','Antes de generar','Spec ad ficticio · Piero Dream Tech','El ritual de salir.'])has(html,phrase);
+assert.equal(occurrences(html,'data-sample-video'),0,"no duplicated samples");
+has(html,'<title>Pato Creando | Reels UGC y anuncios de producto con IA</title>');
+has(html,'<meta property="og:title" content="Pato Creando | Reels UGC y anuncios de producto con IA" />');
+has(html,'<meta name="twitter:title" content="Pato Creando | Reels UGC y anuncios de producto con IA" />');
+has(html,'class="pricing-secondary-contact section-reveal"');
+has(html,'href="#contact" aria-label="Ir al formulario de contacto para enviar tu consulta"');
+has(html,'class="contact-brief-hint"');
+has(html,'<label for="projectType">Tipo y cantidad de piezas</label>');
+has(html,'<span id="submitLabel">Enviar consulta</span>');
+has(html,'<strong id="formStatusTitle">Consulta enviada</strong>');
+has(js,'submitLabel.textContent = "Enviar consulta"');
+assert.equal(occurrences(js,'"Enviar propuesta"'),0,"obsolete submission wording removed");
+for(const [brand,poster] of [["LS2","https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/14f3aeaf-2fec-404d-a933-eccebdee65b6.jpg"],["Piero","https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/0ed1f999-93ee-402b-bcf0-a646ff90879f.jpg"]]){
+ assert.equal(occurrences(html,'poster="'+poster+'"'),1,brand+" has exactly one verified original-video poster");
+}
+assert.equal(occurrences(html,'class="editorial-case editorial-case-ls2"'),1,"LS2 featured only once");
+assert.equal(occurrences(html,'project-item-piero'),1,"Piero product card only once");
+has(html,'Publicidad ficticia · muestra visual.');
+has(html,'No es una campaña oficial ni una pieza publicada o aprobada por LS2');
+assert.equal(occurrences(html,'SPEC AD · FICTICIO'),2,'both ads marked fictitious over preview');
+assert.equal(occurrences(html,'class="spec-ad-media-note"'),2,'two persistent spec ad media flags');
+has(html,'no es un anuncio oficial, publicado o aprobado por Piero');
+has(html,'Spec ad ficticio · Piero Dream Tech');
+assert.equal(occurrences(html,'class="project-sample-legal spec-ad-disclaimer"'),1,'Piero disclaimer visible');
+has(html,'class="editorial-footnote spec-ad-disclaimer"');
+has(html,'./assets/lote-02.css');
+assert.ok(fs.readFileSync('assets/lote-02.css','utf8').includes('.spec-ad-media-note'),'spec ad badges styled');
+assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
+
+assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
 has(html, 'media="(max-width: 639px)"');
-has(html, 'class="case-study-video"');
-has(html, 'Proyecto conceptual, no campaña publicada por la marca.');
+has(html, 'id="caseMyWay"');
+has(html, 'class="perfume-process-track"');
+assert.equal(occurrences(html, 'class="perfume-stage-card'), 5, "five stages in PERFUME_01 process board");
+has(html, 'Proyecto conceptual de perfumería.');
 assert.ok(!js.includes("pricingPackMobileLoop"), "pricing carousel should be manual");
 assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should not autoplay");
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
@@ -81,7 +119,7 @@ assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
 // Compare against main as ground truth for preservation.
 try {
   const baseline = execFileSync("git", ["show", "origin/main:index.html"], {encoding:"utf8"});
-  const intentionallyRemovedUrls = new Set(["https://www.instagram.com/p/Dd24xgrOr5e/?hl=en"]);
+  const intentionallyRemovedUrls = new Set(["https://www.instagram.com/p/Dd24xgrOr5e/?hl=en","https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/cc882a72-3df6-41a3-8398-619e1e7ba9a9.mp4"]);
   const missing = [...links(baseline)].filter(url => !intentionallyRemovedUrls.has(url) && !links(html).has(url));
   assert.deepEqual(missing, [], "Original external media/link URLs were dropped");
 } catch (error) {
@@ -93,26 +131,34 @@ const archivedProjects = [...html.matchAll(/<article\b[^>]*class="[^"]*\bproject
 assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,2,"two unique campaign cards");
-for (const name of ["cc882a72-3df6-41a3-8398-619e1e7ba9a9.mp4","d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]) {
+for (const name of ["84c668cc-ba27-44ab-bdd0-3b8aceaf08b4.mp4","d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]) {
   assert.equal(occurrences(html,name),1,"featured video appears only in one editorial banner: "+name);
   assert.ok(!archivedProjects.some(card=>card.includes(name)),"archive must not repeat featured video: "+name);
 }
 assert.equal(occurrences(html,"Perfume real llevado a una estética cinematográfica."),0,"remove duplicate Perfumería IA copy");
 assert.equal(occurrences(html,"Lenguaje de campaña en clave UGC."),0,"remove duplicate UGC perfume copy");
-assert.equal(occurrences(html,'class="editorial-case"'),2,"two new editorial case chapters");
-has(html,'NOIR 17');
+assert.equal((html.match(/<article class="editorial-case(?: editorial-case-ls2)?"/g)||[]).length,2,"two editorial case chapters");
+has(html,'El ritual de salir.');
 has(html,'UGC Beauty');
-has(html,'03 / Caso aplicado · My Way');
+has(html,'03 / PRODUCTO IA · PERFUMERÍA');
+has(html,'De los archivos');
 assert.equal(occurrences(html,'Workflow aplicado · My Way'),0,"redundant My Way project card should be removed");
 assert.equal(occurrences(html,'https://www.instagram.com/p/Dd24xgrOr5e/?hl=en'),0,"remove requested My Way original reference button");
 assert.equal(occurrences(html,'class="case-study-reference"'),0,"remove requested My Way reference CTA");
 assert.equal(occurrences(html,'Explorar otros formatos'),0,"remove requested duplicate editorial link");
 assert.equal(occurrences(html,'Ver la galería completa'),0,"requested UGC gallery CTA removed");
 assert.equal(occurrences(html,'class="editorial-project-link"'),0,"no extra editorial CTA buttons");
-assert.equal(occurrences(html,'href="#projectFilters"'),0,"gallery anchor no longer linked from case");
+assert.equal(occurrences(html,'href="#projectFilters"'),2,"two service examples lead to gallery filters");
 assert.equal(occurrences(html,'id="projectFilters"'),1,"retain the gallery filter section");
-assert.equal(occurrences(html,'3fb33f83-1289-4aa6-a48e-d9adeb242cd7.mp4'),1,"My Way video displayed only once");
-assert.equal(occurrences(html,'Muestra autorizada para Shop Online Perfumería.'),1,"disclaimer displayed only once");
+assert.equal(occurrences(html,'class="service-cta service-example-link"'),3,"each service has one useful next step");
+has(html,'data-service-filter="ugc" href="#projectFilters"');
+has(html,'data-service-filter="product" href="#projectFilters"');
+has(html,'class="service-cta service-example-link" href="#caseMyWay"');
+has(html,'Versiones de hooks, planos y relatos');
+has(js,'document.querySelectorAll(".service-example-link[data-service-filter]")');
+
+assert.equal(occurrences(html,'perfume-concept-v2-1.mp4'),1,"perfume master retained only in process board");
+assert.equal(occurrences(html,'Muestra autorizada para Shop Online Perfumería; no es una campaña publicada por la marca.'),1,"disclaimer displayed only once");
 assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow gallery tab or card");
 assert.equal(occurrences(html, 'data-filter="workflow"'),0,"only UGC and product remain");
 assert.equal(occurrences(html, 'id="system"'),1,"system presentation is standalone");
@@ -124,13 +170,13 @@ assert.equal(occurrences(html,'href="#system"'),2,"desktop and mobile navigation
 assert.equal(occurrences(html,'social-proof'),0,"no social proof placeholders");
 
 has(html,'id="projectFilters"');
-has(html,'aria-labelledby="noirCaseTitle"');
+has(html,'aria-labelledby="ls2EditorialTitle"');
 has(html,'aria-labelledby="ugcCaseTitle"');
 has(premiumCss,'.editorial-showcase');
 has(premiumCss,'.hero-edition-label');
 has(premiumJs,'IntersectionObserver');
 assert.ok(!premiumJs.includes('video.muted=false'),"editorial videos may never turn on sound");
-assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261009-navfix-2"'),1);
+assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261011-perfume-process-1"'),1);
 assert.equal(occurrences(html,'id="portfolio-nav-critical"'),1,"critical navbar rules embedded in delivered HTML");
 const criticalNavStyle=html.slice(html.indexOf('<style id="portfolio-nav-critical">'),html.indexOf('</style>',html.indexOf('<style id="portfolio-nav-critical">')));
 for(const rule of ['#portfolioHeader .portfolio-nav-layout','#portfolioHeader .portfolio-nav-links','#portfolioHeader .portfolio-mobile-menu.is-open','@media(max-width:1099px)'])has(criticalNavStyle,rule);
