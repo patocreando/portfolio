@@ -1631,11 +1631,11 @@
         });
 
         // PERFUME_01 process board: reveal each file stage in reading order.
-        var perfumeStages = gsap.utils.toArray("#caseMyWay .perfume-stage-card");
+        var perfumeStages = gsap.utils.toArray("#caseMyWay .perfume-viewer-tab");
         if (perfumeStages.length) {
           gsap.from(perfumeStages, {
             scrollTrigger: {
-              trigger: "#caseMyWay .perfume-process-track",
+              trigger: "#caseMyWay .perfume-viewer-list",
               start: fastMobile ? "top 94%" : "top 88%",
               once: true
             },
@@ -2076,4 +2076,64 @@
   if (reduced.addEventListener) reduced.addEventListener("change", function () {
     if (reduced.matches) pause();
   });
+})();
+
+/* PERFUME_01 — accessible tabs, original assets and paused inactive videos. */
+(function perfumeProcessViewer(){
+  "use strict";
+  var root=document.querySelector("#caseMyWay [data-perfume-viewer]");
+  if(!root)return;
+  var list=root.querySelector(".perfume-viewer-list");
+  var tabs=Array.prototype.slice.call(root.querySelectorAll(".perfume-viewer-tab"));
+  var panels=Array.prototype.slice.call(root.querySelectorAll(".perfume-viewer-panel"));
+  if(!list||tabs.length!==5||panels.length!==tabs.length)return;
+
+  function updateOrientation(){
+    list.setAttribute("aria-orientation",window.matchMedia("(max-width: 940px)").matches?"horizontal":"vertical");
+  }
+
+  function select(index,shouldFocus){
+    if(index<0||index>=tabs.length)return;
+    tabs.forEach(function(tab,i){
+      var active=i===index;
+      tab.classList.toggle("is-active",active);
+      tab.setAttribute("aria-selected",active?"true":"false");
+      tab.tabIndex=active?0:-1;
+      panels[i].hidden=!active;
+      if(!active){
+        panels[i].querySelectorAll("video").forEach(function(video){video.pause();});
+      }
+    });
+    var selectedVideo=panels[index].querySelector("video");
+    if(selectedVideo)selectedVideo.preload="metadata"; // Playback only through native controls.
+    if(shouldFocus){
+      tabs[index].focus({preventScroll:true});
+      tabs[index].scrollIntoView({block:"nearest",inline:"nearest",behavior:"auto"});
+    }
+  }
+
+  tabs.forEach(function(tab,index){
+    tab.addEventListener("click",function(){select(index,false);});
+    tab.addEventListener("keydown",function(event){
+      var next=index;
+      if(event.key==="ArrowDown"||event.key==="ArrowRight")next=(index+1)%tabs.length;
+      else if(event.key==="ArrowUp"||event.key==="ArrowLeft")next=(index-1+tabs.length)%tabs.length;
+      else if(event.key==="Home")next=0;
+      else if(event.key==="End")next=tabs.length-1;
+      else return;
+      event.preventDefault();
+      select(next,true);
+    });
+  });
+
+  if(window.matchMedia){
+    var orientation=window.matchMedia("(max-width: 940px)");
+    updateOrientation();
+    if(orientation.addEventListener)orientation.addEventListener("change",updateOrientation);
+    else if(orientation.addListener)orientation.addListener(updateOrientation);
+  }
+  document.addEventListener("visibilitychange",function(){
+    if(document.hidden)root.querySelectorAll("video").forEach(function(video){video.pause();});
+  });
+  select(0,false);
 })();

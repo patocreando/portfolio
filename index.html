@@ -74,7 +74,7 @@
 
   <link rel="stylesheet" href="./assets/site.css" />
   <link rel="stylesheet" href="./assets/premium-lab.css?v=20261011-perfume-process-1" />
-  <link rel="stylesheet" href="./assets/lote-02.css" />
+  <link rel="stylesheet" href="./assets/lote-02.css?v=20261020-perfume-viewer-1" />
   <!-- Critical nav CSS is inlined to prevent stale GitHub Pages stylesheets from unstyling the header. -->
   <style id="portfolio-nav-critical">
 /* Unified navigation / 2026-10-09
@@ -622,69 +622,46 @@
           <p class="perfume-process-intro">Un recorrido visual de principio a fin: imágenes ancla, dos animaciones y el montaje seleccionado. Cada etapa identifica el archivo y aclara si forma parte del reel final.</p>
         </header>
 
-        <div class="perfume-process-bar" aria-hidden="true">
-          <span>Recorrido de producción</span>
-          <span>Entrada <i>→</i> movimiento <i>→</i> montaje</span>
+        <div class="perfume-process-bar" aria-hidden="true"><span>PERFUME_01 / VISOR DE PROCESO</span><span>05 archivos <i>→</i> 01 master</span></div>
+        <div class="perfume-viewer" data-perfume-viewer>
+          <div class="perfume-viewer-stage section-reveal" aria-label="Vista previa del material seleccionado">
+<div id="perfume-panel-01" class="perfume-viewer-panel" role="tabpanel" aria-labelledby="perfume-tab-01" tabindex="0">
+<div class="perfume-viewer-preview"><figure class="perfume-viewer-media"><img src="./assets/cases/perfume-process/anchor-01.jpg" width="1536" height="2752" loading="lazy" alt="Imagen ancla inicial del perfume y su estuche sobre fondo oscuro" /></figure><span class="perfume-viewer-media-type">JPG · ANCLA</span></div>
+<div class="perfume-viewer-caption"><div><span class="perfume-viewer-caption-index">ARCHIVO 01 / 05</span><h3>Imagen ancla 01</h3><p>Base visual explorada para definir producto, luz y encuadre.</p></div><span class="perfume-viewer-meta">JPG · fuera del corte v2.1</span></div>
+</div>
+<div id="perfume-panel-02" class="perfume-viewer-panel" role="tabpanel" aria-labelledby="perfume-tab-02" tabindex="0" hidden>
+<div class="perfume-viewer-preview"><figure class="perfume-viewer-media"><video muted controls playsinline webkit-playsinline preload="none" aria-label="Animación Omni 01, clip original de siete segundos"><source src="./assets/cases/perfume-process/omni-01.mp4" type="video/mp4" /></video></figure><span class="perfume-viewer-media-type">VIDEO · OMNI</span></div>
+<div class="perfume-viewer-caption"><div><span class="perfume-viewer-caption-index">ARCHIVO 02 / 05</span><h3>Animación 01</h3><p>Plano principal de producto, conservado completo en el montaje.</p></div><span class="perfume-viewer-meta">168 fotogramas · 7 s usados</span></div>
+</div>
+<div id="perfume-panel-03" class="perfume-viewer-panel" role="tabpanel" aria-labelledby="perfume-tab-03" tabindex="0" hidden>
+<div class="perfume-viewer-preview"><figure class="perfume-viewer-media"><video muted controls playsinline webkit-playsinline preload="none" aria-label="Animación Flow 02, material original de diez segundos; se usan los primeros 125 fotogramas"><source src="./assets/cases/perfume-process/flow-01.mp4" type="video/mp4" /></video></figure><span class="perfume-viewer-media-type">VIDEO · FLOW</span></div>
+<div class="perfume-viewer-caption"><div><span class="perfume-viewer-caption-index">ARCHIVO 03 / 05</span><h3>Animación 02</h3><p>Se seleccionan los primeros 125 fotogramas del original para continuar el movimiento.</p></div><span class="perfume-viewer-meta">10 s originales · 5,21 s usados</span></div>
+</div>
+<div id="perfume-panel-04" class="perfume-viewer-panel" role="tabpanel" aria-labelledby="perfume-tab-04" tabindex="0" hidden>
+<div class="perfume-viewer-preview"><figure class="perfume-viewer-media"><img src="./assets/cases/perfume-process/anchor-02.jpg" width="1536" height="2752" loading="lazy" alt="Segunda imagen ancla del perfume con luz lateral y estuche al fondo" /></figure><span class="perfume-viewer-media-type">JPG · EXPLORACIÓN</span></div>
+<div class="perfume-viewer-caption"><div><span class="perfume-viewer-caption-index">ARCHIVO 04 / 05</span><h3>Imagen ancla 02</h3><p>Alternativa de cierre revisada durante el montaje.</p></div><span class="perfume-viewer-meta">JPG · no aparece en v2.1</span></div>
+</div>
+<div id="perfume-panel-05" class="perfume-viewer-panel" role="tabpanel" aria-labelledby="perfume-tab-05" tabindex="0" hidden>
+<div class="perfume-viewer-preview"><figure class="perfume-viewer-media"><video muted controls playsinline webkit-playsinline preload="none" aria-label="Reel final PERFUME_01 v2.1, doce segundos y doscientos ocho milésimos"><source src="./assets/videos/perfume-concept-v2-1.mp4" type="video/mp4" /></video></figure><span class="perfume-viewer-media-type">MASTER · 9:16</span></div>
+<div class="perfume-viewer-caption"><div><span class="perfume-viewer-caption-index">ARCHIVO 05 / 05</span><h3>Reel final · v2.1</h3><p>Corte directo entre las dos animaciones; sin imágenes fijas, títulos ni outro.</p></div><span class="perfume-viewer-meta">293 fotogramas · 12,21 s · 24 fps · 720 × 1280</span></div>
+</div>
+          </div>
+          <div class="perfume-viewer-sidebar section-reveal">
+            <div class="perfume-viewer-sidebar-head"><span>Explorá el proceso</span><p>Elegí un archivo para ver su imagen o video y cómo se utilizó.</p></div>
+            <div class="perfume-viewer-list" role="tablist" aria-label="Cinco archivos del proceso PERFUME_01" aria-orientation="vertical">
+<button id="perfume-tab-01" class="perfume-viewer-tab is-active" type="button" role="tab" aria-controls="perfume-panel-01" aria-selected="true" tabindex="0"><span class="perfume-viewer-tab-num">01</span><span class="perfume-viewer-tab-text"><small>REFERENCIA</small><strong>Imagen ancla 01</strong><span>Producto, luz y encuadre</span></span><span class="perfume-viewer-tab-arrow" aria-hidden="true">↗</span></button>
+<button id="perfume-tab-02" class="perfume-viewer-tab" type="button" role="tab" aria-controls="perfume-panel-02" aria-selected="false" tabindex="-1"><span class="perfume-viewer-tab-num">02</span><span class="perfume-viewer-tab-text"><small>OMNI · ANIMACIÓN</small><strong>Animación 01</strong><span>Plano principal completo</span></span><span class="perfume-viewer-tab-arrow" aria-hidden="true">↗</span></button>
+<button id="perfume-tab-03" class="perfume-viewer-tab" type="button" role="tab" aria-controls="perfume-panel-03" aria-selected="false" tabindex="-1"><span class="perfume-viewer-tab-num">03</span><span class="perfume-viewer-tab-text"><small>FLOW · ANIMACIÓN</small><strong>Animación 02</strong><span>Continuidad de movimiento</span></span><span class="perfume-viewer-tab-arrow" aria-hidden="true">↗</span></button>
+<button id="perfume-tab-04" class="perfume-viewer-tab" type="button" role="tab" aria-controls="perfume-panel-04" aria-selected="false" tabindex="-1"><span class="perfume-viewer-tab-num">04</span><span class="perfume-viewer-tab-text"><small>ANCLA · EXPLORACIÓN</small><strong>Imagen ancla 02</strong><span>Cierre alternativo</span></span><span class="perfume-viewer-tab-arrow" aria-hidden="true">↗</span></button>
+<button id="perfume-tab-05" class="perfume-viewer-tab" type="button" role="tab" aria-controls="perfume-panel-05" aria-selected="false" tabindex="-1"><span class="perfume-viewer-tab-num">05</span><span class="perfume-viewer-tab-text"><small>PATO EDITOR · MONTAJE</small><strong>Reel final · v2.1</strong><span>Montaje final seleccionado</span></span><span class="perfume-viewer-tab-arrow" aria-hidden="true">↗</span></button>
+            </div>
+            <p class="perfume-viewer-tip">Seleccioná una etapa · Podés usar las flechas del teclado.</p>
+          </div>
         </div>
-        <ol class="perfume-process-track" aria-label="Recorrido visual del proyecto PERFUME_01">
-          <li class="perfume-stage-card section-reveal">
-            <div class="perfume-stage-top"><span>01</span><small>REFERENCIA</small></div>
-            <figure class="perfume-stage-media">
-              <img src="./assets/cases/perfume-process/anchor-01.jpg" width="1536" height="2752" loading="lazy" alt="Imagen ancla inicial del perfume y su estuche sobre fondo oscuro" />
-            </figure>
-            <h3>Imagen ancla 01</h3>
-            <p>Base visual explorada para definir producto, luz y encuadre.</p>
-            <span class="perfume-stage-footnote">JPG · fuera del corte v2.1</span>
-          </li>
-
-          <li class="perfume-stage-card section-reveal">
-            <div class="perfume-stage-top"><span>02</span><small>OMNI · ANIMACIÓN</small></div>
-            <figure class="perfume-stage-media">
-              <video muted controls playsinline webkit-playsinline preload="metadata" aria-label="Animación Omni 01, clip original de siete segundos">
-                <source src="./assets/cases/perfume-process/omni-01.mp4" type="video/mp4" />
-              </video>
-            </figure>
-            <h3>Animación 01</h3>
-            <p>Plano principal de producto, conservado completo en el montaje.</p>
-            <span class="perfume-stage-footnote">168 fotogramas · 7 s usados</span>
-          </li>
-
-          <li class="perfume-stage-card section-reveal">
-            <div class="perfume-stage-top"><span>03</span><small>FLOW · ANIMACIÓN</small></div>
-            <figure class="perfume-stage-media">
-              <video muted controls playsinline webkit-playsinline preload="metadata" aria-label="Animación Flow 02, material original de diez segundos; se usan los primeros 125 fotogramas">
-                <source src="./assets/cases/perfume-process/flow-01.mp4" type="video/mp4" />
-              </video>
-            </figure>
-            <h3>Animación 02</h3>
-            <p>Se seleccionan los primeros 125 fotogramas del original para continuar el movimiento.</p>
-            <span class="perfume-stage-footnote">10 s originales · 5,21 s usados</span>
-          </li>
-
-          <li class="perfume-stage-card section-reveal">
-            <div class="perfume-stage-top"><span>04</span><small>ANCLA · EXPLORACIÓN</small></div>
-            <figure class="perfume-stage-media">
-              <img src="./assets/cases/perfume-process/anchor-02.jpg" width="1536" height="2752" loading="lazy" alt="Segunda imagen ancla del perfume con luz lateral y estuche al fondo" />
-            </figure>
-            <h3>Imagen ancla 02</h3>
-            <p>Alternativa de cierre revisada durante el montaje.</p>
-            <span class="perfume-stage-footnote">JPG · no aparece en v2.1</span>
-          </li>
-
-          <li class="perfume-stage-card perfume-stage-final section-reveal">
-            <div class="perfume-stage-top"><span>05</span><small>PATO EDITOR · MONTAJE</small></div>
-            <figure class="perfume-stage-media">
-              <video muted controls playsinline webkit-playsinline preload="metadata" aria-label="Reel final PERFUME_01 v2.1, doce segundos y doscientos ocho milésimos">
-                <source src="./assets/videos/perfume-concept-v2-1.mp4" type="video/mp4" />
-              </video>
-            </figure>
-            <h3>Reel final · v2.1</h3>
-            <p>Corte directo entre las dos animaciones; sin imágenes fijas, títulos ni outro.</p>
-            <span class="perfume-stage-footnote">293 fotogramas · 12,21 s · 24 fps · 720 × 1280</span>
-          </li>
-        </ol>
-
-        <p class="perfume-process-note">Las anclas se muestran como parte del recorrido de trabajo. El master v2.1 utiliza únicamente Omni 01 completo y los primeros 125 fotogramas del original de Flow.</p>
+        <div class="perfume-viewer-takeaway section-reveal" aria-label="Qué se incluye en el master final">
+          <div><span>DECISIÓN DE MONTAJE</span><h3>Qué entra al master v2.1</h3><p>Las imágenes ancla documentan la exploración visual; no aparecen en el video final.</p></div>
+          <div class="perfume-viewer-takeaway-tags"><span><i data-lucide="check" aria-hidden="true"></i> Omni 01 · 168 fotogramas completos</span><span><i data-lucide="check" aria-hidden="true"></i> Flow 02 · primeros 125 fotogramas</span></div>
+        </div>
         <p class="case-study-disclaimer">Proyecto conceptual de perfumería. Muestra autorizada para Shop Online Perfumería; no es una campaña publicada por la marca.</p>
       </div>
     </section>
@@ -1260,7 +1237,7 @@
   </main>
 
 
-  <script src="./assets/site.js"></script>
+  <script src="./assets/site.js?v=20261020-perfume-viewer-1"></script>
   <script defer src="./assets/premium-lab.js"></script>
 
   

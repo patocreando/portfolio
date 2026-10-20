@@ -99,21 +99,34 @@ assert.equal(occurrences(html,'Perfumería de nicho'),1,"Original niche perfume 
 assert.equal(occurrences(html,'SPEC AD · FICTICIO'),0,"Unlicensed spec ads never shipped");
 assert.equal(occurrences(html,'project-item-piero'),0,"Piero media excluded from public build");
 assert.equal(occurrences(html,'editorial-case-ls2'),0,"LS2 media excluded from public build");
-has(html,'./assets/lote-02.css');
+has(html,'./assets/lote-02.css?v=20261020-perfume-viewer-1');
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
 has(html, 'media="(max-width: 639px)"');
 has(html, 'id="caseMyWay"');
-has(html, 'class="perfume-process-track"');
-assert.equal(occurrences(html, 'class="perfume-stage-card'), 5, "five stages in PERFUME_01 process board");
+assert.equal(occurrences(html,'data-perfume-viewer'),1,"one interactive process viewer");
+assert.equal(occurrences(html,'role="tablist" aria-label="Cinco archivos del proceso PERFUME_01"'),1,"one accessible process tablist");
+assert.equal((html.match(/class="perfume-viewer-tab(?: is-active)?"/g)||[]).length,5,"five accessible step tabs");
+assert.equal(occurrences(html,'class="perfume-viewer-panel"'),5,"five original media panels");
+assert.equal(occurrences(html,'class="perfume-viewer-media"'),5,"five original media wrappers");
+assert.equal(occurrences(html,'class="perfume-stage-card'),0,"obsolete cards removed");
+const perfumeMarkup=html.slice(html.indexOf('data-perfume-viewer'),html.indexOf('class="perfume-viewer-takeaway'));
+assert.equal(occurrences(perfumeMarkup,'aria-selected="true"'),1,"one selected process tab");
+assert.equal(occurrences(html,'aria-controls="perfume-panel-'),5,"five tab-panel bindings");
+for(const name of ["anchor-01.jpg","omni-01.mp4","flow-01.mp4","anchor-02.jpg","perfume-concept-v2-1.mp4"])has(html,name);
+has(html,'Qué entra al master v2.1');
+has(html,'Omni 01 · 168 fotogramas completos');
+has(html,'Flow 02 · primeros 125 fotogramas');
+has(js,'function perfumeProcessViewer()');
+has(js,'video.pause()');
 has(html, 'Proyecto conceptual de perfumería.');
 assert.ok(!js.includes("pricingPackMobileLoop"), "pricing carousel should be manual");
 assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should not autoplay");
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
 has(js, 'soundToggle.addEventListener("click", toggleAudio)');
 has(js, 'button.addEventListener("keydown"');
-assert.equal(occurrences(html, 'src="./assets/site.js"'), 1);
+assert.equal(occurrences(html, 'src="./assets/site.js?v=20261020-perfume-viewer-1"'),1);
 assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
 // Compare against main as ground truth for preservation.
 try {
