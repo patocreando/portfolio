@@ -1053,6 +1053,18 @@
         });
       });
 
+      // Service cards open the corresponding project tab before native anchor navigation.
+      // Keep regular anchor links so keyboard users and browsers without JS still reach the gallery.
+      document.querySelectorAll(".service-example-link[data-service-filter]").forEach(function (link) {
+        link.addEventListener("click", function () {
+          var selected = link.getAttribute("data-service-filter");
+          var targetTab = tabButtons.find(function (tab) {
+            return tab.getAttribute("data-filter") === selected;
+          });
+          if (targetTab) targetTab.click();
+        });
+      });
+
       showCategory("ugc");
 
       // Magnetic pointer effect
