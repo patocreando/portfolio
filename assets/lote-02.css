@@ -9,28 +9,7 @@
 .pricing-preproduction-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
 .pricing-preproduction-tags span{padding:7px 11px;color:#d7e3d6;font-size:10px;border:1px solid rgba(255,255,255,.16);border-radius:5px;background:rgba(255,255,255,.025)}
 .pricing-packs-disclaimer{max-width:1000px;line-height:1.7}
-.independent-samples{padding:clamp(70px,8vw,110px) 0;background:#0d1112;border-block:1px solid rgba(255,255,255,.075)}
-.independent-samples-head{max-width:850px;margin-bottom:32px}
-.independent-samples-head h2{font-size:clamp(2.6rem,5vw,5.15rem);line-height:1;letter-spacing:-.06em;color:#f3f5ef;margin:18px 0 20px}
-.independent-samples-head h2 span{color:#aeb6b0}
-.independent-samples-head>p{font-size:clamp(14px,1.3vw,17px);line-height:1.65;color:#bcc5be;max-width:720px}
-.independent-samples-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
-.independent-sample-card{min-width:0;padding:clamp(15px,2.1vw,22px);border:1px solid rgba(255,255,255,.12);border-radius:14px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.008))}
-.independent-sample-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#b4c0b6;font-size:10px;letter-spacing:.11em;text-transform:uppercase}
-.independent-sample-label{color:#dcec95}
-.independent-sample-stage{position:relative;isolation:isolate;min-height:290px;display:grid;place-items:center;margin:20px 0 24px;overflow:hidden;border-radius:9px;border:1px solid rgba(255,255,255,.08);background:radial-gradient(circle at 72% 33%,rgba(207,230,90,.12),transparent 52%),linear-gradient(135deg,#171e1e,#0a0f10)}
-.independent-sample-stage .independent-sample-placeholder{display:grid;place-items:center;width:100%;min-height:290px;padding:30px 15px}
-.independent-sample-stage .independent-sample-monogram{font-size:clamp(45px,6.5vw,86px);font-weight:800;letter-spacing:-.05em;color:rgba(255,255,255,.3);line-height:1}
-.independent-sample-stage .independent-sample-awaiting{position:absolute;left:18px;bottom:16px;display:flex;align-items:center;gap:8px;font-size:11px;color:#dfe8dd}
-.independent-sample-stage .independent-sample-awaiting svg{width:14px;height:14px;color:#CFE65A}
-.independent-sample-stage video{display:none;width:auto;max-width:100%;height:min(58vw,460px);max-height:460px;aspect-ratio:9/16;object-fit:contain;background:#060909}
-.independent-sample-stage.has-video video{display:block}
-.independent-sample-stage.has-video .independent-sample-placeholder{display:none}
-.independent-sample-card h3{color:#f1f3ef;font-size:clamp(24px,2.4vw,34px);line-height:1.15;letter-spacing:-.04em;margin:0 0 12px}
-.independent-sample-card>p{color:#c3ccc5;font-size:14px;line-height:1.65;margin:0 0 14px}
-.independent-sample-card .independent-sample-disclaimer{font-size:11px;color:#9eaaa6;border-top:1px solid rgba(255,255,255,.10);padding-top:14px}
-.independent-samples-footnote{color:#929f99;font-size:11px;line-height:1.6;margin:20px 0 0;max-width:880px}
-@media(max-width:760px){.pricing-preproduction{grid-template-columns:1fr}.independent-samples-grid{grid-template-columns:1fr}.independent-sample-stage video{height:min(110vw,510px)}.independent-sample-stage .independent-sample-placeholder{min-height:240px}}
+@media(max-width:760px){.pricing-preproduction{grid-template-columns:1fr}}
 /* Identidad visual extraída de los reels originales (sin generación de nuevas imágenes). */
 .editorial-case-ls2 .editorial-media{background:radial-gradient(circle at 65% 32%,rgba(231,151,79,.19),transparent 50%),#090b0c}
 .editorial-case-ls2 .editorial-index{color:#e5b17a}
@@ -38,3 +17,6 @@
 .project-item-piero .mockup-stage{background:radial-gradient(circle at 56% 18%,rgba(236,214,185,.2),transparent 58%),#292b2b}
 .project-item-piero .project-info-card{border-color:rgba(214,197,177,.23)}
 .project-item-piero .project-sample-legal{margin-top:14px;padding-top:12px;border-top:1px solid rgba(214,197,177,.18);color:#afb8b2;font-size:11px;line-height:1.55}
+
+/* Frames extraídos de los dos reels: el póster mantiene la identidad mientras carga el video. */
+.editorial-case-ls2 .editorial-media video,.project-item-piero .project-video{background-color:#0d1112}
