@@ -192,6 +192,12 @@ async function test() {
       assert.ok(state.systemBoardWidth <= state.systemBoardContainer+2,"System diagram must fit site-shell");
       assert.equal(await page.locator(".editorial-case-ls2").count(),1,"LS2 featured video exists");
       assert.equal(await page.locator(".project-item-piero").count(),1,"Piero product gallery card exists");
+      await page.locator('[data-filter="product"]').click();
+      assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product filter is announced as selected");
+      assert.equal(await page.locator(".project-item-piero").evaluate(el=>el.classList.contains("is-hidden")),false,"Piero card becomes accessible after selecting Campañas IA");
+      assert.ok(await page.locator(".project-item-piero").evaluate(el=>el.getBoundingClientRect().width <= window.innerWidth + 2),"Piero card fits the active viewport");
+      await page.locator('[data-filter="ugc"]').click();
+      assert.equal(await page.locator('[data-filter="ugc"]').getAttribute("aria-selected"),"true","UGC filter returns to default");
       assert.equal(await page.locator(".editorial-case-ls2 video").getAttribute("poster"),"https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/14f3aeaf-2fec-404d-a933-eccebdee65b6.jpg","LS2 poster is sourced from its actual reel");
       assert.equal(await page.locator(".project-item-piero video").getAttribute("poster"),"https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/0ed1f999-93ee-402b-bcf0-a646ff90879f.jpg","Piero poster is sourced from its actual reel");
       assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),1,"Visual dashboard stage is present");
