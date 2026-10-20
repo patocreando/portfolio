@@ -68,10 +68,18 @@ for (const file of ["assets/site.css","assets/site.js","assets/premium-lab.css",
   has(html, "./"+file);
 }
 assert.ok(fs.existsSync("assets/google-meet-logo.png"), "Asset google-meet-logo.png retained in repository for backward compatibility");
-for (const [ref,price] of [["w60952078","ARS 50.000"],["w60952216","ARS 100.000"],["w60952262","ARS 200.000"]]) {
+for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 200.000",1]]) {
   assert.equal(occurrences(html, ref), 1, "Manychat ref: "+ref);
-  assert.equal(occurrences(html, price), 1, "pack price: "+price);
+  assert.equal(occurrences(html, price), count, "pack price and base disclosures: "+price);
 }
+assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed");
+for(const phrase of ['1 video vertical 9:16','2 videos verticales 9:16','4 videos verticales 9:16','dashboard visual personalizado','Antes de generar','Piero · Dream Tech','LS2 · Equipamiento en movimiento'])has(html,phrase);
+assert.equal(occurrences(html,'data-sample-video'),2,"two non-commercial sample preview slots");
+assert.equal(occurrences(html,'no constituye una campaña comercial oficial ni implica aprobación o patrocinio'),2,"independent sample disclaimers");
+for(const asset of ['./assets/lote-02.css','./assets/lote-02.js'])has(html,asset);
+assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
+assert.ok(fs.existsSync('assets/lote-02.js'),"Lote 02 JS exists");
+assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
 has(html, 'media="(max-width: 639px)"');
 has(html, 'id="caseMyWay"');
 has(html, 'class="perfume-process-track"');
