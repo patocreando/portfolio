@@ -191,11 +191,13 @@ async function test() {
       assert.ok(state.systemBoardWidth <= state.innerWidth+2,"System diagram must fit viewport");
       assert.ok(state.systemBoardWidth <= state.systemBoardContainer+2,"System diagram must fit site-shell");
       assert.equal(await page.locator(".editorial-case-ls2").count(),1,"LS2 featured video exists");
+      await page.locator(".editorial-case-ls2").screenshot({path:"artifacts/ls2-editorial-"+spec.name+".png",animations:"disabled"});
       assert.equal(await page.locator(".project-item-piero").count(),1,"Piero product gallery card exists");
       await page.locator('[data-filter="product"]').click();
       assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product filter is announced as selected");
       assert.equal(await page.locator(".project-item-piero").evaluate(el=>el.classList.contains("is-hidden")),false,"Piero card becomes accessible after selecting Campañas IA");
       assert.ok(await page.locator(".project-item-piero").evaluate(el=>el.getBoundingClientRect().width <= window.innerWidth + 2),"Piero card fits the active viewport");
+      await page.locator(".project-item-piero").screenshot({path:"artifacts/piero-product-"+spec.name+".png",animations:"disabled"});
       await page.locator('[data-filter="ugc"]').click();
       assert.equal(await page.locator('[data-filter="ugc"]').getAttribute("aria-selected"),"true","UGC filter returns to default");
       assert.equal(await page.locator(".editorial-case-ls2 video").getAttribute("poster"),"https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/14f3aeaf-2fec-404d-a933-eccebdee65b6.jpg","LS2 poster is sourced from its actual reel");
@@ -203,6 +205,7 @@ async function test() {
       assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),1,"Visual dashboard stage is present");
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
+      await page.locator("#launchOffer").screenshot({path:"artifacts/packs-"+spec.name+".png",animations:"disabled"});
       assert.ok(state.projects && state.caseStudy,"Projects and PERFUME_01 process track must be in DOM");
       assert.equal(state.perfumeStageCount,5,"PERFUME_01 process board contains five stages");
       assert.equal(state.css,"rgb(207, 230, 90)","Accent system styling must load");
