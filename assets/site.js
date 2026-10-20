@@ -1607,7 +1607,7 @@
           "#projectGrid .project-item:not(.is-hidden)",
           "#services .service-card",
           ".pricing-pack",
-          ".deliverables-card",
+          ".deliverables-cloud",
           ".direction-principle",
           "#contact .contact-social-link",
           "#contact form"

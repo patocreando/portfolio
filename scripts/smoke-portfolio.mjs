@@ -13,7 +13,7 @@ const occurrences = (text, needle) => text.split(needle).length - 1;
 const links = text => new Set([...text.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)].map(match => match[1]));
 const sectionIds = [...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(match => match[1]);
 
-assert.deepEqual(sectionIds, ["top","projects","caseMyWay","services","launchOffer","system","method","contact"], "section order");
+assert.deepEqual(sectionIds, ["top","projects","caseMyWay","services","launchOffer","deliverables","system","method","contact"], "section order");
 assert.ok(css.length > 260000, "extracted CSS must not lose original rules");
 assert.ok(js.length > 64000, "Core JS controllers must remain intact after removing the carousel");
 assert.ok(!js.includes("workflowCodeCanvas"),"unused typewriter removed");
@@ -68,6 +68,14 @@ for (const file of ["assets/site.css","assets/site.js","assets/premium-lab.css",
   has(html, "./"+file);
 }
 assert.ok(fs.existsSync("assets/google-meet-logo.png"), "Asset google-meet-logo.png retained in repository for backward compatibility");
+assert.equal(occurrences(html,'id="deliverables"'),1,"one deliverables cloud");
+assert.equal(occurrences(html,'class="cloud-node cloud-node--center"'),1,"one final master node");
+assert.equal((html.match(/<article class="cloud-node cloud-node--[abcd]"/g)||[]).length,4,"four production satellites");
+assert.equal(occurrences(html,'class="deliverable-arrow"'),0,"compact arrows removed");
+for(const icon of ["layout-dashboard","clapperboard","sliders-horizontal","smartphone","badge-check"])has(html,'data-lucide="'+icon+'"');
+for(const label of ["Dashboard previo a generar.","Generación controlada.","Ritmo, audio y control de calidad.","Lista para publicar."])has(html,label);
+has(fs.readFileSync("assets/lote-02.css","utf8"),"@media(prefers-reduced-motion:reduce)","reduced-motion cloud");
+
 for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 200.000",1]]) {
   assert.equal(occurrences(html, ref), 1, "Manychat ref: "+ref);
   assert.equal(occurrences(html, price), count, "pack price and base disclosures: "+price);

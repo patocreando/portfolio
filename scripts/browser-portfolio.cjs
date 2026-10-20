@@ -79,7 +79,7 @@ async function test() {
         systemCta:document.querySelector("#system .studio-system-cta")?.getAttribute("href"),
         editorialHeadings:[...document.querySelectorAll(".editorial-case h4")].map(n=>n.innerText),
         premiumLinks:[...document.querySelectorAll(".editorial-project-link")].map(n=>n.getAttribute("href")),
-        deliveryStepWidth:document.querySelector(".deliverable-step").getBoundingClientRect().width,
+        deliveryStepWidth:document.querySelector("#deliverables .cloud-node--a").getBoundingClientRect().width,
         railWidth:document.querySelector("#pricingPackRail").clientWidth,
         railScroll:document.querySelector("#pricingPackRail").scrollLeft,
         mainWidth:document.querySelector("main").getBoundingClientRect().width,
@@ -155,7 +155,7 @@ async function test() {
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
       assert.equal(await page.locator('.tab-btn[data-filter]').count(),2,"UGC and product filters remain");
-      assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
+      assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","deliverables","system","method","contact"],"Cold-traffic narrative order");
       assert.equal(state.methodSteps,3,"Method simplified to three commercial collaboration steps");
       const terms=await page.locator("#method .method-brief-scope").evaluate(el=>{
         const box=el.getBoundingClientRect();
@@ -210,6 +210,23 @@ async function test() {
       assert.equal(await page.locator("#submitLabel").textContent(),"Enviar consulta","Contact button invites a consultation");
       assert.equal(await page.locator("#contactForm .contact-brief-hint").count(),1,"Brief helper appears above form");
       await page.locator("#launchOffer").screenshot({path:"artifacts/packs-"+spec.name+".png",animations:"disabled"});
+      assert.equal(await page.locator("#deliverables .cloud-node").count(),5,"Four stages and one final master");
+      assert.equal(await page.locator("#deliverables article.cloud-node").count(),4,"Four independent delivery steps");
+      await page.waitForFunction(()=>document.querySelectorAll("#deliverables .cloud-node svg.lucide").length===5,{timeout:15000});
+      const cloud=await page.locator("#deliverables").evaluate(el=>{
+        const cards=[...el.querySelectorAll(".cloud-node")];
+        const area=el.getBoundingClientRect();
+        const sizes=cards.map(card=>{const r=card.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height}});
+        const h=el.querySelector("#deliverablesTitle");
+        const titleSize=parseFloat(getComputedStyle(h).fontSize);
+        return {width:area.width,titleSize,nodes:sizes,scrollWidth:el.scrollWidth,clientWidth:el.clientWidth};
+      });
+      assert.ok(cloud.width<=spec.width+2,"Cloud stays within viewport");
+      assert.ok(cloud.scrollWidth<=cloud.clientWidth+2,"Cloud has no horizontal overflow");
+      assert.ok(cloud.titleSize>=29,"Cloud heading is prominent");
+      assert.ok(cloud.nodes.every(r=>r.width>=130 && r.height>=160),"Cloud nodes have comfortable dimensions");
+      await page.locator("#deliverables").screenshot({path:"artifacts/deliverables-"+spec.name+".png",animations:"disabled"});
+
       assert.ok(state.projects && state.caseStudy,"Projects and PERFUME_01 process track must be in DOM");
       assert.equal(state.perfumeStageCount,5,"PERFUME_01 process board contains five stages");
       assert.equal(state.css,"rgb(207, 230, 90)","Accent system styling must load");
@@ -221,7 +238,7 @@ async function test() {
       assert.equal(state.systemAmbientPreload,"none","Reduced-motion browser should not fetch background video");
       assert.equal(state.heroMuted,true,"Hero is muted by default");
       assert.ok(state.mainWidth <= state.innerWidth+4,"Main must fit viewport");
-      if (spec.isMobile) assert.ok(state.deliveryStepWidth >= 130,"Mobile deliverable steps must be readable");
+      if (spec.isMobile) assert.ok(state.deliveryStepWidth >= 130,"Mobile cloud nodes must remain readable");
       await page.screenshot({path:"artifacts/"+spec.name+".png",fullPage:true,animations:"disabled"});
 
       // An additional real-animation CSS pass: the baseline QA uses reduced motion and
