@@ -80,9 +80,16 @@ for(const [brand,poster] of [["LS2","https://d2ol7oe51mr4n9.cloudfront.net/user_
 }
 assert.equal(occurrences(html,'class="editorial-case editorial-case-ls2"'),1,"LS2 featured only once");
 assert.equal(occurrences(html,'project-item-piero'),1,"Piero product card only once");
-has(html,'sin aprobación, patrocinio ni campaña comercial de LS2');
-has(html,'no implica aprobación ni patrocinio de Piero');
+has(html,'Publicidad ficticia · muestra visual.');
+has(html,'no es una campaña oficial ni una pieza publicada o aprobada por LS2');
+assert.equal(occurrences(html,'SPEC AD · FICTICIO'),2,'both ads marked fictitious over preview');
+assert.equal(occurrences(html,'class="spec-ad-media-note"'),2,'two persistent spec ad media flags');
+has(html,'no es un anuncio oficial, publicado o aprobado por Piero');
+has(html,'Spec ad ficticio · Piero Dream Tech');
+assert.equal(occurrences(html,'class="project-sample-legal spec-ad-disclaimer"'),1,'Piero disclaimer visible');
+has(html,'class="editorial-footnote spec-ad-disclaimer"');
 has(html,'./assets/lote-02.css');
+assert.ok(fs.readFileSync('assets/lote-02.css','utf8').includes('.spec-ad-media-note'),'spec ad badges styled');
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
