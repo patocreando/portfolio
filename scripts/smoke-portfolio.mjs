@@ -13,7 +13,7 @@ const occurrences = (text, needle) => text.split(needle).length - 1;
 const links = text => new Set([...text.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)].map(match => match[1]));
 const sectionIds = [...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(match => match[1]);
 
-assert.deepEqual(sectionIds, ["top","projects","caseMyWay","independentSamples","services","launchOffer","system","method","contact"], "section order");
+assert.deepEqual(sectionIds, ["top","projects","caseMyWay","services","launchOffer","system","method","contact"], "section order");
 assert.ok(css.length > 260000, "extracted CSS must not lose original rules");
 assert.ok(js.length > 64000, "Core JS controllers must remain intact after removing the carousel");
 assert.ok(!js.includes("workflowCodeCanvas"),"unused typewriter removed");
@@ -73,9 +73,10 @@ for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 
   assert.equal(occurrences(html, price), count, "pack price and base disclosures: "+price);
 }
 assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed");
-for(const phrase of ['1 video vertical 9:16','2 videos verticales 9:16','4 videos verticales 9:16','dashboard visual personalizado','Antes de generar','Piero · Dream Tech','LS2 · Equipamiento en movimiento'])has(html,phrase);
-assert.equal(occurrences(html,'data-sample-video'),2,"two non-commercial sample preview slots");
-assert.equal(occurrences(html,'no constituye una campaña comercial oficial ni implica aprobación o patrocinio'),2,"independent sample disclaimers");
+for(const phrase of ['1 video vertical 9:16','2 videos verticales 9:16','4 videos verticales 9:16','dashboard visual personalizado','Antes de generar','Piero · Dream Tech','El ritual de salir.'])has(html,phrase);
+assert.equal(occurrences(html,'data-sample-video'),0,"no duplicated samples");
+has(html,'sin aprobación, patrocinio ni campaña comercial de LS2');
+has(html,'no implica aprobación ni patrocinio de Piero');
 for(const asset of ['./assets/lote-02.css','./assets/lote-02.js'])has(html,asset);
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 assert.ok(fs.existsSync('assets/lote-02.js'),"Lote 02 JS exists");
