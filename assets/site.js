@@ -1053,6 +1053,18 @@
         });
       });
 
+      // Service cards open the corresponding project tab before native anchor navigation.
+      // Keep regular anchor links so keyboard users and browsers without JS still reach the gallery.
+      document.querySelectorAll(".service-example-link[data-service-filter]").forEach(function (link) {
+        link.addEventListener("click", function () {
+          var selected = link.getAttribute("data-service-filter");
+          var targetTab = tabButtons.find(function (tab) {
+            return tab.getAttribute("data-filter") === selected;
+          });
+          if (targetTab) targetTab.click();
+        });
+      });
+
       showCategory("ugc");
 
       // Magnetic pointer effect
@@ -1454,26 +1466,26 @@
           .then(function () {
             showFormStatus(
               "success",
-              "Propuesta enviada",
+              "Consulta enviada",
               "Recibí tu mensaje. Te respondo al correo que dejaste."
             );
 
-            if (submitLabel) submitLabel.textContent = "Propuesta enviada";
+            if (submitLabel) submitLabel.textContent = "Consulta enviada";
             contactForm.reset();
             toggleMailProviderPicker(false);
 
             window.setTimeout(function () {
-              if (submitLabel) submitLabel.textContent = "Enviar propuesta";
+              if (submitLabel) submitLabel.textContent = "Enviar consulta";
             }, 2800);
           })
           .catch(function () {
             showFormStatus(
               "error",
-              "No pude enviarla directamente",
-              "Podés abrir la propuesta en Gmail, Outlook o Yahoo y enviarla desde tu cuenta."
+              "No pude enviar la consulta",
+              "Podés abrir el mensaje en Gmail, Outlook o Yahoo y enviarlo desde tu cuenta."
             );
 
-            if (submitLabel) submitLabel.textContent = "Enviar propuesta";
+            if (submitLabel) submitLabel.textContent = "Enviar consulta";
             toggleMailProviderPicker(true);
           });
         });

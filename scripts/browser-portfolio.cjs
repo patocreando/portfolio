@@ -42,7 +42,8 @@ async function test() {
       const state=await page.evaluate(() => ({
         title:document.querySelector("h1")?.innerText?.replace(/\s+/g," ").trim(),
         projects:!!document.querySelector("#projects"),
-        caseStudy:!!document.querySelector("#caseMyWay .case-study-video"),
+        caseStudy:!!document.querySelector("#caseMyWay .perfume-process-track"),
+        perfumeStageCount:document.querySelectorAll("#caseMyWay .perfume-stage-card").length,
         packCount:document.querySelectorAll("#launchOffer .pricing-pack").length,
         ctaCount:document.querySelectorAll("#launchOffer .pricing-pack-cta").length,
         css:getComputedStyle(document.querySelector(".studio-system-dot")).backgroundColor,
@@ -120,7 +121,7 @@ async function test() {
         assert.notEqual(navState.contactDisplay,"none","Desktop displays the Hablemos CTA");
         assert.equal(navState.toggleDisplay,"none","Desktop hides hamburger");
         assert.ok(Math.abs(navState.nav.center-spec.width/2)<3,"Desktop section links exactly centered in viewport");
-        assert.ok(navState.home.right < navState.brand.left,"Inicio and brand have clear spacing");
+        assert.ok(navState.home.right+8 <= navState.brand.left,"Home and brand have clear spacing (>= 8px)");
         assert.ok(navState.brand.right+8 < navState.nav.left,"Brand does not overlap links");
         assert.ok(navState.nav.right+8 < navState.contact.left,"Links do not overlap the CTA");
       } else {
@@ -128,8 +129,8 @@ async function test() {
         assert.equal(navState.contactDisplay,"none","Mobile/tablet keeps CTA inside the menu");
         assert.notEqual(navState.toggleDisplay,"none","Mobile/tablet displays menu toggle");
         assert.ok(Math.abs(navState.brand.center-spec.width/2)<3,"Mobile brand mathematically centered");
-        assert.ok(navState.home.right+5 < navState.brand.left,"Inicio and centered brand do not overlap");
-        assert.ok(navState.brand.right+5 < navState.toggle.left,"Brand and hamburger do not overlap");
+        assert.ok(navState.home.right+8 <= navState.brand.left,"Mobile home and centered brand maintain minimum 8px separation");
+        assert.ok(navState.brand.right+8 <= navState.toggle.left,"Mobile brand and menu toggle maintain minimum 8px separation");
         assert.equal(await page.locator("#mobileMenu").evaluate(el=>getComputedStyle(el).visibility),"hidden","Mobile menu links are not focusable while closed");
       }
       await page.locator("#portfolioHeader").screenshot({path:"artifacts/nav-"+spec.name+".png",animations:"disabled"});
@@ -140,13 +141,16 @@ async function test() {
       assert.equal(state.archiveTotal,4,"Archive contains four non-duplicated projects");
       assert.equal(state.archiveUGC,2,"UGC archive retains two distinct pieces");
       assert.equal(state.archiveProduct,2,"Campaign archive retains two distinct pieces");
-      assert.equal(state.noirSources,1,"NOIR video is only present in its featured banner");
+      assert.equal(state.noirSources,1,"Original NOIR editorial media preserved in public release");
       assert.equal(state.ugcPerfumeSources,1,"Beauty perfume UGC video is only present in its featured banner");
       assert.equal(state.editorialHeadings.length,2,"Curated editorial headings must render");
       assert.deepEqual(state.premiumLinks,[],"No redundant editorial gallery CTAs remain");
       assert.equal(await page.locator(".editorial-project-link").count(),0,"Remove the remaining editorial gallery button");
       assert.equal(await page.locator("#projectFilters").count(),1,"Keep the gallery filters section");
       assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),0,"Requested original-reference CTA removed");
+      assert.equal(await page.locator("#caseMyWay .perfume-stage-card").count(),5,"PERFUME_01 board contains all five stages");
+      assert.equal(await page.locator("#caseMyWay .perfume-stage-card video").count(),3,"Three video stages in PERFUME_01 track");
+      assert.equal(await page.locator("#caseMyWay .perfume-stage-card img").count(),2,"Two anchor image stages in PERFUME_01 track");
       assert.equal(await page.getByText("Explorar otros formatos",{exact:true}).count(),0,"Requested editorial CTA removed");
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
@@ -157,7 +161,7 @@ async function test() {
         const box=el.getBoundingClientRect();
         return {text:el.textContent.trim().replace(/\s+/g," "),width:box.width,visible:getComputedStyle(el).display!=="none",boldSections:[...el.querySelectorAll("strong")].map(n=>n.textContent.trim())};
       });
-      assert.equal(terms.text,"Alcance, revisiones y plazos de entrega: se acuerdan según el proyecto o el pack contratado. Pago: se realiza al momento de la entrega final.","Explicit timeline and payment terms");
+      assert.equal(terms.text,"Alcance, revisiones y plazos de entrega: se definen por escrito luego de evaluar la complejidad del brief, la fidelidad de producto, las escenas y las piezas solicitadas. No se inicia la generación final hasta validar la propuesta visual y el presupuesto. Pago: se realiza al momento de la entrega final.","Explicit timeline and payment terms");
       assert.deepEqual(terms.boldSections,["Alcance, revisiones y plazos de entrega:","Pago:"],"Terms have clear hierarchy");
       assert.ok(terms.visible&&terms.width<=spec.width+2,"Terms fit on mobile and desktop");
       assert.ok(state.methodWidth<=state.innerWidth+2,"Method stage fits viewport");
@@ -186,9 +190,28 @@ async function test() {
       assert.equal(state.systemCta,"#contact","Contact CTA must stay internal");
       assert.ok(state.systemBoardWidth <= state.innerWidth+2,"System diagram must fit viewport");
       assert.ok(state.systemBoardWidth <= state.systemBoardContainer+2,"System diagram must fit site-shell");
+      assert.equal(await page.locator('[aria-labelledby="noirCaseTitle"]').count(),1,"Original NOIR editorial example is restored");
+      assert.equal(await page.locator(".editorial-case-ls2").count(),0,"Unlicensed LS2 media is excluded from release");
+      assert.equal(await page.locator(".project-item-piero").count(),0,"Unlicensed Piero media is excluded from release");
+      await page.locator('[aria-labelledby="noirCaseTitle"]').screenshot({path:"artifacts/original-noir-"+spec.name+".png",animations:"disabled"});
+      await page.locator('[data-filter="product"]').click();
+      assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product filter is selected");
+      const perfumeCard=page.locator('#projectGrid .project-item[data-category="product"]').filter({hasText:"Perfumería de nicho"});
+      assert.equal(await perfumeCard.count(),1,"Original niche perfume project is restored in product gallery");
+      assert.equal(await perfumeCard.evaluate(el=>el.classList.contains("is-hidden")),false,"Original perfume project becomes visible in product gallery");
+      await perfumeCard.screenshot({path:"artifacts/original-perfume-"+spec.name+".png",animations:"disabled"});
+      await page.locator('[data-filter="ugc"]').click();
+      assert.equal(await page.locator('[data-filter="ugc"]').getAttribute("aria-selected"),"true","UGC tab restored");
+      assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),1,"Visual dashboard stage is present");
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
-      assert.ok(state.projects && state.caseStudy,"Projects and featured case must be in DOM");
+      assert.equal(await page.title(),"Pato Creando | Reels UGC y anuncios de producto con IA","Spanish title fits content strategy");
+      assert.equal(await page.locator("#launchOffer .pricing-secondary-contact a[href='#contact']").count(),1,"Visitor can use contact form instead of Instagram");
+      assert.equal(await page.locator("#submitLabel").textContent(),"Enviar consulta","Contact button invites a consultation");
+      assert.equal(await page.locator("#contactForm .contact-brief-hint").count(),1,"Brief helper appears above form");
+      await page.locator("#launchOffer").screenshot({path:"artifacts/packs-"+spec.name+".png",animations:"disabled"});
+      assert.ok(state.projects && state.caseStudy,"Projects and PERFUME_01 process track must be in DOM");
+      assert.equal(state.perfumeStageCount,5,"PERFUME_01 process board contains five stages");
       assert.equal(state.css,"rgb(207, 230, 90)","Accent system styling must load");
       assert.equal(state.heroActionCount,0,"Requested hero CTA pair removed");
       assert.equal(state.systemAmbientCount,1,"One ambient system backdrop");
@@ -263,6 +286,15 @@ async function test() {
       assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),2,"UGC filter displays the two unique cards");
       await page.locator('[data-filter="product"]').click();
       assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),2,"Campaign filter displays the two unique cards");
+      assert.equal(await page.locator("#services .service-example-link").count(),3,"All services have contextual next steps");
+      await page.locator("#services .service-card-ugc .service-example-link").click();
+      assert.equal(await page.locator('[data-filter="ugc"]').getAttribute("aria-selected"),"true","UGC example shortcut selects the UGC projects");
+      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),2,"UGC projects visible after shortcut");
+      await page.locator("#services .service-card-product .service-example-link").click();
+      assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product example shortcut selects product campaign projects");
+      assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),2,"Product projects visible after shortcut");
+      assert.equal(await page.locator("#services .service-card-testing .service-example-link").getAttribute("href"),"#caseMyWay","Variant service points to actual process example");
+      await page.locator("#services .services-grid").screenshot({path:"artifacts/services-"+spec.name+".png",animations:"disabled"});
       // Page-error report is informational: third-party video/CDN failures are tested separately.
       console.log(JSON.stringify({viewport:spec.name,...state,pageErrors:pageErrors.slice(0,6)}));
       await context.close();
@@ -295,8 +327,8 @@ async function test() {
           assert.ok(freshHeader.navRight+8 < freshHeader.ctaLeft,"CTA right aligned despite stale stylesheet");
         } else {
           assert.ok(Math.abs(freshHeader.brandCenter-staleSpec.width/2)<3,"Mobile brand centered with stale stylesheet");
-          assert.ok(freshHeader.homeRight+5 < freshHeader.brandLeft,"Mobile home does not overlap brand with cached CSS");
-          assert.ok(freshHeader.brandRight+5 < freshHeader.toggleLeft,"Mobile brand does not overlap menu with cached CSS");
+          assert.ok(freshHeader.homeRight+8 <= freshHeader.brandLeft,"Mobile home does not overlap brand with cached CSS (>= 8px)");
+          assert.ok(freshHeader.brandRight+8 <= freshHeader.toggleLeft,"Mobile brand does not overlap menu with cached CSS (>= 8px)");
         }
         await page.locator("#portfolioHeader").screenshot({path:"artifacts/nav-"+staleSpec.name+".png",animations:"disabled"});
         console.log(JSON.stringify({navbarStaleCss:staleSpec.name,...freshHeader}));
