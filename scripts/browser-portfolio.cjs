@@ -141,7 +141,7 @@ async function test() {
       assert.equal(state.archiveTotal,4,"Archive contains four non-duplicated projects");
       assert.equal(state.archiveUGC,2,"UGC archive retains two distinct pieces");
       assert.equal(state.archiveProduct,2,"Campaign archive retains two distinct pieces");
-      assert.equal(state.noirSources,1,"NOIR video is only present in its featured banner");
+      assert.equal(state.noirSources,0,"Old editorial NOIR source removed");
       assert.equal(state.ugcPerfumeSources,1,"Beauty perfume UGC video is only present in its featured banner");
       assert.equal(state.editorialHeadings.length,2,"Curated editorial headings must render");
       assert.deepEqual(state.premiumLinks,[],"No redundant editorial gallery CTAs remain");
@@ -155,7 +155,7 @@ async function test() {
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
       assert.equal(await page.locator('.tab-btn[data-filter]').count(),2,"UGC and product filters remain");
-      assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","independentSamples","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
+      assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
       assert.equal(state.methodSteps,3,"Method simplified to three commercial collaboration steps");
       const terms=await page.locator("#method .method-brief-scope").evaluate(el=>{
         const box=el.getBoundingClientRect();
@@ -190,8 +190,8 @@ async function test() {
       assert.equal(state.systemCta,"#contact","Contact CTA must stay internal");
       assert.ok(state.systemBoardWidth <= state.innerWidth+2,"System diagram must fit viewport");
       assert.ok(state.systemBoardWidth <= state.systemBoardContainer+2,"System diagram must fit site-shell");
-      assert.equal(await page.locator("#independentSamples .independent-sample-card").count(),2,"Piero and LS2 demonstrative examples");
-      assert.equal(await page.locator("#independentSamples video[data-sample-video]").count(),2,"Two optional video players");
+      assert.equal(await page.locator(".editorial-case-ls2").count(),1,"LS2 featured video exists");
+      assert.equal(await page.locator(".project-item-piero").count(),1,"Piero product gallery card exists");
       assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),1,"Visual dashboard stage is present");
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
