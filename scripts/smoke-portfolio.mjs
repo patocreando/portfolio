@@ -108,14 +108,14 @@ const archivedProjects = [...html.matchAll(/<article\b[^>]*class="[^"]*\bproject
 assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,2,"two unique campaign cards");
-for (const name of ["cc882a72-3df6-41a3-8398-619e1e7ba9a9.mp4","d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]) {
+for (const name of ["84c668cc-ba27-44ab-bdd0-3b8aceaf08b4.mp4","d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]) {
   assert.equal(occurrences(html,name),1,"featured video appears only in one editorial banner: "+name);
   assert.ok(!archivedProjects.some(card=>card.includes(name)),"archive must not repeat featured video: "+name);
 }
 assert.equal(occurrences(html,"Perfume real llevado a una estética cinematográfica."),0,"remove duplicate Perfumería IA copy");
 assert.equal(occurrences(html,"Lenguaje de campaña en clave UGC."),0,"remove duplicate UGC perfume copy");
-assert.equal(occurrences(html,'class="editorial-case"'),2,"two new editorial case chapters");
-has(html,'NOIR 17');
+assert.equal((html.match(/<article class="editorial-case(?: editorial-case-ls2)?"/g)||[]).length,2,"two editorial case chapters");
+has(html,'El ritual de salir.');
 has(html,'UGC Beauty');
 has(html,'03 / PRODUCTO IA · PERFUMERÍA');
 has(html,'De los archivos');
@@ -127,7 +127,7 @@ assert.equal(occurrences(html,'Ver la galería completa'),0,"requested UGC galle
 assert.equal(occurrences(html,'class="editorial-project-link"'),0,"no extra editorial CTA buttons");
 assert.equal(occurrences(html,'href="#projectFilters"'),0,"gallery anchor no longer linked from case");
 assert.equal(occurrences(html,'id="projectFilters"'),1,"retain the gallery filter section");
-assert.equal(occurrences(html,'perfume-concept-v2-1.mp4'),2,"perfume reel v2.1 referenced in project card and case process board");
+assert.equal(occurrences(html,'perfume-concept-v2-1.mp4'),1,"perfume master retained only in process board");
 assert.equal(occurrences(html,'Muestra autorizada para Shop Online Perfumería; no es una campaña publicada por la marca.'),1,"disclaimer displayed only once");
 assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow gallery tab or card");
 assert.equal(occurrences(html, 'data-filter="workflow"'),0,"only UGC and product remain");
@@ -140,7 +140,7 @@ assert.equal(occurrences(html,'href="#system"'),2,"desktop and mobile navigation
 assert.equal(occurrences(html,'social-proof'),0,"no social proof placeholders");
 
 has(html,'id="projectFilters"');
-has(html,'aria-labelledby="noirCaseTitle"');
+has(html,'aria-labelledby="ls2EditorialTitle"');
 has(html,'aria-labelledby="ugcCaseTitle"');
 has(premiumCss,'.editorial-showcase');
 has(premiumCss,'.hero-edition-label');
