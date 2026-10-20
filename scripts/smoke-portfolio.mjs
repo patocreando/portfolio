@@ -13,7 +13,7 @@ const occurrences = (text, needle) => text.split(needle).length - 1;
 const links = text => new Set([...text.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)].map(match => match[1]));
 const sectionIds = [...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(match => match[1]);
 
-assert.deepEqual(sectionIds, ["top","projects","caseMyWay","services","launchOffer","system","method","contact"], "section order");
+assert.deepEqual(sectionIds, ["top","projects","caseMyWay","independentSamples","services","launchOffer","system","method","contact"], "section order");
 assert.ok(css.length > 260000, "extracted CSS must not lose original rules");
 assert.ok(js.length > 64000, "Core JS controllers must remain intact after removing the carousel");
 assert.ok(!js.includes("workflowCodeCanvas"),"unused typewriter removed");
@@ -68,7 +68,7 @@ for (const file of ["assets/site.css","assets/site.js","assets/premium-lab.css",
   has(html, "./"+file);
 }
 assert.ok(fs.existsSync("assets/google-meet-logo.png"), "Asset google-meet-logo.png retained in repository for backward compatibility");
-for (const [ref,price] of [["w60952078","ARS 50.000"],["w60952216","ARS 100.000"],["w60952262","ARS 150.000"]]) {
+for (const [ref,price] of [["w60952078","ARS 50.000"],["w60952216","ARS 100.000"],["w60952262","ARS 200.000"]]) {
   assert.equal(occurrences(html, ref), 1, "Manychat ref: "+ref);
   assert.equal(occurrences(html, price), 1, "pack price: "+price);
 }
