@@ -42,8 +42,8 @@ async function test() {
       const state=await page.evaluate(() => ({
         title:document.querySelector("h1")?.innerText?.replace(/\s+/g," ").trim(),
         projects:!!document.querySelector("#projects"),
-        caseStudy:!!document.querySelector("#caseMyWay .perfume-process-track"),
-        perfumeStageCount:document.querySelectorAll("#caseMyWay .perfume-stage-card").length,
+        caseStudy:!!document.querySelector("#caseMyWay .perfume-viewer"),
+        perfumeStageCount:document.querySelectorAll("#caseMyWay .perfume-viewer-tab").length,
         packCount:document.querySelectorAll("#launchOffer .pricing-pack").length,
         ctaCount:document.querySelectorAll("#launchOffer .pricing-pack-cta").length,
         css:getComputedStyle(document.querySelector(".studio-system-dot")).backgroundColor,
@@ -148,9 +148,34 @@ async function test() {
       assert.equal(await page.locator(".editorial-project-link").count(),0,"Remove the remaining editorial gallery button");
       assert.equal(await page.locator("#projectFilters").count(),1,"Keep the gallery filters section");
       assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),0,"Requested original-reference CTA removed");
-      assert.equal(await page.locator("#caseMyWay .perfume-stage-card").count(),5,"PERFUME_01 board contains all five stages");
-      assert.equal(await page.locator("#caseMyWay .perfume-stage-card video").count(),3,"Three video stages in PERFUME_01 track");
-      assert.equal(await page.locator("#caseMyWay .perfume-stage-card img").count(),2,"Two anchor image stages in PERFUME_01 track");
+      assert.equal(await page.locator("#caseMyWay .perfume-viewer-tab").count(),5,"Process viewer exposes five selectable stages");
+      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel video").count(),3,"Original animation files and master video stay intact");
+      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel img").count(),2,"Both original visual anchors stay intact");
+      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel:not([hidden])").count(),1,"Only one preview is visible at a time");
+      assert.equal(await page.locator("#perfume-tab-01").getAttribute("aria-selected"),"true","First visual anchor is the initial preview");
+      await page.locator("#perfume-tab-03").click();
+      assert.equal(await page.locator("#perfume-tab-03").getAttribute("aria-selected"),"true","Flow tab becomes active on click");
+      assert.equal(await page.locator("#perfume-panel-03").isVisible(),true,"Flow video preview is visible");
+      assert.equal(await page.locator("#perfume-panel-01").isVisible(),false,"Old anchor preview is hidden");
+      await page.locator("#perfume-tab-03").focus();
+      await page.keyboard.press("End");
+      assert.equal(await page.locator("#perfume-tab-05").getAttribute("aria-selected"),"true","End key selects final master");
+      assert.equal(await page.locator("#perfume-panel-05").isVisible(),true,"Final master preview is reachable");
+      await page.keyboard.press("Home");
+      assert.equal(await page.locator("#perfume-tab-01").getAttribute("aria-selected"),"true","Home key returns to first visual anchor");
+      assert.equal(await page.locator("#perfume-panel-01").isVisible(),true,"Visual anchor returns in stage");
+      assert.equal(await page.locator("#perfume-tab-02").getAttribute("tabindex"),"-1","Inactive tabs removed from natural tab order");
+      assert.equal(await page.locator("#caseMyWay .case-study-disclaimer").count(),1,"Brand authorization note preserved");
+      const viewerMetrics=await page.locator("#caseMyWay .perfume-viewer").evaluate(el=>{
+        const area=el.getBoundingClientRect();
+        const stage=el.querySelector(".perfume-viewer-stage").getBoundingClientRect();
+        const list=el.querySelector(".perfume-viewer-list");
+        return {width:area.width,stageWidth:stage.width,stageHeight:stage.height,listWidth:list.clientWidth,listScrollWidth:list.scrollWidth,orientation:list.getAttribute("aria-orientation")};
+      });
+      assert.ok(viewerMetrics.width <= spec.width + 2,"Process viewer fits viewport");
+      assert.ok(viewerMetrics.stageWidth >= 300,"Preview is comfortably large");
+      assert.equal(viewerMetrics.orientation,spec.isMobile?"horizontal":"vertical","ARIA follows responsive tab layout");
+      await page.locator("#caseMyWay .perfume-viewer").screenshot({path:"artifacts/perfume-viewer-"+spec.name+".png",animations:"disabled"});
       assert.equal(await page.getByText("Explorar otros formatos",{exact:true}).count(),0,"Requested editorial CTA removed");
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
