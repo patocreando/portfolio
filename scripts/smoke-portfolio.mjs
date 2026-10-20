@@ -81,7 +81,7 @@ for(const [brand,poster] of [["LS2","https://d2ol7oe51mr4n9.cloudfront.net/user_
 assert.equal(occurrences(html,'class="editorial-case editorial-case-ls2"'),1,"LS2 featured only once");
 assert.equal(occurrences(html,'project-item-piero'),1,"Piero product card only once");
 has(html,'Publicidad ficticia · muestra visual.');
-has(html,'no es una campaña oficial ni una pieza publicada o aprobada por LS2');
+has(html,'No es una campaña oficial ni una pieza publicada o aprobada por LS2');
 assert.equal(occurrences(html,'SPEC AD · FICTICIO'),2,'both ads marked fictitious over preview');
 assert.equal(occurrences(html,'class="spec-ad-media-note"'),2,'two persistent spec ad media flags');
 has(html,'no es un anuncio oficial, publicado o aprobado por Piero');
