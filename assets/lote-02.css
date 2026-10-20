@@ -30,3 +30,12 @@
 .project-item-piero .spec-ad-disclaimer{border-color:rgba(232,215,189,.62)}
 .project-item-piero .spec-ad-disclaimer strong{color:#efdfc8}
 @media(max-width:719px){.spec-ad-media-note{top:12px;left:12px;max-width:calc(100% - 24px);font-size:9px;min-height:28px}.spec-ad-disclaimer{font-size:12px;line-height:1.6}}
+
+/* Lote 02: alternativa al DM y orientación para una consulta útil. */
+.pricing-secondary-contact{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px;padding:17px 20px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(255,255,255,.018)}
+.pricing-secondary-contact span{font-size:13px;line-height:1.6;color:#aab5b1}
+.pricing-secondary-contact a{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:#cfe65a;font-size:13px;font-weight:740;text-decoration:none}
+.pricing-secondary-contact a svg{width:16px;height:16px}
+.pricing-secondary-contact a:hover,.pricing-secondary-contact a:focus-visible{color:#efffa5;text-decoration:underline;text-underline-offset:4px}
+.contact-brief-hint{margin:0 0 5px;color:#c3cdca;font-size:13px;line-height:1.6;max-width:570px}
+@media(max-width:719px){.pricing-secondary-contact{align-items:flex-start;padding:15px}.contact-brief-hint{font-size:12px}}
