@@ -155,13 +155,13 @@ async function test() {
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
       assert.equal(await page.locator('.tab-btn[data-filter]').count(),2,"UGC and product filters remain");
-      assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
+      assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","independentSamples","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
       assert.equal(state.methodSteps,3,"Method simplified to three commercial collaboration steps");
       const terms=await page.locator("#method .method-brief-scope").evaluate(el=>{
         const box=el.getBoundingClientRect();
         return {text:el.textContent.trim().replace(/\s+/g," "),width:box.width,visible:getComputedStyle(el).display!=="none",boldSections:[...el.querySelectorAll("strong")].map(n=>n.textContent.trim())};
       });
-      assert.equal(terms.text,"Alcance, revisiones y plazos de entrega: se acuerdan según el proyecto o el pack contratado. Pago: se realiza al momento de la entrega final.","Explicit timeline and payment terms");
+      assert.equal(terms.text,"Alcance, revisiones y plazos de entrega: se definen por escrito luego de evaluar la complejidad del brief, la fidelidad de producto, las escenas y las piezas solicitadas. No se inicia la generación final hasta validar la propuesta visual y el presupuesto. Pago: se realiza al momento de la entrega final.","Explicit timeline and payment terms");
       assert.deepEqual(terms.boldSections,["Alcance, revisiones y plazos de entrega:","Pago:"],"Terms have clear hierarchy");
       assert.ok(terms.visible&&terms.width<=spec.width+2,"Terms fit on mobile and desktop");
       assert.ok(state.methodWidth<=state.innerWidth+2,"Method stage fits viewport");
@@ -190,6 +190,9 @@ async function test() {
       assert.equal(state.systemCta,"#contact","Contact CTA must stay internal");
       assert.ok(state.systemBoardWidth <= state.innerWidth+2,"System diagram must fit viewport");
       assert.ok(state.systemBoardWidth <= state.systemBoardContainer+2,"System diagram must fit site-shell");
+      assert.equal(await page.locator("#independentSamples .independent-sample-card").count(),2,"Piero and LS2 demonstrative examples");
+      assert.equal(await page.locator("#independentSamples video[data-sample-video]").count(),2,"Two optional video players");
+      assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),1,"Visual dashboard stage is present");
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
       assert.ok(state.projects && state.caseStudy,"Projects and PERFUME_01 process track must be in DOM");
