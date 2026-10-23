@@ -1,7 +1,7 @@
 /* Pato Creando wordmark and SILO campaign styling — 2026-10-23 */
 #portfolioHeader .portfolio-nav-logo {
   display:block;
-  width:clamp(182px,16vw,200px);
+  width:clamp(150px,13vw,165px);
   height:auto;
   object-fit:contain;
 }
@@ -33,7 +33,7 @@
   }
 }
 @media (max-width:639px) {
-  #portfolioHeader .portfolio-nav-logo { width:150px; }
+  #portfolioHeader .portfolio-nav-logo { width:126px; }
 }
 .editorial-case--silo .editorial-index,
 .project-item--silo .project-info-card > div p:first-child {
