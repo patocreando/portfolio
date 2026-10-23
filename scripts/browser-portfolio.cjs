@@ -59,7 +59,8 @@ async function test() {
         archiveTotal:document.querySelectorAll("#projectGrid .project-item").length,
         archiveUGC:document.querySelectorAll('#projectGrid .project-item[data-category="ugc"]').length,
         archiveProduct:document.querySelectorAll('#projectGrid .project-item[data-category="product"]').length,
-        noirSources:document.querySelectorAll('source[src*="cc882a72-3df6-41a3-8398-619e1e7ba9a9.mp4"]').length,
+        siloFeaturedSources:document.querySelectorAll('source[src*="silo-campana-producto.mp4"]').length,
+        siloGallerySources:document.querySelectorAll('source[src*="silo-ugc-sin-subtitulos.mp4"]').length,
         ugcPerfumeSources:document.querySelectorAll('source[src*="d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]').length,
         methodSteps:document.querySelectorAll("#method .method-brief-grid > article").length,
         methodWidth:document.querySelector("#method .method-brief-stage")?.getBoundingClientRect().width,
@@ -141,7 +142,8 @@ async function test() {
       assert.equal(state.archiveTotal,4,"Archive contains four non-duplicated projects");
       assert.equal(state.archiveUGC,2,"UGC archive retains two distinct pieces");
       assert.equal(state.archiveProduct,2,"Campaign archive retains two distinct pieces");
-      assert.equal(state.noirSources,1,"Original NOIR editorial media preserved in public release");
+      assert.equal(state.siloFeaturedSources,1,"First SILO ad appears in featured campaign");
+       assert.equal(state.siloGallerySources,1,"Second SILO ad appears in campaign gallery");
       assert.equal(state.ugcPerfumeSources,1,"Beauty perfume UGC video is only present in its featured banner");
       assert.equal(state.editorialHeadings.length,2,"Curated editorial headings must render");
       assert.deepEqual(state.premiumLinks,[],"No redundant editorial gallery CTAs remain");
@@ -186,7 +188,7 @@ async function test() {
         const box=el.getBoundingClientRect();
         return {text:el.textContent.trim().replace(/\s+/g," "),width:box.width,visible:getComputedStyle(el).display!=="none",boldSections:[...el.querySelectorAll("strong")].map(n=>n.textContent.trim())};
       });
-      assert.equal(terms.text,"Alcance, revisiones y plazos de entrega: se definen por escrito luego de evaluar la complejidad del brief, la fidelidad de producto, las escenas y las piezas solicitadas. No se inicia la generación final hasta validar la propuesta visual y el presupuesto. Pago: se realiza al momento de la entrega final.","Explicit timeline and payment terms");
+      assert.equal(terms.text,"Alcance, revisiones y plazos de entrega: se definen por escrito luego de evaluar la complejidad del resumen del proyecto, la fidelidad de producto, las escenas y las piezas solicitadas. No se inicia la generación final hasta validar la propuesta visual y el presupuesto. Pago: se realiza al momento de la entrega final.","Explicit timeline and payment terms");
       assert.deepEqual(terms.boldSections,["Alcance, revisiones y plazos de entrega:","Pago:"],"Terms have clear hierarchy");
       assert.ok(terms.visible&&terms.width<=spec.width+2,"Terms fit on mobile and desktop");
       assert.ok(state.methodWidth<=state.innerWidth+2,"Method stage fits viewport");
@@ -215,16 +217,16 @@ async function test() {
       assert.equal(state.systemCta,"#contact","Contact CTA must stay internal");
       assert.ok(state.systemBoardWidth <= state.innerWidth+2,"System diagram must fit viewport");
       assert.ok(state.systemBoardWidth <= state.systemBoardContainer+2,"System diagram must fit site-shell");
-      assert.equal(await page.locator('[aria-labelledby="noirCaseTitle"]').count(),1,"Original NOIR editorial example is restored");
+      assert.equal(await page.locator('[aria-labelledby="siloCaseTitle"]').count(),1,"SILO editorial case is featured");
       assert.equal(await page.locator(".editorial-case-ls2").count(),0,"Unlicensed LS2 media is excluded from release");
       assert.equal(await page.locator(".project-item-piero").count(),0,"Unlicensed Piero media is excluded from release");
-      await page.locator('[aria-labelledby="noirCaseTitle"]').screenshot({path:"artifacts/original-noir-"+spec.name+".png",animations:"disabled"});
+      await page.locator('[aria-labelledby="siloCaseTitle"]').screenshot({path:"artifacts/silo-featured-"+spec.name+".png",animations:"disabled"});
       await page.locator('[data-filter="product"]').click();
       assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product filter is selected");
-      const perfumeCard=page.locator('#projectGrid .project-item[data-category="product"]').filter({hasText:"Perfumería de nicho"});
-      assert.equal(await perfumeCard.count(),1,"Original niche perfume project is restored in product gallery");
-      assert.equal(await perfumeCard.evaluate(el=>el.classList.contains("is-hidden")),false,"Original perfume project becomes visible in product gallery");
-      await perfumeCard.screenshot({path:"artifacts/original-perfume-"+spec.name+".png",animations:"disabled"});
+      const siloCard=page.locator('#projectGrid .project-item[data-category="product"]').filter({hasText:"SILO, de cerca."});
+      assert.equal(await siloCard.count(),1,"Second SILO ad appears in product gallery");
+      assert.equal(await siloCard.evaluate(el=>el.classList.contains("is-hidden")),false,"SILO ad becomes visible in product gallery");
+      await siloCard.screenshot({path:"artifacts/silo-gallery-"+spec.name+".png",animations:"disabled"});
       await page.locator('[data-filter="ugc"]').click();
       assert.equal(await page.locator('[data-filter="ugc"]').getAttribute("aria-selected"),"true","UGC tab restored");
       assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),1,"Visual dashboard stage is present");
