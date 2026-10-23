@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 282 68" role="img" aria-labelledby="title">
+<title id="title">Pato Creando IA Content</title>
+<defs><linearGradient id="lime" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e4fb4e"/><stop offset="1" stop-color="#a9da16"/></linearGradient></defs>
+<path fill="#f4f7f1" fill-rule="evenodd" d="M5 61V7h27c18 0 29 8 29 23 0 14-11 23-29 23H21v8H5Zm16-40v18h11c9 0 13-3 13-9s-4-9-13-9H21Z"/>
+<path fill="url(#lime)" d="M5 60 29 37h16L20 62H5v-2Z"/>
+<path fill="#101613" opacity=".75" d="m28 37 17-17v13L39 39H28v-2Z"/>
+<text x="72" y="20" fill="#cfe65a" font-family="Inter,Arial,sans-serif" font-size="10.5" font-weight="800" letter-spacing="3.5">IA CONTENT</text>
+<text x="70" y="53" fill="#f4f7f1" font-family="Inter,Arial,sans-serif" font-size="31" font-weight="800" letter-spacing="-1.5">ato Creando</text>
+</svg>

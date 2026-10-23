@@ -27,7 +27,8 @@ async function test() {
     for (const spec of [
       {name:"mobile-375",width:375,height:812,isMobile:true},
       {name:"mobile-390",width:390,height:844,isMobile:true},
-      {name:"desktop-1366",width:1366,height:900,isMobile:false},
+      {name:"tablet-1200",width:1200,height:900,isMobile:false},
+       {name:"desktop-1366",width:1366,height:900,isMobile:false},
       {name:"desktop-1920",width:1920,height:1080,isMobile:false}
     ]) {
       const context = await browser.newContext({viewport:{width:spec.width,height:spec.height},isMobile:spec.isMobile,hasTouch:spec.isMobile,deviceScaleFactor:1,reducedMotion:"reduce"});
@@ -117,14 +118,14 @@ async function test() {
       assert.equal(navState.brandCount,1,"One brand link");
       assert.equal(navState.legacyReturnCount,0,"No overlapping fixed Inicio overlay");
       assert.deepEqual(navState.mainLinks,["#projects","#system","#services","#launchOffer"],"All central links preserved");
-      if(spec.width>=1100){
+      if(spec.width>=1300){
         assert.notEqual(navState.navDisplay,"none","Desktop displays the centered section links");
         assert.notEqual(navState.contactDisplay,"none","Desktop displays the Hablemos CTA");
         assert.equal(navState.toggleDisplay,"none","Desktop hides hamburger");
-        assert.ok(Math.abs(navState.nav.center-spec.width/2)<3,"Desktop section links exactly centered in viewport");
-        assert.ok(navState.home.right+8 <= navState.brand.left,"Home and brand have clear spacing (>= 8px)");
-        assert.ok(navState.brand.right+8 < navState.nav.left,"Brand does not overlap links");
-        assert.ok(navState.nav.right+8 < navState.contact.left,"Links do not overlap the CTA");
+        assert.ok(Math.abs(navState.brand.center-spec.width/2)<3,"Desktop logo exactly centered in viewport");
+        assert.ok(navState.home.right+8 <= navState.nav.left,"Home and section links have clear spacing (>= 8px)");
+        assert.ok(navState.nav.right+8 < navState.brand.left,"Links do not overlap centered logo");
+        assert.ok(navState.brand.right+8 < navState.contact.left,"Centered logo does not overlap the CTA");
       } else {
         assert.equal(navState.navDisplay,"none","Mobile/tablet hides desktop section links");
         assert.equal(navState.contactDisplay,"none","Mobile/tablet keeps CTA inside the menu");
@@ -365,10 +366,11 @@ async function test() {
         assert.ok(freshHeader.height>=60&&freshHeader.height<=80,"Old cached stylesheet must not create a tall stacked header");
         assert.equal(freshHeader.top,0,"Fixed nav remains at top with cached CSS");
         assert.ok(freshHeader.width>=staleSpec.width-2,"Nav remains full width with cached CSS");
-        if(staleSpec.width>=1100){
-          assert.ok(Math.abs(freshHeader.navCenter-staleSpec.width/2)<3,"Desktop nav centered with stale stylesheet");
-          assert.ok(freshHeader.brandRight+8 < freshHeader.navLeft,"Brand and nav separated despite stale stylesheet");
-          assert.ok(freshHeader.navRight+8 < freshHeader.ctaLeft,"CTA right aligned despite stale stylesheet");
+        if(staleSpec.width>=1300){
+          assert.ok(Math.abs(freshHeader.brandCenter-staleSpec.width/2)<3,"Desktop logo centered with stale stylesheet");
+          assert.ok(freshHeader.homeRight+8 < freshHeader.navLeft,"Home and links separated despite stale stylesheet");
+           assert.ok(freshHeader.navRight+8 < freshHeader.brandLeft,"Links and centered logo separated despite stale stylesheet");
+          assert.ok(freshHeader.brandRight+8 < freshHeader.ctaLeft,"CTA right aligned despite stale stylesheet");
         } else {
           assert.ok(Math.abs(freshHeader.brandCenter-staleSpec.width/2)<3,"Mobile brand centered with stale stylesheet");
           assert.ok(freshHeader.homeRight+8 <= freshHeader.brandLeft,"Mobile home does not overlap brand with cached CSS (>= 8px)");

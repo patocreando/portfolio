@@ -191,7 +191,7 @@ assert.ok(!premiumJs.includes('video.muted=false'),"editorial videos may never t
 assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261011-perfume-process-1"'),1);
 assert.equal(occurrences(html,'id="portfolio-nav-critical"'),1,"critical navbar rules embedded in delivered HTML");
 const criticalNavStyle=html.slice(html.indexOf('<style id="portfolio-nav-critical">'),html.indexOf('</style>',html.indexOf('<style id="portfolio-nav-critical">')));
-for(const rule of ['#portfolioHeader .portfolio-nav-layout','#portfolioHeader .portfolio-nav-links','#portfolioHeader .portfolio-mobile-menu.is-open','@media(max-width:1099px)'])has(criticalNavStyle,rule);
+for(const rule of ['#portfolioHeader .portfolio-nav-layout','#portfolioHeader .portfolio-nav-links','#portfolioHeader .portfolio-mobile-menu.is-open','@media(max-width:1299px)'])has(criticalNavStyle,rule);
 assert.ok(html.indexOf('id="portfolio-nav-critical"') < html.indexOf('</head>'),"critical navbar styles load before any page content");
 assert.ok(criticalNavStyle.includes('position:fixed;inset:0 0 auto;z-index:1000;'),"navbar position does not depend on Tailwind runtime");
 
@@ -255,7 +255,9 @@ has(premiumCss,'@media(prefers-reduced-motion:reduce)');
 assert.equal(occurrences(html,'WORKFLOW'),0,"no WORKFLOW badges remain on any video");
 assert.equal(occurrences(html,'./assets/videos/silo-campana-producto.mp4'),1,"first SILO ad appears in featured case");
 assert.equal(occurrences(html,'./assets/videos/silo-ugc-sin-subtitulos.mp4'),1,"second SILO ad appears in campaign gallery");
-assert.equal(occurrences(html,'./assets/images/pato-creando-logo-lima.png'),2,"new brand logo appears in navigation and hero");
+assert.equal(occurrences(html,'./assets/images/pato-creando-logo-header.svg'),1,"redesigned logo appears only in navigation");
+assert.equal(occurrences(html,'hero-brandmark'),0,"hero logo removed");
+assert.ok(fs.existsSync('assets/images/pato-creando-logo-header.svg'),"redesigned logo asset exists");
 assert.ok(fs.existsSync('assets/silo-update.css'),"SILO responsive styles exist");
 has(html,'./assets/silo-update.css');
 assert.equal(occurrences(html,'Un perfume. Otra atmósfera.'),0,"old featured concept removed");
