@@ -21,7 +21,11 @@ const server = http.createServer(async (req, res) => {
 async function test() {
   await new Promise(resolve => server.listen(0,"127.0.0.1",resolve));
   const url = "http://127.0.0.1:" + server.address().port + "/";
-  const browser = await chromium.launch({headless:true,args:["--no-sandbox"]});
+  const browser = await chromium.launch({
+    headless:true,
+    args:["--no-sandbox"],
+    ...(process.env.PLAYWRIGHT_CHROME_PATH ? {executablePath:process.env.PLAYWRIGHT_CHROME_PATH} : {})
+  });
   await fs.mkdir("artifacts", {recursive:true});
   try {
     for (const spec of [
@@ -43,8 +47,8 @@ async function test() {
       const state=await page.evaluate(() => ({
         title:document.querySelector("h1")?.innerText?.replace(/\s+/g," ").trim(),
         projects:!!document.querySelector("#projects"),
-        caseStudy:!!document.querySelector("#caseMyWay .perfume-viewer"),
-        perfumeStageCount:document.querySelectorAll("#caseMyWay .perfume-viewer-tab").length,
+        caseStudy:!!document.querySelector("#caseMyWay .umbral-showcase-reel"),
+        umbralVideoCount:document.querySelectorAll("#caseMyWay .umbral-showcase-video").length,
         packCount:document.querySelectorAll("#launchOffer .pricing-pack").length,
         ctaCount:document.querySelectorAll("#launchOffer .pricing-pack-cta").length,
         css:getComputedStyle(document.querySelector(".studio-system-dot")).backgroundColor,
@@ -151,34 +155,23 @@ async function test() {
       assert.equal(await page.locator(".editorial-project-link").count(),0,"Remove the remaining editorial gallery button");
       assert.equal(await page.locator("#projectFilters").count(),1,"Keep the gallery filters section");
       assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),0,"Requested original-reference CTA removed");
-      assert.equal(await page.locator("#caseMyWay .perfume-viewer-tab").count(),6,"UMBRAL process viewer exposes six stages");
-      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel video").count(),5,"Five UMBRAL process and final videos");
-      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel img").count(),1,"UMBRAL design anchor");
-      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel:not([hidden])").count(),1,"Exactly one active preview");
-      assert.equal(await page.locator("#umbral-tab-06").getAttribute("aria-selected"),"true","Final UMBRAL ad is shown first");
-      await page.locator("#umbral-tab-03").click();
-      assert.equal(await page.locator("#umbral-tab-03").getAttribute("aria-selected"),"true","NOIR tab becomes active");
-      assert.equal(await page.locator("#umbral-panel-03").isVisible(),true,"NOIR video becomes visible");
-      assert.equal(await page.locator("#umbral-panel-06").isVisible(),false,"Previous final video hides");
-      await page.locator("#umbral-tab-03").focus();
-      await page.keyboard.press("End");
-      assert.equal(await page.locator("#umbral-tab-06").getAttribute("aria-selected"),"true","End key returns to UMBRAL final ad");
-      assert.equal(await page.locator("#umbral-panel-06").isVisible(),true,"Final ad accessible");
-      await page.keyboard.press("Home");
-      assert.equal(await page.locator("#umbral-tab-01").getAttribute("aria-selected"),"true","Home key shows product anchor");
-      assert.equal(await page.locator("#umbral-panel-01").isVisible(),true,"Product anchor visible");
-      assert.equal(await page.locator("#umbral-tab-02").getAttribute("tabindex"),"-1","Inactive tabs removed from keyboard flow");
+      assert.equal(await page.locator("#caseMyWay .umbral-showcase-video").count(),5,"Five UMBRAL videos");
+      assert.equal(await page.locator("#caseMyWay video[controls], #caseMyWay button, #caseMyWay [role=tab]").count(),0,"UMBRAL sequence has no controls");
+      assert.equal(await page.locator("#caseMyWay .umbral-showcase-video:not([hidden])").count(),1,"Exactly one video is visible");
+      assert.equal(await page.locator("#caseMyWay [data-umbral-title]").textContent(),"Anuncio final","Final ad is shown first");
+      await page.locator("#caseMyWay .umbral-showcase-video").first().evaluate(video=>video.dispatchEvent(new Event("ended")));
+      assert.equal(await page.locator("#caseMyWay [data-umbral-title]").textContent(),"Materia en primer plano","Sequence advances after a clip ends");
+      assert.equal(await page.locator("#caseMyWay .umbral-showcase-video").nth(1).isVisible(),true,"Next clip becomes visible");
       assert.equal(await page.locator("#caseMyWay .case-study-disclaimer").count(),1,"UMBRAL fictional-project disclaimer");
-      const viewerMetrics=await page.locator("#caseMyWay .perfume-viewer").evaluate(el=>{
+      const viewerMetrics=await page.locator("#caseMyWay .umbral-showcase-reel").evaluate(el=>{
         const area=el.getBoundingClientRect();
-        const stage=el.querySelector(".perfume-viewer-stage").getBoundingClientRect();
-        const list=el.querySelector(".perfume-viewer-list");
-        return {width:area.width,stageWidth:stage.width,stageHeight:stage.height,listWidth:list.clientWidth,listScrollWidth:list.scrollWidth,orientation:list.getAttribute("aria-orientation")};
+        const screen=el.querySelector(".umbral-showcase-screen").getBoundingClientRect();
+        return {width:area.width,height:area.height,screenHeight:screen.height};
       });
-      assert.ok(viewerMetrics.width <= spec.width + 2,"Process viewer fits viewport");
-      assert.ok(viewerMetrics.stageWidth >= 300,"Preview is comfortably large");
-      assert.equal(viewerMetrics.orientation,spec.isMobile?"horizontal":"vertical","ARIA follows responsive tab layout");
-      await page.locator("#caseMyWay .perfume-viewer").screenshot({path:"artifacts/umbral-viewer-"+spec.name+".png",animations:"disabled"});
+      assert.ok(viewerMetrics.width <= spec.width + 2,"UMBRAL reel fits viewport");
+      assert.ok(viewerMetrics.height <= 560,"UMBRAL reel remains compact");
+      assert.ok(viewerMetrics.screenHeight >= 300,"Video remains large enough to see");
+      await page.locator("#caseMyWay .umbral-showcase-reel").screenshot({path:"artifacts/umbral-viewer-"+spec.name+".png",animations:"disabled"});
       assert.equal(await page.getByText("Explorar otros formatos",{exact:true}).count(),0,"Requested editorial CTA removed");
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
@@ -255,8 +248,8 @@ async function test() {
       assert.ok(cloud.nodes.every(r=>r.width>=130 && r.height>=160),"Cloud nodes have comfortable dimensions");
       await page.locator("#deliverables").screenshot({path:"artifacts/deliverables-"+spec.name+".png",animations:"disabled"});
 
-      assert.ok(state.projects && state.caseStudy,"Projects and UMBRAL process must be in DOM");
-      assert.equal(state.perfumeStageCount,6,"UMBRAL process viewer contains six stages");
+      assert.ok(state.projects && state.caseStudy,"Projects and UMBRAL sequence must be in DOM");
+      assert.equal(state.umbralVideoCount,5,"UMBRAL sequence contains five clips");
       assert.equal(state.css,"rgb(207, 230, 90)","Accent system styling must load");
       assert.equal(state.heroActionCount,0,"Requested hero CTA pair removed");
       assert.equal(state.systemAmbientCount,1,"One ambient system backdrop");

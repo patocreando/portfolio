@@ -105,31 +105,27 @@ assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
 has(html, 'media="(max-width: 639px)"');
 has(html, 'id="caseMyWay"');
-assert.equal(occurrences(html,'data-perfume-viewer'),1,'one process viewer');
-assert.equal(occurrences(html,'role="tablist" aria-label="Seis etapas del proceso de UMBRAL 01"'),1,'six-stage tablist');
-assert.equal((html.match(/class="perfume-viewer-tab(?: is-active)?"/g)||[]).length,6,'six tabs');
-assert.equal(occurrences(html,'class="perfume-viewer-panel"'),6,'six panels');
-assert.equal(occurrences(html,'class="perfume-viewer-media"'),6,'six media elements');
-assert.equal(occurrences(html,'aria-controls="umbral-panel-'),6,'ARIA binds six panels');
-assert.equal(occurrences(html.slice(html.indexOf('data-perfume-viewer'),html.indexOf('class="perfume-viewer-takeaway')),'aria-selected="true"'),1,'one selected process tab');
+assert.equal(occurrences(html,'data-umbral-reel'),1,'one automatic UMBRAL sequence');
+assert.equal(occurrences(html,'class="umbral-showcase-video'),5,'five video clips');
+assert.equal(occurrences(html,'class="umbral-showcase-video is-active"'),1,'final ad appears first');
+assert.equal(occurrences(html,'class="perfume-viewer-tab'),0,'no stage controls');
+assert.equal(occurrences(html,'<details class="perfume-viewer-takeaway'),0,'no extra accordion');
 for(const asset of ['anchor.jpg','noir.jpg','architectural.jpg','monument-trim2.jpg','final-trim2.jpg','macro.web.mp4','noir.web.mp4','light.web.mp4','monument-trim2.web.mp4','final-trim2.web.mp4']){
   assert.ok(fs.existsSync('assets/cases/umbral-01/'+asset),'UMBRAL asset present: '+asset);
 }
 has(html,'Una lámpara que no existe.');
 has(html,'La luz cambia el espacio');
-has(html,'Cada plano responde a una decisión.');
-has(html,'class="perfume-viewer-prev"');
-has(html,'class="perfume-viewer-next"');
+has(html,'Secuencia automática · sin sonido');
 has(html,'Sin copy ni subtítulos');
-has(html,'./assets/umbral-compact.css?v=20261024-1');
-has(js,'select(tabs.length-1,false)');
+has(html,'./assets/umbral-compact.css?v=20261024-2');
+has(js,'function umbralAutoSequence()');
 assert.equal(occurrences(html,'03 / PRODUCTO IA · PERFUMERÍA'),0,'old case replaced');
 assert.ok(!js.includes("pricingPackMobileLoop"), "pricing carousel should be manual");
 assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should not autoplay");
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
 has(js, 'soundToggle.addEventListener("click", toggleAudio)');
 has(js, 'button.addEventListener("keydown"');
-assert.equal(occurrences(html, 'src="./assets/site.js?v=20261023-umbral-01"'),1);
+assert.equal(occurrences(html, 'src="./assets/site.js?v=20261024-umbral-auto"'),1);
 assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
 // Compare against main as ground truth for preservation.
 try {
