@@ -2086,6 +2086,9 @@
   var list=root.querySelector(".perfume-viewer-list");
   var tabs=Array.prototype.slice.call(root.querySelectorAll(".perfume-viewer-tab"));
   var panels=Array.prototype.slice.call(root.querySelectorAll(".perfume-viewer-panel"));
+  var previous=root.querySelector(".perfume-viewer-prev");
+  var next=root.querySelector(".perfume-viewer-next");
+  var progress=root.querySelector(".perfume-viewer-progress");
   if(!list||tabs.length<2||panels.length!==tabs.length)return;
 
   function updateOrientation(){
@@ -2106,6 +2109,9 @@
     });
     var selectedVideo=panels[index].querySelector("video");
     if(selectedVideo)selectedVideo.preload="metadata"; // Playback only through native controls.
+    if(previous)previous.disabled=index===0;
+    if(next)next.disabled=index===tabs.length-1;
+    if(progress)progress.textContent=String(index+1).padStart(2,"0")+" / 06 · "+tabs[index].querySelector("small").textContent;
     if(shouldFocus){
       tabs[index].focus({preventScroll:true});
       tabs[index].scrollIntoView({block:"nearest",inline:"nearest",behavior:"auto"});
@@ -2113,7 +2119,12 @@
   }
 
   tabs.forEach(function(tab,index){
-    tab.addEventListener("click",function(){select(index,false);});
+    tab.addEventListener("click",function(){
+      select(index,false);
+      if(window.matchMedia("(max-width: 940px)").matches){
+        root.querySelector(".perfume-viewer-stage").scrollIntoView({block:"start",behavior:"auto"});
+      }
+    });
     tab.addEventListener("keydown",function(event){
       var next=index;
       if(event.key==="ArrowDown"||event.key==="ArrowRight")next=(index+1)%tabs.length;
@@ -2124,6 +2135,15 @@
       event.preventDefault();
       select(next,true);
     });
+  });
+
+  if(previous)previous.addEventListener("click",function(){
+    var index=tabs.findIndex(function(tab){return tab.getAttribute("aria-selected")==="true";});
+    select(Math.max(0,index-1),false);
+  });
+  if(next)next.addEventListener("click",function(){
+    var index=tabs.findIndex(function(tab){return tab.getAttribute("aria-selected")==="true";});
+    select(Math.min(tabs.length-1,index+1),false);
   });
 
   if(window.matchMedia){

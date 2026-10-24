@@ -73,7 +73,7 @@ assert.equal(occurrences(html,'class="cloud-node cloud-node--center"'),1,"one fi
 assert.equal((html.match(/<article class="cloud-node cloud-node--[abcd]"/g)||[]).length,4,"four production satellites");
 assert.equal(occurrences(html,'class="deliverable-arrow"'),0,"compact arrows removed");
 for(const icon of ["layout-dashboard","clapperboard","sliders-horizontal","smartphone","badge-check"])has(html,'data-lucide="'+icon+'"');
-for(const label of ["Panel previo a generar.","Generación controlada.","Ritmo, audio y control de calidad.","Lista para publicar."])has(html,label);
+for(const label of ["Panel previo a generar.","Generación controlada.","Ritmo, audio y control de calidad.","Clip 9:16 sin copy ni subtítulos."])has(html,label);
 has(fs.readFileSync("assets/lote-02.css","utf8"),"@media(prefers-reduced-motion:reduce)","reduced-motion cloud");
 
 for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 200.000",1]]) {
@@ -81,7 +81,7 @@ for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 
   assert.equal(occurrences(html, price), count, "pack price and base disclosures: "+price);
 }
 assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed");
-for(const phrase of ['1 video vertical 9:16','2 videos verticales 9:16','4 videos verticales 9:16','panel visual personalizado','Antes de generar','Digitalización y cierre en campaña','SILO, de cerca.'])has(html,phrase);
+for(const phrase of ['1 reel vertical 9:16','2 reels verticales 9:16','4 reels verticales 9:16','panel visual personalizado','Antes de generar','Digitalización y cierre en campaña','SILO, de cerca.'])has(html,phrase);
 assert.equal(occurrences(html,'data-sample-video'),0,"no duplicated samples");
 has(html,'<title>Pato Creando | Reels UGC y anuncios de producto con IA</title>');
 has(html,'<meta property="og:title" content="Pato Creando | Reels UGC y anuncios de producto con IA" />');
@@ -117,7 +117,11 @@ for(const asset of ['anchor.jpg','noir.jpg','architectural.jpg','monument-trim2.
 }
 has(html,'Una lámpara que no existe.');
 has(html,'La luz cambia el espacio');
-has(html,'No se trata de generar. Se trata de dirigir.');
+has(html,'Cada plano responde a una decisión.');
+has(html,'class="perfume-viewer-prev"');
+has(html,'class="perfume-viewer-next"');
+has(html,'Sin copy ni subtítulos');
+has(html,'./assets/umbral-compact.css?v=20261024-1');
 has(js,'select(tabs.length-1,false)');
 assert.equal(occurrences(html,'03 / PRODUCTO IA · PERFUMERÍA'),0,'old case replaced');
 assert.ok(!js.includes("pricingPackMobileLoop"), "pricing carousel should be manual");
