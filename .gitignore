@@ -1,4 +1,6 @@
 # Logs
+artifacts/
+_site/
 logs
 *.log
 npm-debug.log*

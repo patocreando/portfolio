@@ -1356,7 +1356,8 @@
         var projectType = document.getElementById("projectType").value.trim();
         var message = document.getElementById("message").value.trim();
 
-        var subject = "Consulta portfolio — " + (name || "nuevo proyecto");
+        var subjectName = name.replace(/[\r\n\t]/g, " ").replace(/\s+/g, " ").slice(0, 80);
+        var subject = "Consulta portfolio — " + (subjectName || "nuevo proyecto");
         var body =
           "Hola Ulises,\n\n" +
           "Soy " + name + ".\n" +
@@ -1446,6 +1447,8 @@
 
           fetch(formSubmitEndpoint, {
             method: "POST",
+            credentials: "omit",
+            cache: "no-store",
             headers: {
               "Content-Type": "application/json",
               "Accept": "application/json"
