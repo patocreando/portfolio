@@ -60,7 +60,7 @@ async function test() {
         archiveTotal:document.querySelectorAll("#projectGrid .project-item").length,
         archiveUGC:document.querySelectorAll('#projectGrid .project-item[data-category="ugc"]').length,
         archiveProduct:document.querySelectorAll('#projectGrid .project-item[data-category="product"]').length,
-        siloFeaturedSources:document.querySelectorAll('source[src*="silo-campana-producto.mp4"]').length,
+        siloFeaturedSources:document.querySelectorAll('source[src*="silo-campana-producto-recortado.mp4"]').length,
         siloGallerySources:document.querySelectorAll('source[src*="silo-ugc-sin-subtitulos.mp4"]').length,
         ugcPerfumeSources:document.querySelectorAll('source[src*="d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]').length,
         methodSteps:document.querySelectorAll("#method .method-brief-grid > article").length,
@@ -151,24 +151,24 @@ async function test() {
       assert.equal(await page.locator(".editorial-project-link").count(),0,"Remove the remaining editorial gallery button");
       assert.equal(await page.locator("#projectFilters").count(),1,"Keep the gallery filters section");
       assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),0,"Requested original-reference CTA removed");
-      assert.equal(await page.locator("#caseMyWay .perfume-viewer-tab").count(),5,"Process viewer exposes five selectable stages");
-      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel video").count(),3,"Original animation files and master video stay intact");
-      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel img").count(),2,"Both original visual anchors stay intact");
-      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel:not([hidden])").count(),1,"Only one preview is visible at a time");
-      assert.equal(await page.locator("#perfume-tab-01").getAttribute("aria-selected"),"true","First visual anchor is the initial preview");
-      await page.locator("#perfume-tab-03").click();
-      assert.equal(await page.locator("#perfume-tab-03").getAttribute("aria-selected"),"true","Flow tab becomes active on click");
-      assert.equal(await page.locator("#perfume-panel-03").isVisible(),true,"Flow video preview is visible");
-      assert.equal(await page.locator("#perfume-panel-01").isVisible(),false,"Old anchor preview is hidden");
-      await page.locator("#perfume-tab-03").focus();
+      assert.equal(await page.locator("#caseMyWay .perfume-viewer-tab").count(),6,"UMBRAL process viewer exposes six stages");
+      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel video").count(),5,"Five UMBRAL process and final videos");
+      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel img").count(),1,"UMBRAL design anchor");
+      assert.equal(await page.locator("#caseMyWay .perfume-viewer-panel:not([hidden])").count(),1,"Exactly one active preview");
+      assert.equal(await page.locator("#umbral-tab-06").getAttribute("aria-selected"),"true","Final UMBRAL ad is shown first");
+      await page.locator("#umbral-tab-03").click();
+      assert.equal(await page.locator("#umbral-tab-03").getAttribute("aria-selected"),"true","NOIR tab becomes active");
+      assert.equal(await page.locator("#umbral-panel-03").isVisible(),true,"NOIR video becomes visible");
+      assert.equal(await page.locator("#umbral-panel-06").isVisible(),false,"Previous final video hides");
+      await page.locator("#umbral-tab-03").focus();
       await page.keyboard.press("End");
-      assert.equal(await page.locator("#perfume-tab-05").getAttribute("aria-selected"),"true","End key selects final master");
-      assert.equal(await page.locator("#perfume-panel-05").isVisible(),true,"Final master preview is reachable");
+      assert.equal(await page.locator("#umbral-tab-06").getAttribute("aria-selected"),"true","End key returns to UMBRAL final ad");
+      assert.equal(await page.locator("#umbral-panel-06").isVisible(),true,"Final ad accessible");
       await page.keyboard.press("Home");
-      assert.equal(await page.locator("#perfume-tab-01").getAttribute("aria-selected"),"true","Home key returns to first visual anchor");
-      assert.equal(await page.locator("#perfume-panel-01").isVisible(),true,"Visual anchor returns in stage");
-      assert.equal(await page.locator("#perfume-tab-02").getAttribute("tabindex"),"-1","Inactive tabs removed from natural tab order");
-      assert.equal(await page.locator("#caseMyWay .case-study-disclaimer").count(),1,"Brand authorization note preserved");
+      assert.equal(await page.locator("#umbral-tab-01").getAttribute("aria-selected"),"true","Home key shows product anchor");
+      assert.equal(await page.locator("#umbral-panel-01").isVisible(),true,"Product anchor visible");
+      assert.equal(await page.locator("#umbral-tab-02").getAttribute("tabindex"),"-1","Inactive tabs removed from keyboard flow");
+      assert.equal(await page.locator("#caseMyWay .case-study-disclaimer").count(),1,"UMBRAL fictional-project disclaimer");
       const viewerMetrics=await page.locator("#caseMyWay .perfume-viewer").evaluate(el=>{
         const area=el.getBoundingClientRect();
         const stage=el.querySelector(".perfume-viewer-stage").getBoundingClientRect();
@@ -178,7 +178,7 @@ async function test() {
       assert.ok(viewerMetrics.width <= spec.width + 2,"Process viewer fits viewport");
       assert.ok(viewerMetrics.stageWidth >= 300,"Preview is comfortably large");
       assert.equal(viewerMetrics.orientation,spec.isMobile?"horizontal":"vertical","ARIA follows responsive tab layout");
-      await page.locator("#caseMyWay .perfume-viewer").screenshot({path:"artifacts/perfume-viewer-"+spec.name+".png",animations:"disabled"});
+      await page.locator("#caseMyWay .perfume-viewer").screenshot({path:"artifacts/umbral-viewer-"+spec.name+".png",animations:"disabled"});
       assert.equal(await page.getByText("Explorar otros formatos",{exact:true}).count(),0,"Requested editorial CTA removed");
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
