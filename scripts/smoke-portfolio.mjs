@@ -99,7 +99,7 @@ assert.equal(occurrences(html,'Perfumería de nicho'),0,"removed conceptual perf
 assert.equal(occurrences(html,'SPEC AD · FICTICIO'),0,"Unlicensed spec ads never shipped");
 assert.equal(occurrences(html,'project-item-piero'),0,"Piero media excluded from public build");
 assert.equal(occurrences(html,'editorial-case-ls2'),0,"LS2 media excluded from public build");
-has(html,'./assets/lote-02.css?v=20261020-perfume-viewer-1');
+has(html,'./assets/lote-02.css?v=20261023-umbral-01');
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
