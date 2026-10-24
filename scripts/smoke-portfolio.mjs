@@ -99,34 +99,33 @@ assert.equal(occurrences(html,'Perfumería de nicho'),0,"removed conceptual perf
 assert.equal(occurrences(html,'SPEC AD · FICTICIO'),0,"Unlicensed spec ads never shipped");
 assert.equal(occurrences(html,'project-item-piero'),0,"Piero media excluded from public build");
 assert.equal(occurrences(html,'editorial-case-ls2'),0,"LS2 media excluded from public build");
-has(html,'./assets/lote-02.css?v=20261020-perfume-viewer-1');
+has(html,'./assets/lote-02.css?v=20261023-umbral-01');
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
 has(html, 'media="(max-width: 639px)"');
 has(html, 'id="caseMyWay"');
-assert.equal(occurrences(html,'data-perfume-viewer'),1,"one interactive process viewer");
-assert.equal(occurrences(html,'role="tablist" aria-label="Cinco archivos del proceso PERFUME_01"'),1,"one accessible process tablist");
-assert.equal((html.match(/class="perfume-viewer-tab(?: is-active)?"/g)||[]).length,5,"five accessible step tabs");
-assert.equal(occurrences(html,'class="perfume-viewer-panel"'),5,"five original media panels");
-assert.equal(occurrences(html,'class="perfume-viewer-media"'),5,"five original media wrappers");
-assert.equal(occurrences(html,'class="perfume-stage-card'),0,"obsolete cards removed");
-const perfumeMarkup=html.slice(html.indexOf('data-perfume-viewer'),html.indexOf('class="perfume-viewer-takeaway'));
-assert.equal(occurrences(perfumeMarkup,'aria-selected="true"'),1,"one selected process tab");
-assert.equal(occurrences(html,'aria-controls="perfume-panel-'),5,"five tab-panel bindings");
-for(const name of ["anchor-01.jpg","omni-01.mp4","flow-01.mp4","anchor-02.jpg","perfume-concept-v2-1.mp4"])has(html,name);
-has(html,'Qué entra en el montaje final v2.1');
-has(html,'Omni 01 · 168 fotogramas completos');
-has(html,'Flow 02 · primeros 125 fotogramas');
-has(js,'function perfumeProcessViewer()');
-has(js,'video.pause()');
-has(html, 'Proyecto conceptual de perfumería.');
+assert.equal(occurrences(html,'data-perfume-viewer'),1,'one process viewer');
+assert.equal(occurrences(html,'role="tablist" aria-label="Seis etapas del proceso de UMBRAL 01"'),1,'six-stage tablist');
+assert.equal((html.match(/class="perfume-viewer-tab(?: is-active)?"/g)||[]).length,6,'six tabs');
+assert.equal(occurrences(html,'class="perfume-viewer-panel"'),6,'six panels');
+assert.equal(occurrences(html,'class="perfume-viewer-media"'),6,'six media elements');
+assert.equal(occurrences(html,'aria-controls="umbral-panel-'),6,'ARIA binds six panels');
+assert.equal(occurrences(html.slice(html.indexOf('data-perfume-viewer'),html.indexOf('class="perfume-viewer-takeaway')),'aria-selected="true"'),1,'one selected process tab');
+for(const asset of ['anchor.jpg','noir.jpg','architectural.jpg','monument.jpg','macro.web.mp4','noir.web.mp4','light.web.mp4','monument.web.mp4','final.web.mp4']){
+  assert.ok(fs.existsSync('assets/cases/umbral-01/'+asset),'UMBRAL asset present: '+asset);
+}
+has(html,'Una lámpara que no existe.');
+has(html,'La luz cambia el espacio');
+has(html,'No se trata de generar. Se trata de dirigir.');
+has(js,'select(tabs.length-1,false)');
+assert.equal(occurrences(html,'03 / PRODUCTO IA · PERFUMERÍA'),0,'old case replaced');
 assert.ok(!js.includes("pricingPackMobileLoop"), "pricing carousel should be manual");
 assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should not autoplay");
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
 has(js, 'soundToggle.addEventListener("click", toggleAudio)');
 has(js, 'button.addEventListener("keydown"');
-assert.equal(occurrences(html, 'src="./assets/site.js?v=20261020-perfume-viewer-1"'),1);
+assert.equal(occurrences(html, 'src="./assets/site.js?v=20261023-umbral-01"'),1);
 assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
 // Compare against main as ground truth for preservation.
 try {
@@ -143,7 +142,7 @@ const archivedProjects = [...html.matchAll(/<article\b[^>]*class="[^"]*\bproject
 assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,2,"two unique campaign cards");
-for (const name of ["silo-campana-producto.mp4","d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]) {
+for (const name of ["silo-campana-producto-recortado.mp4","d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]) {
   assert.equal(occurrences(html,name),1,"featured video appears only in one editorial banner: "+name);
   assert.ok(!archivedProjects.some(card=>card.includes(name)),"archive must not repeat featured video: "+name);
 }
@@ -152,8 +151,8 @@ assert.equal(occurrences(html,"Lenguaje de campaña en clave UGC."),0,"remove du
 assert.equal((html.match(/class="editorial-case(?: editorial-case--silo)?"/g)||[]).length,2,"two editorial showcases");
 has(html,'Digitalización y cierre en campaña');
 has(html,'UGC para producto');
-has(html,'03 / PRODUCTO IA · PERFUMERÍA');
-has(html,'De los archivos');
+has(html,'03 / PRODUCTO IA · DIRECCIÓN CREATIVA');
+has(html,'Una campaña que sí.');
 assert.equal(occurrences(html,'Workflow aplicado · My Way'),0,"redundant My Way project card should be removed");
 assert.equal(occurrences(html,'https://www.instagram.com/p/Dd24xgrOr5e/?hl=en'),0,"remove requested My Way original reference button");
 assert.equal(occurrences(html,'class="case-study-reference"'),0,"remove requested My Way reference CTA");
@@ -169,8 +168,8 @@ has(html,'class="service-cta service-example-link" href="#caseMyWay"');
 has(html,'Versiones de aperturas, planos y relatos');
 has(js,'document.querySelectorAll(".service-example-link[data-service-filter]")');
 
-assert.equal(occurrences(html,'perfume-concept-v2-1.mp4'),1,"perfume montage remains in process viewer only");
-assert.equal(occurrences(html,'Muestra autorizada para Shop Online Perfumería; no es una campaña publicada por la marca.'),1,"disclaimer displayed only once");
+assert.equal(occurrences(html,'final.web.mp4'),1,'UMBRAL video master appears once');
+assert.equal(occurrences(html,'UMBRAL es una lámpara ficticia.'),1,'Conceptual disclaimer appears once');
 assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow gallery tab or card");
 assert.equal(occurrences(html, 'data-filter="workflow"'),0,"only UGC and product remain");
 assert.equal(occurrences(html, 'id="system"'),1,"system presentation is standalone");
@@ -253,11 +252,11 @@ has(premiumCss,'@media(prefers-reduced-motion:reduce)');
 
 
 assert.equal(occurrences(html,'WORKFLOW'),0,"no WORKFLOW badges remain on any video");
-assert.equal(occurrences(html,'./assets/videos/silo-campana-producto.mp4'),1,"first SILO ad appears in featured case");
+assert.equal(occurrences(html,'./assets/videos/silo-campana-producto-recortado.mp4'),1,"first SILO ad appears in featured case");
 assert.equal(occurrences(html,'./assets/videos/silo-ugc-sin-subtitulos.mp4'),1,"second SILO ad appears in campaign gallery");
-assert.equal(occurrences(html,'./assets/images/pato-creando-logo-header.svg'),1,"redesigned logo appears only in navigation");
+assert.equal(occurrences(html,'./assets/images/pato-creando-ia-content-v3.png'),1,"redesigned logo appears only in navigation");
 assert.equal(occurrences(html,'hero-brandmark'),0,"hero logo removed");
-assert.ok(fs.existsSync('assets/images/pato-creando-logo-header.svg'),"redesigned logo asset exists");
+assert.ok(fs.existsSync('assets/images/pato-creando-ia-content-v3.png'),"redesigned logo asset exists");
 assert.ok(fs.existsSync('assets/silo-update.css'),"SILO responsive styles exist");
 has(html,'./assets/silo-update.css');
 assert.equal(occurrences(html,'Un perfume. Otra atmósfera.'),0,"old featured concept removed");

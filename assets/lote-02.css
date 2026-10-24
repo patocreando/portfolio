@@ -95,7 +95,7 @@
   #deliverables .cloud-node--center{transform:none}
 }
 
-/* PERFUME_01 — cinematic single-stage viewer, compact tabs and original media. */
+/* Visor de proceso reutilizado en UMBRAL / 01 — pestañas accesibles y medios locales. */
 #caseMyWay .perfume-process-head{margin-bottom:clamp(24px,3vw,36px)}
 #caseMyWay .perfume-process-intro{max-width:730px;margin-top:14px;font-size:clamp(14px,1.3vw,16px)}
 #caseMyWay .perfume-process-bar{margin-bottom:17px}
@@ -143,7 +143,7 @@
  #caseMyWay .perfume-viewer-preview{height:clamp(340px,55vw,470px)}
  #caseMyWay .perfume-viewer-list{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,46vw);grid-template-columns:none;gap:10px;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;scrollbar-width:thin;padding:3px 3px 14px}
  #caseMyWay .perfume-viewer-tab{scroll-snap-align:start;min-height:99px}
- #caseMyWay .perfume-viewer-tip::after{content:" Deslizá para ver las cinco etapas."}
+ #caseMyWay .perfume-viewer-tip::after{content:" Deslizá para ver las seis etapas."}
 }
 @media(max-width:580px){
  #caseMyWay .perfume-process-head{margin-bottom:24px}
@@ -156,3 +156,27 @@
  #caseMyWay .perfume-viewer-takeaway-tags{min-width:0}
 }
 @media(prefers-reduced-motion:reduce){#caseMyWay .perfume-viewer-tab{transition:none}}
+ 
+
+/* UMBRAL 01 — acabado editorial del visor; no altera otras secciones. */
+#caseMyWay.umbral-case{position:relative;isolation:isolate}
+#caseMyWay.umbral-case .perfume-process-head{align-items:end}
+#caseMyWay.umbral-case .perfume-process-bar{border-color:rgba(207,230,90,.22)}
+#caseMyWay.umbral-case .perfume-process-bar i{color:#cfe65a;font-style:normal;margin:0 8px}
+#caseMyWay.umbral-case .perfume-viewer-stage{background:radial-gradient(ellipse at 55% 38%,rgba(207,230,90,.095),transparent 68%),#080b0d}
+#caseMyWay.umbral-case .perfume-viewer-preview{height:clamp(390px,42vw,530px);background:radial-gradient(circle at 50% 45%,rgba(202,177,103,.065),transparent 55%),#080b0d}
+#caseMyWay.umbral-case .perfume-viewer-media img,#caseMyWay.umbral-case .perfume-viewer-media video{box-shadow:0 20px 55px rgba(0,0,0,.32)}
+#caseMyWay.umbral-case .perfume-viewer-tab{min-height:72px;padding:10px 14px;gap:12px}
+#caseMyWay.umbral-case .perfume-viewer-tab-text{gap:2px}
+#caseMyWay.umbral-case .perfume-viewer-tab-text strong{font-size:clamp(13px,1.18vw,16px)}
+#caseMyWay.umbral-case .perfume-viewer-tab-num{width:34px;height:34px}
+#caseMyWay.umbral-case .perfume-viewer-meta{white-space:normal}
+#caseMyWay.umbral-case .perfume-viewer-takeaway{margin-top:21px}
+#caseMyWay.umbral-case .umbral-case-end{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:20px;flex-wrap:wrap}
+#caseMyWay.umbral-case .umbral-case-end .case-study-disclaimer{margin:0;flex:1 1 400px}
+#caseMyWay.umbral-case .umbral-case-cta{display:inline-flex;align-items:center;justify-content:center;gap:14px;min-height:44px;flex-shrink:0;padding:0 18px;border:1px solid rgba(207,230,90,.42);border-radius:9px;background:rgba(207,230,90,.10);color:#e5f59b;font-size:13px;font-weight:740;text-decoration:none;transition:background .18s ease,border-color .18s ease}
+#caseMyWay.umbral-case .umbral-case-cta:hover{background:rgba(207,230,90,.18);border-color:#cfe65a}
+#caseMyWay.umbral-case .umbral-case-cta:focus-visible{outline:2px solid #cfe65a;outline-offset:3px}
+@media(max-width:940px){#caseMyWay.umbral-case .perfume-viewer-preview{height:clamp(350px,60vw,490px)}#caseMyWay.umbral-case .perfume-viewer-tab{min-height:84px}}
+@media(max-width:580px){#caseMyWay.umbral-case .perfume-viewer-preview{height:clamp(320px,95vw,400px)}#caseMyWay.umbral-case .perfume-viewer-tab{min-height:87px}#caseMyWay.umbral-case .perfume-viewer-tip::after{content:" Deslizá para recorrer las seis etapas."}#caseMyWay.umbral-case .umbral-case-cta{width:100%}}
+@media(prefers-reduced-motion:reduce){#caseMyWay.umbral-case .umbral-case-cta{transition:none}}
