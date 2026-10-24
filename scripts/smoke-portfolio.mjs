@@ -112,7 +112,7 @@ assert.equal(occurrences(html,'class="perfume-viewer-panel"'),6,'six panels');
 assert.equal(occurrences(html,'class="perfume-viewer-media"'),6,'six media elements');
 assert.equal(occurrences(html,'aria-controls="umbral-panel-'),6,'ARIA binds six panels');
 assert.equal(occurrences(html.slice(html.indexOf('data-perfume-viewer'),html.indexOf('class="perfume-viewer-takeaway')),'aria-selected="true"'),1,'one selected process tab');
-for(const asset of ['anchor.jpg','noir.jpg','architectural.jpg','monument.jpg','macro.web.mp4','noir.web.mp4','light.web.mp4','monument.web.mp4','final.web.mp4']){
+for(const asset of ['anchor.jpg','noir.jpg','architectural.jpg','monument-trim2.jpg','final-trim2.jpg','macro.web.mp4','noir.web.mp4','light.web.mp4','monument-trim2.web.mp4','final-trim2.web.mp4']){
   assert.ok(fs.existsSync('assets/cases/umbral-01/'+asset),'UMBRAL asset present: '+asset);
 }
 has(html,'Una lámpara que no existe.');
@@ -168,7 +168,8 @@ has(html,'class="service-cta service-example-link" href="#caseMyWay"');
 has(html,'Versiones de aperturas, planos y relatos');
 has(js,'document.querySelectorAll(".service-example-link[data-service-filter]")');
 
-assert.equal(occurrences(html,'final.web.mp4'),1,'UMBRAL video master appears once');
+assert.equal(occurrences(html,'final-trim2.web.mp4'),1,'Trimmed UMBRAL video master appears once');
+assert.equal(occurrences(html,'monument-trim2.web.mp4'),1,'Trimmed UMBRAL hero appears once');
 assert.equal(occurrences(html,'UMBRAL es una lámpara ficticia.'),1,'Conceptual disclaimer appears once');
 assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow gallery tab or card");
 assert.equal(occurrences(html, 'data-filter="workflow"'),0,"only UGC and product remain");
@@ -254,9 +255,9 @@ has(premiumCss,'@media(prefers-reduced-motion:reduce)');
 assert.equal(occurrences(html,'WORKFLOW'),0,"no WORKFLOW badges remain on any video");
 assert.equal(occurrences(html,'./assets/videos/silo-campana-producto-recortado.mp4'),1,"first SILO ad appears in featured case");
 assert.equal(occurrences(html,'./assets/videos/silo-ugc-sin-subtitulos.mp4'),1,"second SILO ad appears in campaign gallery");
-assert.equal(occurrences(html,'./assets/images/pato-creando-ia-content-v3.png'),1,"redesigned logo appears only in navigation");
+assert.equal(occurrences(html,'./assets/images/pato-creando-ia-content-v4.png'),1,"redesigned logo appears only in navigation");
 assert.equal(occurrences(html,'hero-brandmark'),0,"hero logo removed");
-assert.ok(fs.existsSync('assets/images/pato-creando-ia-content-v3.png'),"redesigned logo asset exists");
+assert.ok(fs.existsSync('assets/images/pato-creando-ia-content-v4.png'),"redesigned logo asset exists");
 assert.ok(fs.existsSync('assets/silo-update.css'),"SILO responsive styles exist");
 has(html,'./assets/silo-update.css');
 assert.equal(occurrences(html,'Un perfume. Otra atmósfera.'),0,"old featured concept removed");
