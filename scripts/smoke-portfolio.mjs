@@ -111,7 +111,7 @@ assert.equal((html.match(/class="perfume-viewer-tab(?: is-active)?"/g)||[]).leng
 assert.equal(occurrences(html,'class="perfume-viewer-panel"'),6,'six panels');
 assert.equal(occurrences(html,'class="perfume-viewer-media"'),6,'six media elements');
 assert.equal(occurrences(html,'aria-controls="umbral-panel-'),6,'ARIA binds six panels');
-assert.equal(occurrences(html,'aria-selected="true"'),1,'one selected tab');
+assert.equal(occurrences(html.slice(html.indexOf('data-perfume-viewer'),html.indexOf('class="perfume-viewer-takeaway')),'aria-selected="true"'),1,'one selected process tab');
 for(const asset of ['anchor.jpg','noir.jpg','architectural.jpg','monument.jpg','macro.web.mp4','noir.web.mp4','light.web.mp4','monument.web.mp4','final.web.mp4']){
   assert.ok(fs.existsSync('assets/cases/umbral-01/'+asset),'UMBRAL asset present: '+asset);
 }
