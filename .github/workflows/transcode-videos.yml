@@ -1,11 +1,6 @@
 name: Transcode videos for mobile compatibility
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/transcode-videos.yml
   workflow_dispatch:
 
 permissions:
@@ -44,6 +39,7 @@ jobs:
             ffmpeg -y \
               -i "$file" \
               -map 0:v:0 \
+              -map 0:a? \
               -vf "scale=720:1280:force_original_aspect_ratio=decrease:force_divisible_by=2,fps=30,format=yuv420p" \
               -c:v libx264 \
               -profile:v baseline \
@@ -53,7 +49,8 @@ jobs:
               -maxrate 3500k \
               -bufsize 7000k \
               -movflags +faststart \
-              -an \
+              -c:a aac \
+              -b:a 128k \
               "$out"
 
             mv "$out" "$file"

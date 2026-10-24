@@ -1,11 +1,6 @@
 name: Fast mobile video transcode
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/transcode-videos-fast.yml
   workflow_dispatch:
 
 permissions:
@@ -52,6 +47,7 @@ jobs:
             "$FFMPEG_BIN" -y \
               -i "$file" \
               -map 0:v:0 \
+              -map 0:a? \
               -vf "scale='min(720,iw)':-2:force_original_aspect_ratio=decrease,fps=30,format=yuv420p" \
               -c:v libx264 \
               -profile:v baseline \
@@ -64,7 +60,8 @@ jobs:
               -keyint_min 30 \
               -sc_threshold 0 \
               -movflags +faststart \
-              -an \
+              -c:a aac \
+              -b:a 128k \
               "$out"
 
             mv "$out" "$file"
