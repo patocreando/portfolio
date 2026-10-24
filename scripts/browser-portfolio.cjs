@@ -255,8 +255,8 @@ async function test() {
       assert.ok(cloud.nodes.every(r=>r.width>=130 && r.height>=160),"Cloud nodes have comfortable dimensions");
       await page.locator("#deliverables").screenshot({path:"artifacts/deliverables-"+spec.name+".png",animations:"disabled"});
 
-      assert.ok(state.projects && state.caseStudy,"Projects and PERFUME_01 process track must be in DOM");
-      assert.equal(state.perfumeStageCount,5,"PERFUME_01 process board contains five stages");
+      assert.ok(state.projects && state.caseStudy,"Projects and UMBRAL process must be in DOM");
+      assert.equal(state.perfumeStageCount,6,"UMBRAL process viewer contains six stages");
       assert.equal(state.css,"rgb(207, 230, 90)","Accent system styling must load");
       assert.equal(state.heroActionCount,0,"Requested hero CTA pair removed");
       assert.equal(state.systemAmbientCount,1,"One ambient system backdrop");
