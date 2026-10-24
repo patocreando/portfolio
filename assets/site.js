@@ -2078,7 +2078,7 @@
   });
 })();
 
-/* PERFUME_01 — accessible tabs, original assets and paused inactive videos. */
+/* UMBRAL / 01 — visor accesible, medios reales y pausa de videos inactivos. */
 (function perfumeProcessViewer(){
   "use strict";
   var root=document.querySelector("#caseMyWay [data-perfume-viewer]");
@@ -2086,7 +2086,7 @@
   var list=root.querySelector(".perfume-viewer-list");
   var tabs=Array.prototype.slice.call(root.querySelectorAll(".perfume-viewer-tab"));
   var panels=Array.prototype.slice.call(root.querySelectorAll(".perfume-viewer-panel"));
-  if(!list||tabs.length!==5||panels.length!==tabs.length)return;
+  if(!list||tabs.length<2||panels.length!==tabs.length)return;
 
   function updateOrientation(){
     list.setAttribute("aria-orientation",window.matchMedia("(max-width: 940px)").matches?"horizontal":"vertical");
@@ -2135,5 +2135,5 @@
   document.addEventListener("visibilitychange",function(){
     if(document.hidden)root.querySelectorAll("video").forEach(function(video){video.pause();});
   });
-  select(0,false);
+  select(tabs.length-1,false); // Mostrar el anuncio final primero; proceso a un clic.
 })();
