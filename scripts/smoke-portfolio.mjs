@@ -142,15 +142,18 @@ const archivedProjects = [...html.matchAll(/<article\b[^>]*class="[^"]*\bproject
 assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,2,"two unique campaign cards");
-for (const name of ["silo-campana-producto-recortado.mp4","d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]) {
+for (const name of ["silo-campana-producto-recortado.mp4","club-del-coctel.mp4"]) {
   assert.equal(occurrences(html,name),1,"featured video appears only in one editorial banner: "+name);
   assert.ok(!archivedProjects.some(card=>card.includes(name)),"archive must not repeat featured video: "+name);
 }
+assert.ok(fs.existsSync("assets/videos/club-del-coctel.mp4"), "Club del Cóctel reel asset exists");
+assert.ok(fs.statSync("assets/videos/club-del-coctel.mp4").size > 1_000_000, "Club del Cóctel video is not an empty placeholder");
+assert.ok(fs.existsSync("assets/images/club-del-coctel.jpg"), "Club del Cóctel poster exists");
 assert.equal(occurrences(html,"Perfume real llevado a una estética cinematográfica."),0,"remove duplicate Perfumería IA copy");
 assert.equal(occurrences(html,"Lenguaje de campaña en clave UGC."),0,"remove duplicate UGC perfume copy");
 assert.equal((html.match(/class="editorial-case(?: editorial-case--silo)?"/g)||[]).length,2,"two editorial showcases");
 has(html,'Digitalización y cierre en campaña');
-has(html,'UGC para producto');
+has(html,'UGC para cliente · Club del Cóctel');
 has(html,'03 / PRODUCTO IA · DIRECCIÓN CREATIVA');
 has(html,'Una campaña que sí.');
 assert.equal(occurrences(html,'Workflow aplicado · My Way'),0,"redundant My Way project card should be removed");
@@ -183,7 +186,7 @@ assert.equal(occurrences(html,'social-proof'),0,"no social proof placeholders");
 
 has(html,'id="projectFilters"');
 has(html,'aria-labelledby="siloCaseTitle"');
-has(html,'aria-labelledby="ugcCaseTitle"');
+has(html,'aria-labelledby="clubCaseTitle"');
 has(premiumCss,'.editorial-showcase');
 has(premiumCss,'.hero-edition-label');
 has(premiumJs,'IntersectionObserver');
