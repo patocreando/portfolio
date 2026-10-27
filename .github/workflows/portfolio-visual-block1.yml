@@ -1,0 +1,48 @@
+name: Portfolio visual Block 1 QA
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  visual-block1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Verify social preview and video accessible names
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const assert = require('node:assert/strict');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const image = 'assets/images/pato-creando-ia-content-v4.png';
+          const url = 'https://patocreando.github.io/portfolio/' + image;
+          assert.ok(html.includes('<meta property="og:image" content="' + url + '" />'));
+          assert.ok(html.includes('<meta name="twitter:image" content="' + url + '" />'));
+          assert.ok(html.includes('<meta name="twitter:card" content="summary_large_image" />'));
+          assert.ok(html.includes('<meta property="og:image:alt" content='));
+          assert.ok(html.includes('<meta name="twitter:image:alt" content='));
+          const png = fs.readFileSync(image);
+          assert.deepEqual([...png.subarray(0,8)], [137,80,78,71,13,10,26,10]);
+          assert.equal(png.readUInt32BE(16),1550);
+          assert.equal(png.readUInt32BE(20),600);
+          assert.ok(png.length < 100000);
+          const hero = html.match(/<video[^>]*class="hero-video"[^>]*>/);
+          assert.ok(hero && hero[0].includes('aria-label="'), 'Hero video accessible name');
+          for (const name of ['ugc-beauty.mp4','ugc-fashion.mp4','hyperreal-portrait.mp4']) {
+            const idx = html.indexOf('<source src="./assets/videos/' + name + '"');
+            assert.ok(idx >= 0, 'Video source retained: ' + name);
+            const opening = html.lastIndexOf('<video',idx);
+            assert.ok(opening > html.lastIndexOf('</video>',idx));
+            assert.ok(html.slice(opening,idx).includes('aria-label="'), 'Video accessible name: ' + name);
+          }
+          console.log('Visual Block 1: preview image, metadata and video labels OK.');
+          NODE
