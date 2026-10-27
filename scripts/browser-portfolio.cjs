@@ -141,7 +141,7 @@ async function test() {
       }
       await page.locator("#portfolioHeader").screenshot({path:"artifacts/nav-"+spec.name+".png",animations:"disabled"});
 
-      assert.equal(await page.locator(".editorial-play-control").count(),2,"Both editorial cases have explicit player controls");
+      assert.equal(await page.locator(".editorial-play-control, .content-audio-toggle").count(),0,"Video controls stay off-screen");
       assert.equal(state.clippedDecisionLabels,0,"Case decision labels must fit available grid columns");
       assert.equal(state.premiumCaseCount,2,"Two new curated case chapters and My Way must render");
       assert.equal(state.archiveTotal,4,"Archive contains four non-duplicated projects");
@@ -316,14 +316,9 @@ async function test() {
         assert.ok(!(await page.locator("#mobileMenu").evaluate(el=>el.classList.contains("is-open"))),"Menu closes after navigation");
 
       }
-      const playButton=page.locator(".editorial-play-control").first();
-      await playButton.click();
-      const videoIsMuted=await playButton.evaluate(button=>button.parentElement.querySelector("video").muted);
-      assert.ok(videoIsMuted,"Manual preview must not enable audio");
-      const originalAudioButton=page.locator(".editorial-audio-toggle").first();
-      await originalAudioButton.click();
-      const originalAudioEnabled=await originalAudioButton.evaluate(button=>!button.parentElement.querySelector("video").muted);
-      assert.ok(originalAudioEnabled,"Featured reels can play with original audio after an explicit click");
+      const featuredVideo=page.locator("video[data-editorial-reel]").first();
+      const audioInstruction=await featuredVideo.getAttribute("aria-label");
+      assert.ok(audioInstruction.includes("escuchar el audio original"),"Video remains directly operable without on-screen buttons");
       await page.locator('[data-filter="ugc"]').click();
       assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),2,"UGC filter displays the two unique cards");
       await page.locator('[data-filter="product"]').click();

@@ -1,75 +1,87 @@
-/* LAB 02. Editorial and project reels start muted and expose explicit original-audio controls. */
+/* Content reels start muted. Click/tap a video to play its original audio; click again to pause. */
 (function () {
   "use strict";
-  var reels=Array.prototype.slice.call(document.querySelectorAll("video[data-editorial-reel], video.project-video"));
-  if(!reels.length) return;
+  var videos=Array.prototype.slice.call(document.querySelectorAll("video[data-editorial-reel], video.project-video, video.hero-video, video.umbral-showcase-video"));
+  if(!videos.length) return;
   var reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   var visible=new WeakMap();
   function pause(video) { try {video.pause();} catch(error) {} }
-  function updateAudioButton(button,video) {
-    var active=video.dataset.userUnmuted==="true"&&!video.muted&&video.volume>0;
-    var label=button.querySelector("[data-audio-label]");
-    button.classList.toggle("is-audible",active);
-    button.setAttribute("aria-pressed",String(active));
-    button.setAttribute("aria-label",active?"Silenciar audio original":"Escuchar audio original");
-    if(label) label.textContent=active?"Silenciar":"Audio original";
+  function setMuted(video,muted) {
+    var shouldMute=muted||video.dataset.audioAvailable!=="true";
+    video.dataset.userUnmuted=String(!shouldMute);
+    video.muted=shouldMute;
+    video.defaultMuted=shouldMute;
+    video.volume=shouldMute?0:1;
+    if(shouldMute) video.setAttribute("muted","");
+    else video.removeAttribute("muted");
   }
-  function addAudioButton(video) {
-    var host=video.closest(".editorial-media, .phone-screen, .clean-media-frame");
-    if(!host||host.querySelector(":scope > .content-audio-toggle")) return;
-    if(video.dataset.audioAvailable==="false") return;
-    var button=document.createElement("button");
-    button.type="button";
-    button.className="content-audio-toggle"+(video.hasAttribute("data-editorial-reel")?" editorial-audio-toggle":"");
-    button.innerHTML='<span class="content-audio-icon" aria-hidden="true">♪</span><span data-audio-label>Audio original</span>';
-    button.addEventListener("click",function(event){
-      event.preventDefault();
-      event.stopPropagation();
-      var enable=video.dataset.userUnmuted!=="true"||video.muted;
-      video.dataset.userUnmuted=String(enable);
-      video.defaultMuted=!enable;
-      video.muted=!enable;
-      video.volume=enable?1:0;
-      if(enable) video.removeAttribute("muted");
-      else video.setAttribute("muted","");
-      updateAudioButton(button,video);
-      if(enable) play(video,true);
+  function stopOthers(active) {
+    videos.forEach(function(video){
+      if(video===active)return;
+      video.dataset.userPaused="true";
+      setMuted(video,true);
+      pause(video);
     });
-    video.addEventListener("volumechange",function(){updateAudioButton(button,video);});
-    host.appendChild(button);
-    updateAudioButton(button,video);
   }
   function play(video,manual) {
+    if(!manual&&video.dataset.userPaused==="true")return;
     if(!manual && (document.hidden||reduced.matches||!visible.get(video))) return;
     if(video.preload==="none") video.preload="metadata";
-    var keepAudio=video.dataset.userUnmuted==="true";
-    video.muted=!keepAudio;
-    video.defaultMuted=!keepAudio;
-    video.volume=keepAudio?1:0;
+    var audible=video.dataset.userUnmuted==="true";
+    setMuted(video,!audible);
     var promise; try {promise=video.play();} catch(error) {}
-    if(promise && typeof promise.catch==="function") promise.catch(function(){});
+    if(promise && typeof promise.catch==="function") promise.catch(function(){
+      setMuted(video,true);
+      if(window.__PATO_SOUND_ACTIVE_VIDEO__===video) window.__PATO_SOUND_ACTIVE_VIDEO__=null;
+    });
   }
-  reels.forEach(function(video) {
-    addAudioButton(video);
-    var button=video.hasAttribute("data-editorial-reel")&&video.parentElement && video.parentElement.querySelector(".editorial-play-control");
-    if(!button) return;
-    var originalName=video.getAttribute("aria-label")||"pieza";
-    function sync() {
-      var running=!video.paused && !video.ended;
-      var label=button.querySelector(".editorial-play-label");
-      var symbol=button.querySelector(".editorial-play-symbol");
-      if(label) label.textContent=running?"Pausar":"Reproducir";
-      if(symbol) symbol.textContent=running?"Ⅱ":"▶";
-      button.setAttribute("aria-pressed",String(running));
-      button.setAttribute("aria-label",(running?"Pausar ":"Reproducir ")+originalName);
+  function activate(video,event) {
+    if(event){event.preventDefault();event.stopPropagation();}
+    var alreadyActive=!video.paused&&!video.ended&&video.dataset.userPaused!=="true";
+    if(alreadyActive){
+      video.dataset.userPaused="true";
+      pause(video);
+      setMuted(video,true);
+      if(window.__PATO_SOUND_ACTIVE_VIDEO__===video) window.__PATO_SOUND_ACTIVE_VIDEO__=null;
+      return;
     }
-    button.addEventListener("click",function(){if(video.paused) play(video,true);else pause(video);});
-    video.addEventListener("playing",sync);
-    video.addEventListener("pause",sync);
-    video.addEventListener("ended",sync);
-    video.addEventListener("error",sync);
-    sync();
+    stopOthers(video);
+    video.dataset.userPaused="false";
+    setMuted(video,video.dataset.audioAvailable!=="true");
+    window.__PATO_SOUND_ACTIVE_VIDEO__=video;
+    play(video,true);
+  }
+  function stopAudioOutsideViewport() {
+    var active=window.__PATO_SOUND_ACTIVE_VIDEO__;
+    if(!active)return;
+    var rect=active.getBoundingClientRect();
+    var visibleHeight=Math.max(0,Math.min(rect.bottom,window.innerHeight)-Math.max(rect.top,0));
+    if(visibleHeight/Math.max(rect.height,1)<.18){
+      active.dataset.userPaused="true";
+      setMuted(active,true);
+      pause(active);
+      window.__PATO_SOUND_ACTIVE_VIDEO__=null;
+    }
+  }
+  window.__PATO_ACTIVATE_VIDEO_AUDIO__=activate;
+  videos.forEach(function(video){
+    video.tabIndex=0;
+    video.setAttribute("aria-keyshortcuts","Enter Space");
+    var label=video.getAttribute("aria-label")||"Video";
+    var instruction=video.dataset.audioAvailable==="true"
+      ?"Toca o presiona Enter para escuchar el audio original; vuelve a tocar para pausar."
+      :"Toca o presiona Enter para reproducir o pausar.";
+    video.setAttribute("aria-label",label+". "+instruction);
+    video.addEventListener("click",function(event){activate(video,event);});
+    video.addEventListener("keydown",function(event){
+      if(event.key==="Enter"||event.key===" ")activate(video,event);
+    });
+    video.addEventListener("pointerenter",function(){
+      var active=window.__PATO_SOUND_ACTIVE_VIDEO__;
+      if(active&&active!==video){active.dataset.userPaused="true";setMuted(active,true);pause(active);window.__PATO_SOUND_ACTIVE_VIDEO__=null;}
+    });
   });
+  var reels=videos.filter(function(video){return video.hasAttribute("data-editorial-reel");});
   if("IntersectionObserver" in window) {
     var observer=new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
@@ -80,14 +92,16 @@
     },{rootMargin:"120px 0px 120px 0px",threshold:[0,.22,.5]});
     reels.forEach(function(video){observer.observe(video);});
   } else {
-    reels.forEach(function(video){visible.set(video,true);});
-    reels.forEach(play);
+    reels.forEach(function(video){visible.set(video,true);play(video);});
   }
   document.addEventListener("visibilitychange",function(){
-    reels.forEach(function(video){if(document.hidden) pause(video); else play(video);});
+    videos.forEach(function(video){if(document.hidden){setMuted(video,true);pause(video);}});
+    if(document.hidden)window.__PATO_SOUND_ACTIVE_VIDEO__=null;
   });
+  window.addEventListener("scroll",stopAudioOutsideViewport,{passive:true});
+  window.addEventListener("resize",stopAudioOutsideViewport,{passive:true});
   if(typeof reduced.addEventListener==="function")
-    reduced.addEventListener("change",function(){reels.forEach(function(video){if(reduced.matches)pause(video); else play(video);});});
+    reduced.addEventListener("change",function(){reels.forEach(function(video){if(reduced.matches){setMuted(video,true);pause(video);} else play(video);});});
 })();
 
 

@@ -59,27 +59,7 @@
       }
 
       function ensurePlayButton(video) {
-        var shell = shellFor(video);
-        if (!shell) return null;
-
-        var button = shell.querySelector(".video-tap-fallback");
-        if (!button) {
-          button = document.createElement("button");
-          button.type = "button";
-          button.className = "video-tap-fallback is-visible";
-          button.setAttribute("aria-label", "Reproducir video");
-          button.innerHTML =
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">' +
-            '<path d="M8 5v14l11-7z"></path></svg>' +
-            '<span>Tocar para reproducir</span>';
-          shell.appendChild(button);
-        } else {
-          button.classList.add("is-visible");
-          var label = button.querySelector("span");
-          if (label) label.textContent = "Tocar para reproducir";
-        }
-
-        return button;
+        return null;
       }
 
       function prepare(video) {
@@ -99,13 +79,8 @@
         video.preload = "metadata";
         video.disablePictureInPicture = true;
 
-        if (video.classList.contains("hero-video")) {
-          video.controls = false;
-          video.removeAttribute("controls");
-        } else {
-          video.controls = true;
-          video.setAttribute("controls", "");
-        }
+        video.controls = false;
+        video.removeAttribute("controls");
 
         if (src) {
           video.src = src;
@@ -372,29 +347,7 @@
       }
 
       function ensureButton(video) {
-        var shell = video.closest(".phone-screen, .clean-media-frame, .hero-phone-screen");
-        if (!shell) return null;
-
-        var existing = shell.querySelector(".video-tap-fallback");
-        if (existing) return existing;
-
-        var button = document.createElement("button");
-        button.type = "button";
-        button.className = inAppBrowser ? "video-tap-fallback is-visible" : "video-tap-fallback";
-        button.setAttribute("aria-label", "Reproducir video");
-        button.innerHTML =
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">' +
-          '<path d="M8 5v14l11-7z"></path></svg>' +
-          '<span>Reproducir</span>';
-
-        button.addEventListener("click", function (event) {
-          event.preventDefault();
-          event.stopPropagation();
-          activate(video, true);
-        });
-
-        shell.appendChild(button);
-        return button;
+        return null;
       }
 
       function pause(video) {
@@ -405,6 +358,7 @@
 
       function play(video, userGesture) {
         if (!video) return;
+        if (video.dataset.userPaused === "true") return;
 
         prepare(video);
         video.preload = "auto";
@@ -2090,28 +2044,17 @@
   var count=root.querySelector("[data-umbral-count]");
   var title=root.querySelector("[data-umbral-title]");
   var progress=root.querySelector("[data-umbral-progress]");
-  var soundButton=root.querySelector("[data-umbral-audio]");
   if(videos.length<2||!count||!title||!progress)return;
   var reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   var visible=false;
   var current=0;
-  var audioEnabled=false;
 
   function canPlay(){return visible&&!document.hidden&&!reduced.matches;}
-  function syncAudioButton(){
-    if(!soundButton)return;
-    var hasAudio=videos[current].dataset.audioAvailable==="true";
-    var label=soundButton.querySelector("[data-umbral-audio-label]");
-    soundButton.hidden=!hasAudio;
-    soundButton.setAttribute("aria-pressed",String(audioEnabled&&hasAudio));
-    soundButton.setAttribute("aria-label",audioEnabled&&hasAudio?"Silenciar audio original del anuncio final":"Escuchar audio original del anuncio final");
-    if(label)label.textContent=audioEnabled&&hasAudio?"Silenciar":"Audio original";
-  }
   function playActive(){
     if(!canPlay())return;
     var video=videos[current];
-    var keepAudio=audioEnabled&&video.dataset.audioAvailable==="true";
-    video.dataset.userUnmuted=String(keepAudio);
+    if(video.dataset.userPaused==="true")return;
+    var keepAudio=video.dataset.userUnmuted==="true"&&video.dataset.audioAvailable==="true";
     video.muted=!keepAudio;
     video.defaultMuted=!keepAudio;
     video.volume=keepAudio?1:0;
@@ -2135,18 +2078,8 @@
     count.textContent=String(current+1).padStart(2,"0")+" / "+String(videos.length).padStart(2,"0");
     title.textContent=selected.dataset.title;
     progress.style.transform="scaleX(0)";
-    syncAudioButton();
     playActive();
   }
-
-  if(soundButton)soundButton.addEventListener("click",function(event){
-    event.preventDefault();
-    event.stopPropagation();
-    if(videos[current].dataset.audioAvailable!=="true")return;
-    audioEnabled=!audioEnabled;
-    syncAudioButton();
-    playActive();
-  });
 
   videos.forEach(function(video,index){
     video.addEventListener("ended",function(){

@@ -44,23 +44,9 @@
   height:100%;
   object-fit:contain;
   background:transparent;
-  pointer-events:none;
+  pointer-events:auto;
 }
 #caseMyWay .umbral-showcase-video[hidden]{display:none!important}
-#caseMyWay .umbral-showcase-stamp{
-  position:absolute;
-  top:14px;
-  left:14px;
-  z-index:1;
-  padding:7px 9px;
-  border:1px solid rgba(207,230,90,.28);
-  border-radius:5px;
-  background:rgba(7,10,10,.75);
-  color:#CFE65A;
-  font-size:9px;
-  font-weight:750;
-  letter-spacing:.13em;
-}
 #caseMyWay .umbral-showcase-info{
   display:grid;
   grid-template-columns:auto minmax(0,1fr) auto;
