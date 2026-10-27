@@ -1,21 +1,57 @@
-/* LAB 02. Only editorial case videos: defer downloads and play when visible.
-   Audio is never enabled automatically. Does not touch the hero or project players. */
+/* LAB 02. Editorial and project reels start muted and expose explicit original-audio controls. */
 (function () {
   "use strict";
-  var reels=Array.prototype.slice.call(document.querySelectorAll("video[data-editorial-reel]"));
+  var reels=Array.prototype.slice.call(document.querySelectorAll("video[data-editorial-reel], video.project-video"));
   if(!reels.length) return;
   var reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   var visible=new WeakMap();
   function pause(video) { try {video.pause();} catch(error) {} }
+  function updateAudioButton(button,video) {
+    var active=video.dataset.userUnmuted==="true"&&!video.muted&&video.volume>0;
+    var label=button.querySelector("[data-audio-label]");
+    button.classList.toggle("is-audible",active);
+    button.setAttribute("aria-pressed",String(active));
+    button.setAttribute("aria-label",active?"Silenciar audio original":"Escuchar audio original");
+    if(label) label.textContent=active?"Silenciar":"Audio original";
+  }
+  function addAudioButton(video) {
+    var host=video.closest(".editorial-media, .phone-screen, .clean-media-frame");
+    if(!host||host.querySelector(":scope > .content-audio-toggle")) return;
+    if(video.dataset.audioAvailable==="false") return;
+    var button=document.createElement("button");
+    button.type="button";
+    button.className="content-audio-toggle"+(video.hasAttribute("data-editorial-reel")?" editorial-audio-toggle":"");
+    button.innerHTML='<span class="content-audio-icon" aria-hidden="true">♪</span><span data-audio-label>Audio original</span>';
+    button.addEventListener("click",function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      var enable=video.dataset.userUnmuted!=="true"||video.muted;
+      video.dataset.userUnmuted=String(enable);
+      video.defaultMuted=!enable;
+      video.muted=!enable;
+      video.volume=enable?1:0;
+      if(enable) video.removeAttribute("muted");
+      else video.setAttribute("muted","");
+      updateAudioButton(button,video);
+      if(enable) play(video,true);
+    });
+    video.addEventListener("volumechange",function(){updateAudioButton(button,video);});
+    host.appendChild(button);
+    updateAudioButton(button,video);
+  }
   function play(video,manual) {
     if(!manual && (document.hidden||reduced.matches||!visible.get(video))) return;
     if(video.preload==="none") video.preload="metadata";
-    video.muted=true;
+    var keepAudio=video.dataset.userUnmuted==="true";
+    video.muted=!keepAudio;
+    video.defaultMuted=!keepAudio;
+    video.volume=keepAudio?1:0;
     var promise; try {promise=video.play();} catch(error) {}
     if(promise && typeof promise.catch==="function") promise.catch(function(){});
   }
   reels.forEach(function(video) {
-    var button=video.parentElement && video.parentElement.querySelector(".editorial-play-control");
+    addAudioButton(video);
+    var button=video.hasAttribute("data-editorial-reel")&&video.parentElement && video.parentElement.querySelector(".editorial-play-control");
     if(!button) return;
     var originalName=video.getAttribute("aria-label")||"pieza";
     function sync() {

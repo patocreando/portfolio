@@ -23,7 +23,7 @@ html { scroll-padding-top: 78px; }
 #top .hero-cta-secondary { border-color: rgba(255,255,255,.18) !important; }
 .hero-edition-label { display: flex; align-items: center; gap: 12px; margin-top: 30px; font-size: 10px; color: #818b88; letter-spacing: .16em; text-transform: uppercase; }
 .hero-edition-label::before { content: ""; width: 32px; height: 1px; background: #CFE65A; flex: 0 0 32px; }
-.hero-frame-overline { position: absolute; z-index: 5; top: 15px; right: 10px; font-size: 9px; font-weight: 700; letter-spacing: .16em; color: rgba(255,255,255,.84); text-shadow: 0 1px 14px rgba(0,0,0,.85); pointer-events: none; }
+.hero-frame-overline { position: absolute; z-index: 5; top: 15px; right: 10px; font-size: 9px; font-weight: 700; letter-spacing: .16em; color: #CFE65A; text-shadow: 0 1px 14px rgba(0,0,0,.85); pointer-events: none; }
 #projects { padding-top: clamp(60px,6vw,96px) !important; }
 #projects > .site-shell > .max-w-4xl h2 { font-size: clamp(2.7rem,5.9vw,5.6rem) !important; line-height: 1 !important; }
 #projects .project-category-row { margin-top: 16px; }
@@ -114,6 +114,20 @@ html { scroll-padding-top: 78px; }
 .editorial-play-control:hover { background:rgba(25,32,32,.92);border-color:#CFE65A; }
 .editorial-play-control:focus-visible { outline:2px solid #CFE65A;outline-offset:3px; }
 .editorial-play-symbol {font-size:11px;color:#CFE65A; }
+.editorial-play-label { color:#CFE65A; }
+.editorial-campaign-tag { position:absolute;top:17px;left:17px;z-index:5;padding:8px 10px;border:1px solid rgba(207,230,90,.58);border-radius:5px;background:rgba(7,10,11,.78);color:#CFE65A;font:750 10px/1 Inter,sans-serif;letter-spacing:.16em;pointer-events:none; }
+.content-audio-toggle { position:absolute;top:12px;right:12px;z-index:9;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:7px 10px;border:1px solid rgba(207,230,90,.58);border-radius:5px;background:rgba(7,10,11,.82);color:#CFE65A;font:700 10px/1 Inter,sans-serif;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px); }
+.content-audio-toggle:hover,.content-audio-toggle.is-audible { background:rgba(207,230,90,.16);border-color:#CFE65A; }
+.content-audio-toggle:focus-visible { outline:2px solid #CFE65A;outline-offset:3px; }
+.content-audio-icon { color:#CFE65A;font-size:17px;line-height:.8; }
+.editorial-audio-toggle { top:64px;right:17px;z-index:6;min-height:39px;padding:8px 12px;font-size:11px; }
+.video-tap-fallback { color:#CFE65A; border-color:rgba(207,230,90,.45); }
+.video-tap-fallback svg { color:#CFE65A; }
+.umbral-audio-toggle { position:absolute;top:14px;right:14px;z-index:6;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:7px 10px;border:1px solid rgba(207,230,90,.58);border-radius:5px;background:rgba(7,10,11,.82);color:#CFE65A;font:700 10px/1 Inter,sans-serif;letter-spacing:.04em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px); }
+.umbral-audio-toggle:hover,.umbral-audio-toggle[aria-pressed="true"] { background:rgba(207,230,90,.16);border-color:#CFE65A; }
+.umbral-audio-toggle:focus-visible { outline:2px solid #CFE65A;outline-offset:3px; }
+.umbral-audio-toggle[hidden] { display:none!important; }
+@media(max-width:420px) { .content-audio-toggle {min-height:34px;padding:6px 8px;font-size:9px;} .editorial-audio-toggle {top:61px;} }
 @media(prefers-reduced-motion:reduce) {.editorial-play-control{transition:none;}}
 
 /* Perfume process board: shared visual case layout. */

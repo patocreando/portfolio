@@ -2090,16 +2090,33 @@
   var count=root.querySelector("[data-umbral-count]");
   var title=root.querySelector("[data-umbral-title]");
   var progress=root.querySelector("[data-umbral-progress]");
+  var soundButton=root.querySelector("[data-umbral-audio]");
   if(videos.length<2||!count||!title||!progress)return;
   var reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   var visible=false;
   var current=0;
+  var audioEnabled=false;
 
   function canPlay(){return visible&&!document.hidden&&!reduced.matches;}
+  function syncAudioButton(){
+    if(!soundButton)return;
+    var hasAudio=videos[current].dataset.audioAvailable==="true";
+    var label=soundButton.querySelector("[data-umbral-audio-label]");
+    soundButton.hidden=!hasAudio;
+    soundButton.setAttribute("aria-pressed",String(audioEnabled&&hasAudio));
+    soundButton.setAttribute("aria-label",audioEnabled&&hasAudio?"Silenciar audio original del anuncio final":"Escuchar audio original del anuncio final");
+    if(label)label.textContent=audioEnabled&&hasAudio?"Silenciar":"Audio original";
+  }
   function playActive(){
     if(!canPlay())return;
     var video=videos[current];
-    video.muted=true;
+    var keepAudio=audioEnabled&&video.dataset.audioAvailable==="true";
+    video.dataset.userUnmuted=String(keepAudio);
+    video.muted=!keepAudio;
+    video.defaultMuted=!keepAudio;
+    video.volume=keepAudio?1:0;
+    if(keepAudio)video.removeAttribute("muted");
+    else video.setAttribute("muted","");
     video.preload="auto";
     var attempt=video.play();
     if(attempt&&attempt.catch)attempt.catch(function(){});
@@ -2118,8 +2135,18 @@
     count.textContent=String(current+1).padStart(2,"0")+" / "+String(videos.length).padStart(2,"0");
     title.textContent=selected.dataset.title;
     progress.style.transform="scaleX(0)";
+    syncAudioButton();
     playActive();
   }
+
+  if(soundButton)soundButton.addEventListener("click",function(event){
+    event.preventDefault();
+    event.stopPropagation();
+    if(videos[current].dataset.audioAvailable!=="true")return;
+    audioEnabled=!audioEnabled;
+    syncAudioButton();
+    playActive();
+  });
 
   videos.forEach(function(video,index){
     video.addEventListener("ended",function(){

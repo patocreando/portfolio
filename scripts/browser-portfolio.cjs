@@ -320,6 +320,10 @@ async function test() {
       await playButton.click();
       const videoIsMuted=await playButton.evaluate(button=>button.parentElement.querySelector("video").muted);
       assert.ok(videoIsMuted,"Manual preview must not enable audio");
+      const originalAudioButton=page.locator(".editorial-audio-toggle").first();
+      await originalAudioButton.click();
+      const originalAudioEnabled=await originalAudioButton.evaluate(button=>!button.parentElement.querySelector("video").muted);
+      assert.ok(originalAudioEnabled,"Featured reels can play with original audio after an explicit click");
       await page.locator('[data-filter="ugc"]').click();
       assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),2,"UGC filter displays the two unique cards");
       await page.locator('[data-filter="product"]').click();
