@@ -8,18 +8,20 @@ const css = fs.readFileSync("assets/site.css", "utf8");
 const js = fs.readFileSync("assets/site.js", "utf8");
 const premiumCss = fs.readFileSync("assets/premium-lab.css", "utf8");
 const premiumJs = fs.readFileSync("assets/premium-lab.js", "utf8");
+const pagesScript = fs.readFileSync("scripts/stage-pages.mjs", "utf8");
 const has = (text, needle, context) => assert.ok(text.includes(needle), context || needle);
 const occurrences = (text, needle) => text.split(needle).length - 1;
 const links = text => new Set([...text.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)].map(match => match[1]));
 const sectionIds = [...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(match => match[1]);
 
-assert.deepEqual(sectionIds, ["top","projects","caseMyWay","services","launchOffer","deliverables","system","method","contact"], "section order");
+assert.deepEqual(sectionIds, ["top","projects","caseMyWay","services","launchOffer","system","method","contact"], "section order");
 assert.ok(css.length > 260000, "extracted CSS must not lose original rules");
 assert.ok(js.length > 64000, "Core JS controllers must remain intact after removing the carousel");
 assert.ok(!js.includes("workflowCodeCanvas"),"unused typewriter removed");
 has(css, ".case-study-wrap");
 has(css, ".hero-cta-primary");
 has(html, 'href="#main-content"');
+has(pagesScript, "poster|data-src", "Pages staging includes dynamically selected local media");
 
 const headerMarkup=html.slice(html.indexOf('<header id="portfolioHeader"'),html.indexOf('  <main id="main-content">'));
 assert.ok(headerMarkup.startsWith('<header id="portfolioHeader"'),"one unified portfolio header");
@@ -61,20 +63,23 @@ has(premiumJs,'prefers-reduced-motion: reduce');
 has(premiumJs,'connection.saveData');
 
 has(html, 'role="tabpanel"');
-has(html, 'aria-labelledby="caseMyWayTitle"');
+has(html, 'aria-labelledby="clubWorkflowTitle"');
 assert.equal(occurrences(html, "aria-controls=\"projectGrid\""), 2);
 for (const file of ["assets/site.css","assets/site.js","assets/premium-lab.css","assets/premium-lab.js","assets/favicon.svg"]) {
   assert.ok(fs.existsSync(file), "Missing local asset "+file);
   has(html, "./"+file);
 }
+for (const file of ["assets/club-case.css","assets/club-case.js","assets/cases/club-del-coctel-01/character-sheet.webp","assets/cases/club-del-coctel-01/kitchen-anchor.webp","assets/cases/club-del-coctel-01/generated-scene.mp4","assets/cases/club-del-coctel-01/edit-shot-01.webp","assets/cases/club-del-coctel-01/edit-shot-02.webp","assets/cases/club-del-coctel-01/edit-shot-03.webp"]) {
+  assert.ok(fs.existsSync(file), "Missing Club case asset "+file);
+}
 assert.ok(fs.existsSync("assets/google-meet-logo.png"), "Asset google-meet-logo.png retained in repository for backward compatibility");
-assert.equal(occurrences(html,'id="deliverables"'),1,"one deliverables cloud");
-assert.equal(occurrences(html,'class="cloud-node cloud-node--center"'),1,"one final master node");
-assert.equal((html.match(/<article class="cloud-node cloud-node--[abcd]"/g)||[]).length,4,"four production satellites");
-assert.equal(occurrences(html,'class="deliverable-arrow"'),0,"compact arrows removed");
-for(const icon of ["layout-dashboard","clapperboard","sliders-horizontal","smartphone","badge-check"])has(html,'data-lucide="'+icon+'"');
-for(const label of ["Panel previo a generar.","Generación controlada.","Ritmo, audio y control de calidad.","Clip 9:16 sin copy ni subtítulos."])has(html,label);
-has(fs.readFileSync("assets/lote-02.css","utf8"),"@media(prefers-reduced-motion:reduce)","reduced-motion cloud");
+assert.equal(occurrences(html,'id="deliverables"'),1,"delivery stages are anchored inside the Club case");
+assert.equal(occurrences(html,'data-club-step'),4,"four interactive production stages");
+assert.equal(occurrences(html,'class="club-proposal-board"'),1,"proposal board is a visual mockup");
+assert.equal(occurrences(html,'class="club-edit-board"'),1,"editing timeline is a visual mockup");
+assert.equal(occurrences(html,'class="cloud-node'),0,"separate deliverables cloud removed");
+for(const label of ["Panel previo a generar","Generación controlada","Ritmo, audio y calidad","Clip sin copy ni subtítulos añadidos"])has(html,label);
+has(fs.readFileSync("assets/club-case.css","utf8"),"@media(prefers-reduced-motion:reduce)","reduced-motion interactive case");
 
 for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 200.000",1]]) {
   assert.equal(occurrences(html, ref), 1, "Manychat ref: "+ref);
@@ -99,33 +104,38 @@ assert.equal(occurrences(html,'Perfumería de nicho'),0,"removed conceptual perf
 assert.equal(occurrences(html,'SPEC AD · FICTICIO'),0,"Unlicensed spec ads never shipped");
 assert.equal(occurrences(html,'project-item-piero'),0,"Piero media excluded from public build");
 assert.equal(occurrences(html,'editorial-case-ls2'),0,"LS2 media excluded from public build");
-has(html,'./assets/lote-02.css?v=20261023-umbral-01');
+has(html,'./assets/lote-02.css?v=20261027-club-case-2');
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
 has(html, 'media="(max-width: 639px)"');
 has(html, 'id="caseMyWay"');
-assert.equal(occurrences(html,'data-umbral-reel'),1,'one automatic UMBRAL sequence');
-assert.equal(occurrences(html,'class="umbral-showcase-video'),5,'five video clips');
-assert.equal(occurrences(html,'class="umbral-showcase-video is-active"'),1,'final ad appears first');
-assert.equal(occurrences(html,'class="perfume-viewer-tab'),0,'no stage controls');
-assert.equal(occurrences(html,'<details class="perfume-viewer-takeaway'),0,'no extra accordion');
-for(const asset of ['anchor.jpg','noir.jpg','architectural.jpg','monument-trim2.jpg','final-trim2.jpg','macro.web.mp4','noir.web.mp4','light.web.mp4','monument-trim2.web.mp4','final-trim2.web.mp4']){
-  assert.ok(fs.existsSync('assets/cases/umbral-01/'+asset),'UMBRAL asset present: '+asset);
-}
-has(html,'Una lámpara que no existe.');
-has(html,'La luz cambia el espacio');
-has(html,'Secuencia automática · sin sonido');
-has(html,'Sin copy ni subtítulos');
-has(html,'./assets/umbral-compact.css?v=20261024-2');
-has(js,'function umbralAutoSequence()');
+assert.equal(occurrences(html,'class="editorial-index"'),0,'remove category tags from featured videos');
+assert.equal(occurrences(html,'class="editorial-footnote"'),0,'remove video footnote tags');
+assert.equal(occurrences(html,'class="service-chips"'),0,'remove service badges layered with video cards');
+assert.equal(occurrences(html,'class="pricing-pack-badge"'),0,'remove floating tag above the plan video');
+assert.equal(occurrences(html,'class="service-kicker"'),0,'remove category labels from service video cards');
+assert.equal(occurrences(html,'data-umbral-reel'),0,'legacy UMBRAL showcase removed');
+assert.equal(occurrences(html,'class="club-workflow-video"'),1,'one video player is reused across the interactive stages');
+assert.equal(occurrences(html,'data-club-step'),4,'four interactive Club stages');
+assert.equal(occurrences(html,'Una lámpara que no existe.'),0,'replaced the UMBRAL project copy');
+assert.equal(occurrences(html,'UMBRAL / 01'),0,'no UMBRAL project heading remains');
+has(html,'De la idea <span>al archivo final.</span>');
+has(html,'Qué recibís / Producción con IA · CLUB DEL CÓCTEL');
+has(html,'./assets/cases/club-del-coctel-01/character-sheet.webp');
+has(html,'./assets/cases/club-del-coctel-01/generated-scene.mp4');
+has(html,'./assets/videos/club-del-coctel.mp4');
+has(html,'./assets/club-case.css?v=20261027-2');
+has(html,'./assets/club-case.js?v=20261027-2');
+assert.equal(occurrences(html,'./assets/umbral-compact.css'),0,'obsolete UMBRAL presentation stylesheet is no longer loaded');
+assert.equal(occurrences(js,'function umbralAutoSequence()'),0,'obsolete UMBRAL playback code removed');
 assert.equal(occurrences(html,'03 / PRODUCTO IA · PERFUMERÍA'),0,'old case replaced');
 assert.ok(!js.includes("pricingPackMobileLoop"), "pricing carousel should be manual");
 assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should not autoplay");
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
 has(js, 'soundToggle.addEventListener("click", toggleAudio)');
 has(js, 'button.addEventListener("keydown"');
-assert.equal(occurrences(html, 'src="./assets/site.js?v=20261024-umbral-auto"'),1);
+assert.equal(occurrences(html, 'src="./assets/site.js?v=20261027-club-case-2"'),1);
 assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
 // Compare against main as ground truth for preservation.
 try {
@@ -142,10 +152,10 @@ const archivedProjects = [...html.matchAll(/<article\b[^>]*class="[^"]*\bproject
 assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,2,"two unique campaign cards");
-for (const name of ["silo-campana-producto-recortado.mp4","club-del-coctel.mp4"]) {
-  assert.equal(occurrences(html,name),1,"featured video appears only in one editorial banner: "+name);
+assert.equal(occurrences(html,"silo-campana-producto-recortado.mp4"),1,"SILO reel appears once");
+assert.equal(occurrences(html,"club-del-coctel.mp4"),2,"Club reel is reused in its project and final delivery stage");
+for (const name of ["silo-campana-producto-recortado.mp4","club-del-coctel.mp4"])
   assert.ok(!archivedProjects.some(card=>card.includes(name)),"archive must not repeat featured video: "+name);
-}
 assert.ok(fs.existsSync("assets/videos/club-del-coctel.mp4"), "Club del Cóctel reel asset exists");
 assert.ok(fs.statSync("assets/videos/club-del-coctel.mp4").size > 1_000_000, "Club del Cóctel video is not an empty placeholder");
 assert.ok(fs.existsSync("assets/images/club-del-coctel.jpg"), "Club del Cóctel poster exists");
@@ -153,9 +163,9 @@ assert.equal(occurrences(html,"Perfume real llevado a una estética cinematográ
 assert.equal(occurrences(html,"Lenguaje de campaña en clave UGC."),0,"remove duplicate UGC perfume copy");
 assert.equal((html.match(/class="editorial-case(?: editorial-case--silo)?"/g)||[]).length,2,"two editorial showcases");
 has(html,'Digitalización y cierre en campaña');
-has(html,'UGC para cliente · Club del Cóctel');
-has(html,'03 / PRODUCTO IA · DIRECCIÓN CREATIVA');
-has(html,'Una campaña que sí.');
+has(html,'Una receta, contada desde la barra.');
+assert.equal(occurrences(html,'03 / PRODUCTO IA · DIRECCIÓN CREATIVA'),0,'old UMBRAL project heading removed');
+assert.equal(occurrences(html,'Una campaña que sí.'),0,'old UMBRAL project copy removed');
 assert.equal(occurrences(html,'Workflow aplicado · My Way'),0,"redundant My Way project card should be removed");
 assert.equal(occurrences(html,'https://www.instagram.com/p/Dd24xgrOr5e/?hl=en'),0,"remove requested My Way original reference button");
 assert.equal(occurrences(html,'class="case-study-reference"'),0,"remove requested My Way reference CTA");
@@ -171,9 +181,9 @@ has(html,'class="service-cta service-example-link" href="#caseMyWay"');
 has(html,'Versiones de aperturas, planos y relatos');
 has(js,'document.querySelectorAll(".service-example-link[data-service-filter]")');
 
-assert.equal(occurrences(html,'final-trim2.web.mp4'),1,'Trimmed UMBRAL video master appears once');
-assert.equal(occurrences(html,'monument-trim2.web.mp4'),1,'Trimmed UMBRAL hero appears once');
-assert.equal(occurrences(html,'UMBRAL es una lámpara ficticia.'),1,'Conceptual disclaimer appears once');
+assert.equal(occurrences(html,'final-trim2.web.mp4'),0,'old UMBRAL video master removed');
+assert.equal(occurrences(html,'monument-trim2.web.mp4'),0,'old UMBRAL hero removed');
+assert.equal(occurrences(html,'UMBRAL es una lámpara ficticia.'),0,'old conceptual disclaimer removed');
 assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow gallery tab or card");
 assert.equal(occurrences(html, 'data-filter="workflow"'),0,"only UGC and product remain");
 assert.equal(occurrences(html, 'id="system"'),1,"system presentation is standalone");
@@ -187,16 +197,19 @@ assert.equal(occurrences(html,'social-proof'),0,"no social proof placeholders");
 has(html,'id="projectFilters"');
 has(html,'aria-labelledby="siloCaseTitle"');
 has(html,'aria-labelledby="clubCaseTitle"');
+has(html,'aria-labelledby="clubWorkflowTitle"');
 has(premiumCss,'.editorial-showcase');
-has(premiumCss,'.hero-edition-label');
+assert.equal(occurrences(premiumCss,'.editorial-media-note'),0,'no floating caption style over featured videos');
 has(premiumJs,'IntersectionObserver');
 has(premiumJs,'video.dataset.userUnmuted');
 has(premiumJs,'window.__PATO_ACTIVATE_VIDEO_AUDIO__=activate');
 assert.equal(occurrences(html,'editorial-campaign-tag'),0,'video copy is not injected as an HTML badge');
 assert.equal(occurrences(html,'editorial-play-control'),0,'video pause/play buttons are removed');
 assert.equal(occurrences(html,'data-audio-available="true"'),4,'all local portfolio videos with original audio expose it');
-assert.equal(occurrences(html,'data-umbral-audio'),0,'UMBRAL has no on-screen audio button');
-assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261011-perfume-process-1"'),1);
+assert.equal(occurrences(html,'data-umbral-audio'),0,'no obsolete UMBRAL audio UI remains');
+assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261027-club-case-2"'),1);
+assert.equal(occurrences(html,'href="./assets/lote-02.css?v=20261027-club-case-2"'),1);
+assert.equal(occurrences(html,'id="clubWorkflowTitle"'),1,'interactive project title has a unique id');
 assert.equal(occurrences(html,'id="portfolio-nav-critical"'),1,"critical navbar rules embedded in delivered HTML");
 const criticalNavStyle=html.slice(html.indexOf('<style id="portfolio-nav-critical">'),html.indexOf('</style>',html.indexOf('<style id="portfolio-nav-critical">')));
 for(const rule of ['#portfolioHeader .portfolio-nav-layout','#portfolioHeader .portfolio-nav-links','#portfolioHeader .portfolio-mobile-menu.is-open','@media(max-width:1299px)'])has(criticalNavStyle,rule);

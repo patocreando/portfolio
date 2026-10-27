@@ -6,7 +6,7 @@ const path = require("node:path");
 const assert = require("node:assert/strict");
 
 const root = process.cwd();
-const types = {".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".svg":"image/svg+xml",".png":"image/png"};
+const types = {".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".svg":"image/svg+xml",".png":"image/png",".webp":"image/webp"};
 const server = http.createServer(async (req, res) => {
   try {
     const u = new URL(req.url, "http://localhost");
@@ -47,8 +47,8 @@ async function test() {
       const state=await page.evaluate(() => ({
         title:document.querySelector("h1")?.innerText?.replace(/\s+/g," ").trim(),
         projects:!!document.querySelector("#projects"),
-        caseStudy:!!document.querySelector("#caseMyWay .umbral-showcase-reel"),
-        umbralVideoCount:document.querySelectorAll("#caseMyWay .umbral-showcase-video").length,
+        caseStudy:!!document.querySelector("#caseMyWay [data-club-viewer]"),
+        clubStepCount:document.querySelectorAll("#caseMyWay [data-club-step]").length,
         packCount:document.querySelectorAll("#launchOffer .pricing-pack").length,
         ctaCount:document.querySelectorAll("#launchOffer .pricing-pack-cta").length,
         css:getComputedStyle(document.querySelector(".studio-system-dot")).backgroundColor,
@@ -85,7 +85,7 @@ async function test() {
         systemCta:document.querySelector("#system .studio-system-cta")?.getAttribute("href"),
         editorialHeadings:[...document.querySelectorAll(".editorial-case h4")].map(n=>n.innerText),
         premiumLinks:[...document.querySelectorAll(".editorial-project-link")].map(n=>n.getAttribute("href")),
-        deliveryStepWidth:document.querySelector("#deliverables .cloud-node--a").getBoundingClientRect().width,
+        deliveryStepWidth:document.querySelector("#caseMyWay .club-workflow-step")?.getBoundingClientRect().width,
         railWidth:document.querySelector("#pricingPackRail").clientWidth,
         railScroll:document.querySelector("#pricingPackRail").scrollLeft,
         mainWidth:document.querySelector("main").getBoundingClientRect().width,
@@ -155,28 +155,36 @@ async function test() {
       assert.equal(await page.locator(".editorial-project-link").count(),0,"Remove the remaining editorial gallery button");
       assert.equal(await page.locator("#projectFilters").count(),1,"Keep the gallery filters section");
       assert.equal(await page.locator("#caseMyWay .case-study-reference").count(),0,"Requested original-reference CTA removed");
-      assert.equal(await page.locator("#caseMyWay .umbral-showcase-video").count(),5,"Five UMBRAL videos");
-      assert.equal(await page.locator("#caseMyWay video[controls], #caseMyWay button, #caseMyWay [role=tab]").count(),0,"UMBRAL sequence has no controls");
-      assert.equal(await page.locator("#caseMyWay .umbral-showcase-video:not([hidden])").count(),1,"Exactly one video is visible");
-      assert.equal(await page.locator("#caseMyWay [data-umbral-title]").textContent(),"Anuncio final","Final ad is shown first");
-      await page.locator("#caseMyWay .umbral-showcase-video").first().evaluate(video=>video.dispatchEvent(new Event("ended")));
-      assert.equal(await page.locator("#caseMyWay [data-umbral-title]").textContent(),"Materia en primer plano","Sequence advances after a clip ends");
-      assert.equal(await page.locator("#caseMyWay .umbral-showcase-video").nth(1).isVisible(),true,"Next clip becomes visible");
-      assert.equal(await page.locator("#caseMyWay .case-study-disclaimer").count(),1,"UMBRAL fictional-project disclaimer");
-      const viewerMetrics=await page.locator("#caseMyWay .umbral-showcase-reel").evaluate(el=>{
+      const clubTabs=page.locator("#caseMyWay [data-club-step]");
+      assert.equal(await clubTabs.count(),4,"Four interactive Club stages");
+      assert.equal(await page.locator("#caseMyWay video[controls]").count(),0,"No visible native video controls");
+      assert.equal(await page.locator("#caseMyWay .club-workflow-video").count(),1,"One video element is reused for production and delivery");
+      assert.equal(await page.locator("#caseMyWay [data-club-title]").textContent(),"Propuesta visual","Proposal is shown first");
+      await clubTabs.nth(1).click();
+      assert.equal(await page.locator("#caseMyWay [data-club-title]").textContent(),"Producción","Production step selected");
+      assert.equal(await page.locator("#caseMyWay .club-workflow-video").isVisible(),true,"Generated scene is visible");
+      assert.ok((await page.locator("#caseMyWay .club-workflow-video").getAttribute("src")).endsWith("generated-scene.mp4"),"Production uses its actual generated clip");
+      await clubTabs.nth(2).click();
+      assert.equal(await page.locator("#caseMyWay [data-club-title]").textContent(),"Edición","Edit step selected");
+      assert.equal(await page.locator("#caseMyWay [data-club-edit]").isVisible(),true,"Editing mockup is visible");
+      await clubTabs.nth(3).click();
+      assert.equal(await page.locator("#caseMyWay [data-club-title]").textContent(),"Archivo final","Final delivery selected");
+      assert.ok((await page.locator("#caseMyWay .club-workflow-video").getAttribute("src")).endsWith("club-del-coctel.mp4"),"Delivery stage reuses the unmodified final reel");
+      const viewerMetrics=await page.locator("#caseMyWay [data-club-viewer]").evaluate(el=>{
         const area=el.getBoundingClientRect();
-        const screen=el.querySelector(".umbral-showcase-screen").getBoundingClientRect();
+        const screen=el.querySelector(".club-workflow-screen").getBoundingClientRect();
         return {width:area.width,height:area.height,screenHeight:screen.height};
       });
-      assert.ok(viewerMetrics.width <= spec.width + 2,"UMBRAL reel fits viewport");
-      assert.ok(viewerMetrics.height <= 560,"UMBRAL reel remains compact");
-      assert.ok(viewerMetrics.screenHeight >= 300,"Video remains large enough to see");
-      await page.locator("#caseMyWay .umbral-showcase-reel").screenshot({path:"artifacts/umbral-viewer-"+spec.name+".png",animations:"disabled"});
+      assert.ok(viewerMetrics.width <= spec.width + 2,"Club walkthrough fits viewport");
+      assert.ok(viewerMetrics.height >= 500,"Interactive mockup has enough room to show the process");
+      assert.ok(viewerMetrics.screenHeight >= 300,"Preview area remains large enough to see");
+      await page.locator("#caseMyWay [data-club-viewer]").screenshot({path:"artifacts/club-workflow-"+spec.name+".png",animations:"disabled"});
+      await clubTabs.first().click();
       assert.equal(await page.getByText("Explorar otros formatos",{exact:true}).count(),0,"Requested editorial CTA removed");
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
       assert.equal(await page.locator('.tab-btn[data-filter]').count(),2,"UGC and product filters remain");
-      assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","deliverables","system","method","contact"],"Cold-traffic narrative order");
+      assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
       assert.equal(state.methodSteps,3,"Method simplified to three commercial collaboration steps");
       const terms=await page.locator("#method .method-brief-scope").evaluate(el=>{
         const box=el.getBoundingClientRect();
@@ -231,25 +239,11 @@ async function test() {
       assert.equal(await page.locator("#submitLabel").textContent(),"Enviar consulta","Contact button invites a consultation");
       assert.equal(await page.locator("#contactForm .contact-brief-hint").count(),1,"Brief helper appears above form");
       await page.locator("#launchOffer").screenshot({path:"artifacts/packs-"+spec.name+".png",animations:"disabled"});
-      assert.equal(await page.locator("#deliverables .cloud-node").count(),5,"Four stages and one final master");
-      assert.equal(await page.locator("#deliverables article.cloud-node").count(),4,"Four independent delivery steps");
-      await page.waitForFunction(()=>document.querySelectorAll("#deliverables .cloud-node svg.lucide").length===5,{timeout:15000});
-      const cloud=await page.locator("#deliverables").evaluate(el=>{
-        const cards=[...el.querySelectorAll(".cloud-node")];
-        const area=el.getBoundingClientRect();
-        const sizes=cards.map(card=>{const r=card.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height}});
-        const h=el.querySelector("#deliverablesTitle");
-        const titleSize=parseFloat(getComputedStyle(h).fontSize);
-        return {width:area.width,titleSize,nodes:sizes,scrollWidth:el.scrollWidth,clientWidth:el.clientWidth};
-      });
-      assert.ok(cloud.width<=spec.width+2,"Cloud stays within viewport");
-      assert.ok(cloud.scrollWidth<=cloud.clientWidth+2,"Cloud has no horizontal overflow");
-      assert.ok(cloud.titleSize>=29,"Cloud heading is prominent");
-      assert.ok(cloud.nodes.every(r=>r.width>=130 && r.height>=160),"Cloud nodes have comfortable dimensions");
-      await page.locator("#deliverables").screenshot({path:"artifacts/deliverables-"+spec.name+".png",animations:"disabled"});
+      assert.equal(state.clubStepCount,4,"Club project shows the four expected stages");
+      assert.equal(await page.locator("#caseMyWay .club-workflow-step[aria-selected='true']").count(),1,"One stage is active at a time");
+      assert.equal(await page.locator("#caseMyWay .club-workflow-screen").evaluate(el=>el.scrollWidth<=el.clientWidth+2),true,"Project mockup has no horizontal overflow");
 
-      assert.ok(state.projects && state.caseStudy,"Projects and UMBRAL sequence must be in DOM");
-      assert.equal(state.umbralVideoCount,5,"UMBRAL sequence contains five clips");
+      assert.ok(state.projects && state.caseStudy,"Projects and the Club workflow must be in DOM");
       assert.equal(state.css,"rgb(207, 230, 90)","Accent system styling must load");
       assert.equal(state.heroActionCount,0,"Requested hero CTA pair removed");
       assert.equal(state.systemAmbientCount,1,"One ambient system backdrop");
@@ -259,7 +253,7 @@ async function test() {
       assert.equal(state.systemAmbientPreload,"none","Reduced-motion browser should not fetch background video");
       assert.equal(state.heroMuted,true,"Hero is muted by default");
       assert.ok(state.mainWidth <= state.innerWidth+4,"Main must fit viewport");
-      if (spec.isMobile) assert.ok(state.deliveryStepWidth >= 130,"Mobile cloud nodes must remain readable");
+      if (spec.isMobile) assert.ok(state.deliveryStepWidth >= 130,"Mobile process stages must remain readable");
       await page.screenshot({path:"artifacts/"+spec.name+".png",fullPage:true,animations:"disabled"});
 
       // An additional real-animation CSS pass: the baseline QA uses reduced motion and

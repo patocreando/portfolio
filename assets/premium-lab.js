@@ -1,7 +1,7 @@
 /* Content reels start muted. Click/tap a video to play its original audio; click again to pause. */
 (function () {
   "use strict";
-  var videos=Array.prototype.slice.call(document.querySelectorAll("video[data-editorial-reel], video.project-video, video.hero-video, video.umbral-showcase-video"));
+  var videos=Array.prototype.slice.call(document.querySelectorAll("video[data-editorial-reel], video.project-video, video.hero-video, video.club-workflow-video"));
   if(!videos.length) return;
   var reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   var visible=new WeakMap();
@@ -23,6 +23,15 @@
       pause(video);
     });
   }
+  window.__PATO_STOP_ACTIVE_VIDEO__=function(except){
+    videos.forEach(function(video){
+      if(video===except)return;
+      video.dataset.userPaused="true";
+      setMuted(video,true);
+      pause(video);
+    });
+    if(window.__PATO_SOUND_ACTIVE_VIDEO__!==except)window.__PATO_SOUND_ACTIVE_VIDEO__=null;
+  };
   function play(video,manual) {
     if(!manual&&video.dataset.userPaused==="true")return;
     if(!manual && (document.hidden||reduced.matches||!visible.get(video))) return;
@@ -37,8 +46,10 @@
   }
   function activate(video,event) {
     if(event){event.preventDefault();event.stopPropagation();}
+    var hasAudio=video.dataset.audioAvailable==="true";
     var alreadyActive=!video.paused&&!video.ended&&video.dataset.userPaused!=="true";
-    if(alreadyActive){
+    var alreadyAudible=hasAudio&&alreadyActive&&!video.muted&&video.dataset.userUnmuted==="true";
+    if(alreadyAudible||(!hasAudio&&alreadyActive)){
       video.dataset.userPaused="true";
       pause(video);
       setMuted(video,true);
@@ -47,7 +58,7 @@
     }
     stopOthers(video);
     video.dataset.userPaused="false";
-    setMuted(video,video.dataset.audioAvailable!=="true");
+    setMuted(video,!hasAudio);
     window.__PATO_SOUND_ACTIVE_VIDEO__=video;
     play(video,true);
   }

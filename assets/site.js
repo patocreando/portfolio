@@ -1564,7 +1564,7 @@
           "#projectGrid .project-item:not(.is-hidden)",
           "#services .service-card",
           ".pricing-pack",
-          ".deliverables-cloud",
+          ".club-workflow",
           ".direction-principle",
           "#contact .contact-social-link",
           "#contact form"
@@ -1586,24 +1586,6 @@
             clearProps: "transform"
           });
         });
-
-        // PERFUME_01 process board: reveal each file stage in reading order.
-        var perfumeStages = gsap.utils.toArray("#caseMyWay .perfume-viewer-tab");
-        if (perfumeStages.length) {
-          gsap.from(perfumeStages, {
-            scrollTrigger: {
-              trigger: "#caseMyWay .perfume-viewer-list",
-              start: fastMobile ? "top 94%" : "top 88%",
-              once: true
-            },
-            opacity: 0,
-            y: fastMobile ? 12 : 24,
-            stagger: fastMobile ? .08 : .12,
-            duration: fastMobile ? .3 : .52,
-            ease: "power3.out",
-            clearProps: "transform,opacity"
-          });
-        }
 
         gsap.utils.toArray("[data-orb]").forEach(function (orb, index) {
           gsap.to(orb, {
@@ -2001,113 +1983,3 @@
       });
     })();
 ;
-/* Caso aplicado: carga diferida y reproducción opcional en función de visibilidad. */
-(function caseStudyPlayback() {
-  "use strict";
-  var video = document.querySelector("#caseMyWay .case-study-video");
-  if (!video) return;
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-  function play() {
-    if (document.hidden || reduced.matches) return;
-    video.preload = "metadata";
-    var p = video.play();
-    if (p && typeof p.catch === "function") p.catch(function () {});
-  }
-  function pause() { try { video.pause(); } catch (e) {} }
-  if ("IntersectionObserver" in window) {
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.15) play();
-        else pause();
-      });
-    }, { threshold: [0, 0.15, 0.45] });
-    observer.observe(video);
-  }
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden) pause();
-    else {
-      var rect = video.getBoundingClientRect();
-      if (rect.bottom > 0 && rect.top < window.innerHeight) play();
-    }
-  });
-  if (reduced.addEventListener) reduced.addEventListener("change", function () {
-    if (reduced.matches) pause();
-  });
-})();
-
-/* UMBRAL / 01 — five clips advance on their own while the case is visible. */
-(function umbralAutoSequence(){
-  "use strict";
-  var root=document.querySelector("#caseMyWay [data-umbral-reel]");
-  if(!root)return;
-  var videos=Array.prototype.slice.call(root.querySelectorAll(".umbral-showcase-video"));
-  var count=root.querySelector("[data-umbral-count]");
-  var title=root.querySelector("[data-umbral-title]");
-  var progress=root.querySelector("[data-umbral-progress]");
-  if(videos.length<2||!count||!title||!progress)return;
-  var reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
-  var visible=false;
-  var current=0;
-
-  function canPlay(){return visible&&!document.hidden&&!reduced.matches;}
-  function playActive(){
-    if(!canPlay())return;
-    var video=videos[current];
-    if(video.dataset.userPaused==="true")return;
-    var keepAudio=video.dataset.userUnmuted==="true"&&video.dataset.audioAvailable==="true";
-    video.muted=!keepAudio;
-    video.defaultMuted=!keepAudio;
-    video.volume=keepAudio?1:0;
-    if(keepAudio)video.removeAttribute("muted");
-    else video.setAttribute("muted","");
-    video.preload="auto";
-    var attempt=video.play();
-    if(attempt&&attempt.catch)attempt.catch(function(){});
-  }
-  function show(index){
-    videos[current].pause();
-    current=index;
-    videos.forEach(function(video,i){
-      var active=i===current;
-      video.hidden=!active;
-      video.classList.toggle("is-active",active);
-      if(!active)video.pause();
-    });
-    var selected=videos[current];
-    try{selected.currentTime=0;}catch(error){}
-    count.textContent=String(current+1).padStart(2,"0")+" / "+String(videos.length).padStart(2,"0");
-    title.textContent=selected.dataset.title;
-    progress.style.transform="scaleX(0)";
-    playActive();
-  }
-
-  videos.forEach(function(video,index){
-    video.addEventListener("ended",function(){
-      if(index===current)show((current+1)%videos.length);
-    });
-    video.addEventListener("timeupdate",function(){
-      if(index!==current||!Number.isFinite(video.duration)||video.duration<=0)return;
-      progress.style.transform="scaleX("+Math.min(1,video.currentTime/video.duration)+")";
-    });
-  });
-  if("IntersectionObserver" in window){
-    var observer=new IntersectionObserver(function(entries){
-      visible=entries[0].isIntersecting&&entries[0].intersectionRatio>=0.15;
-      if(visible)playActive();
-      else videos[current].pause();
-    },{threshold:[0,0.15,0.5]});
-    observer.observe(root);
-  }else{
-    visible=true;
-    playActive();
-  }
-  document.addEventListener("visibilitychange",function(){
-    if(document.hidden)videos[current].pause();
-    else playActive();
-  });
-  if(reduced.addEventListener)reduced.addEventListener("change",function(){
-    if(reduced.matches)videos[current].pause();
-    else playActive();
-  });
-  show(0);
-})();
