@@ -58,9 +58,9 @@
   <script src="./assets/vendor/ScrollTrigger-3.12.5.min.js"></script>
 
   <link rel="stylesheet" href="./assets/site.css" />
-  <link rel="stylesheet" href="./assets/premium-lab.css?v=20261027-club-case-2" />
-  <link rel="stylesheet" href="./assets/lote-02.css?v=20261027-club-case-2" />
-  <link rel="stylesheet" href="./assets/club-case.css?v=20261027-2" />
+  <link rel="stylesheet" href="./assets/premium-lab.css?v=20261027-club-case-3" />
+  <link rel="stylesheet" href="./assets/lote-02.css?v=20261027-club-case-3" />
+  <link rel="stylesheet" href="./assets/club-case.css?v=20261027-3" />
   <!-- Critical nav CSS is inlined to prevent stale GitHub Pages stylesheets from unstyling the header. -->
   <style id="portfolio-nav-critical">
 /* Unified navigation / 2026-10-09
@@ -365,10 +365,13 @@
 
         <div class="editorial-showcase" aria-label="Casos seleccionados de producción con IA">
           <article class="editorial-case editorial-case--silo" aria-labelledby="siloCaseTitle">
-            <div class="editorial-media">
-              <video data-editorial-reel data-audio-available="true" autoplay muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/silo-campana-producto-recortado.jpg" aria-label="Anuncio de SILO Perfumería de Autor: fragancias y escenas de producto">
-                <source src="./assets/videos/silo-campana-producto-recortado.mp4" type="video/mp4" />
-              </video>
+            <div class="editorial-media-stack">
+              <div class="editorial-media">
+                <video data-editorial-reel data-audio-available="true" autoplay muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/silo-campana-producto-recortado.jpg" aria-label="Anuncio de SILO Perfumería de Autor: fragancias y escenas de producto">
+                  <source src="./assets/videos/silo-campana-producto-recortado.mp4" type="video/mp4" />
+                </video>
+              </div>
+              <button class="portfolio-audio-prompt" type="button" data-video-audio-prompt aria-pressed="false"><span aria-hidden="true">♪</span><span data-audio-prompt-label>Presiona para escuchar</span></button>
             </div>
             <div class="editorial-content">
               <h4 class="display" id="siloCaseTitle">Digitalización y cierre en campaña</h4>
@@ -382,10 +385,13 @@
           </article>
 
           <article class="editorial-case" aria-labelledby="clubCaseTitle">
-            <div class="editorial-media">
-              <video data-editorial-reel data-audio-available="true" autoplay muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/club-del-coctel.jpg" aria-label="Video UGC para Club del Cóctel: presentación y preparación de cócteles">
-                <source src="./assets/videos/club-del-coctel.mp4" type="video/mp4" />
-              </video>
+            <div class="editorial-media-stack">
+              <div class="editorial-media">
+                <video data-editorial-reel data-audio-available="true" autoplay muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/club-del-coctel.jpg" aria-label="Video UGC para Club del Cóctel: presentación y preparación de cócteles">
+                  <source src="./assets/videos/club-del-coctel.mp4" type="video/mp4" />
+                </video>
+              </div>
+              <button class="portfolio-audio-prompt" type="button" data-video-audio-prompt aria-pressed="false"><span aria-hidden="true">♪</span><span data-audio-prompt-label>Presiona para escuchar</span></button>
             </div>
             <div class="editorial-content">
               <h4 class="display" id="clubCaseTitle">Una receta, contada desde la barra.</h4>
@@ -434,25 +440,12 @@
               <div class="phone-shell">
                 <div class="phone-screen">
                   <video class="project-video" muted loop playsinline webkit-playsinline preload="none">
-                    <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/706208ee-4969-48d1-b61b-0e2cafa95f14.mp4" type="video/mp4" />
+                    <source src="./assets/videos/ugc-beauty.mp4" type="video/mp4" />
                   </video>
                 </div>
               </div>
             </div>
 
-            <div class="project-info-card glass">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h3 class="display mt-2 text-[1.45rem] leading-tight tracking-[-.035em] font-semibold">
-                    Uso realista, sin perder naturalidad.
-                  </h3>
-
-                  <p class="project-note">Avatar estable, objeto visible y movimientos controlados para sostener una sensación orgánica de principio a fin.</p>
-                </div>
-              </div>
-
-              
-            </div>
           </article>
 
           <!-- Product 02: fashion avatar -->
@@ -460,24 +453,11 @@
             <div class="mockup-stage">
               <div class="clean-media-frame">
                 <video class="project-video" muted loop playsinline webkit-playsinline preload="none">
-                  <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/f96e1001-0400-4e61-a09b-8dc2b2a0a2cb.mp4" type="video/mp4" />
+                  <source src="./assets/videos/ugc-fashion.mp4" type="video/mp4" />
                 </video>
               </div>
             </div>
 
-            <div class="project-info-card glass">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h3 class="display mt-2 text-[1.45rem] leading-tight tracking-[-.035em] font-semibold">
-                    Avatar de moda aplicado a una campaña.
-                  </h3>
-
-                  <p class="project-note">Avatar de moda con accesorios definidos, estilismo marcado y movimiento pensado para una lectura publicitaria.</p>
-                </div>
-              </div>
-
-              
-            </div>
           </article>
 
           <!-- SILO: second client ad, in Campañas IA -->
@@ -489,17 +469,8 @@
                 </video>
               </div>
             </div>
+            <button class="portfolio-audio-prompt project-audio-prompt" type="button" data-video-audio-prompt aria-pressed="false"><span aria-hidden="true">♪</span><span data-audio-prompt-label>Presiona para escuchar</span></button>
 
-            <div class="project-info-card glass">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h3 class="display mt-2 text-[1.45rem] leading-tight tracking-[-.035em] font-semibold">
-                    SILO, de cerca.
-                  </h3>
-                  <p class="project-note">Una pieza vertical de tono cercano: talento en cámara, fragancia en primer plano y cierre de marca. Entregada sin subtítulos por pedido del cliente.</p>
-                </div>
-              </div>
-            </div>
           </article>
 
           <!-- Product 01 -->
@@ -507,24 +478,11 @@
             <div class="mockup-stage">
               <div class="clean-media-frame">
                 <video class="project-video" muted loop playsinline webkit-playsinline preload="none">
-                  <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/9c4f840c-a00d-47cc-87ec-bf82c4003c86.mp4" type="video/mp4" />
+                  <source src="./assets/videos/hyperreal-portrait.mp4" type="video/mp4" />
                 </video>
               </div>
             </div>
 
-            <div class="project-info-card glass">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h3 class="display mt-2 text-[1.45rem] leading-tight tracking-[-.035em] font-semibold">
-                    Detalle que resiste el primer plano.
-                  </h3>
-
-                  <p class="project-note">Trabajo de piel, microtextura, iluminación y movimiento facial para conservar realismo incluso en primerísimo plano.</p>
-                </div>
-              </div>
-
-              
-            </div>
           </article>
 
 
@@ -579,11 +537,10 @@
                 </div>
               </div>
 
-              <div class="club-edit-board" data-club-edit hidden aria-label="Maqueta de edición con escenas, línea de tiempo y audio">
-                <div class="club-edit-monitor"><img src="./assets/cases/club-del-coctel-01/edit-shot-02.webp" alt="Vista de referencia del reel durante edición" /></div>
-                <div class="club-edit-filmstrip" aria-label="Secuencia de escenas del reel">
-                  <img src="./assets/cases/club-del-coctel-01/edit-shot-01.webp" alt="Escena del bartender" />
-                  <img src="./assets/cases/club-del-coctel-01/edit-shot-02.webp" alt="Inserto de recetas del cóctel" />
+              <div class="club-edit-board" data-club-edit hidden aria-label="Maqueta de edición con escenas, línea de tiempo y audio; sin el inserto de B-roll">
+                <div class="club-edit-monitor"><img src="./assets/cases/club-del-coctel-01/edit-shot-01.webp" alt="Plano principal del bartender durante la edición" /></div>
+                <div class="club-edit-filmstrip" aria-label="Secuencia de planos del bartender, sin B-roll">
+                  <img src="./assets/cases/club-del-coctel-01/edit-shot-01.webp" alt="Plano principal del bartender" />
                   <img src="./assets/cases/club-del-coctel-01/edit-shot-03.webp" alt="Cierre del bartender con el cóctel" />
                 </div>
                 <div class="club-edit-audio" aria-label="Pista de audio"><div aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
@@ -591,6 +548,10 @@
 
               <video class="club-workflow-video" data-club-video data-audio-available="true" muted playsinline webkit-playsinline preload="none" poster="./assets/cases/club-del-coctel-01/kitchen-anchor.webp" aria-label="Video del proyecto Club del Cóctel; toca para escuchar el audio original" hidden></video>
             </div>
+            <button class="club-workflow-audio-prompt" type="button" data-club-audio hidden aria-pressed="false">
+              <span class="club-workflow-audio-icon" aria-hidden="true">♪</span>
+              <span data-club-audio-label>Presiona para escuchar</span>
+            </button>
             <div class="club-workflow-caption">
               <span data-club-kicker>ETAPA 01</span>
               <div>
@@ -1133,9 +1094,9 @@
   </main>
 
 
-  <script src="./assets/site.js?v=20261027-club-case-2"></script>
-  <script defer src="./assets/premium-lab.js?v=20261027-club-case-2"></script>
-  <script defer src="./assets/club-case.js?v=20261027-2"></script>
+  <script src="./assets/site.js?v=20261027-club-case-3"></script>
+  <script defer src="./assets/premium-lab.js?v=20261027-club-case-3"></script>
+  <script defer src="./assets/club-case.js?v=20261027-3"></script>
 
   
 

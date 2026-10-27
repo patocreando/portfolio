@@ -6,6 +6,18 @@
   var reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   var visible=new WeakMap();
   function pause(video) { try {video.pause();} catch(error) {} }
+  function promptFor(video) {
+    var host=video.closest(".editorial-media-stack")||video.closest(".project-item");
+    return host?host.querySelector("[data-video-audio-prompt]"):null;
+  }
+  function syncAudioPrompt(video) {
+    var button=promptFor(video);
+    if(!button)return;
+    var active=window.__PATO_SOUND_ACTIVE_VIDEO__===video&&!video.muted&&!video.paused;
+    button.setAttribute("aria-pressed",String(active));
+    var label=button.querySelector("[data-audio-prompt-label]");
+    if(label)label.textContent=active?"Escuchando · presiona para pausar":"Presiona para escuchar";
+  }
   function setMuted(video,muted) {
     var shouldMute=muted||video.dataset.audioAvailable!=="true";
     video.dataset.userUnmuted=String(!shouldMute);
@@ -21,6 +33,7 @@
       video.dataset.userPaused="true";
       setMuted(video,true);
       pause(video);
+      syncAudioPrompt(video);
     });
   }
   window.__PATO_STOP_ACTIVE_VIDEO__=function(except){
@@ -29,6 +42,7 @@
       video.dataset.userPaused="true";
       setMuted(video,true);
       pause(video);
+      syncAudioPrompt(video);
     });
     if(window.__PATO_SOUND_ACTIVE_VIDEO__!==except)window.__PATO_SOUND_ACTIVE_VIDEO__=null;
   };
@@ -54,6 +68,7 @@
       pause(video);
       setMuted(video,true);
       if(window.__PATO_SOUND_ACTIVE_VIDEO__===video) window.__PATO_SOUND_ACTIVE_VIDEO__=null;
+      syncAudioPrompt(video);
       return;
     }
     stopOthers(video);
@@ -61,6 +76,7 @@
     setMuted(video,!hasAudio);
     window.__PATO_SOUND_ACTIVE_VIDEO__=video;
     play(video,true);
+    syncAudioPrompt(video);
   }
   function stopAudioOutsideViewport() {
     var active=window.__PATO_SOUND_ACTIVE_VIDEO__;
@@ -72,6 +88,7 @@
       setMuted(active,true);
       pause(active);
       window.__PATO_SOUND_ACTIVE_VIDEO__=null;
+      syncAudioPrompt(active);
     }
   }
   window.__PATO_ACTIVATE_VIDEO_AUDIO__=activate;
@@ -89,8 +106,16 @@
     });
     video.addEventListener("pointerenter",function(){
       var active=window.__PATO_SOUND_ACTIVE_VIDEO__;
-      if(active&&active!==video){active.dataset.userPaused="true";setMuted(active,true);pause(active);window.__PATO_SOUND_ACTIVE_VIDEO__=null;}
+      if(active&&active!==video){active.dataset.userPaused="true";setMuted(active,true);pause(active);window.__PATO_SOUND_ACTIVE_VIDEO__=null;syncAudioPrompt(active);}
     });
+    video.addEventListener("play",function(){syncAudioPrompt(video);});
+    video.addEventListener("pause",function(){syncAudioPrompt(video);});
+    video.addEventListener("volumechange",function(){syncAudioPrompt(video);});
+    var prompt=promptFor(video);
+    if(prompt){
+      prompt.addEventListener("click",function(event){activate(video,event);});
+      syncAudioPrompt(video);
+    }
   });
   var reels=videos.filter(function(video){return video.hasAttribute("data-editorial-reel");});
   if("IntersectionObserver" in window) {
@@ -106,7 +131,7 @@
     reels.forEach(function(video){visible.set(video,true);play(video);});
   }
   document.addEventListener("visibilitychange",function(){
-    videos.forEach(function(video){if(document.hidden){setMuted(video,true);pause(video);}});
+    videos.forEach(function(video){if(document.hidden){setMuted(video,true);pause(video);syncAudioPrompt(video);}});
     if(document.hidden)window.__PATO_SOUND_ACTIVE_VIDEO__=null;
   });
   window.addEventListener("scroll",stopAudioOutsideViewport,{passive:true});

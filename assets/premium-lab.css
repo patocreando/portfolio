@@ -33,13 +33,20 @@ html { scroll-padding-top: 78px; }
 .editorial-showcase { display: grid; gap: clamp(25px,3.4vw,48px); margin-top: clamp(27px,3.5vw,47px); }
 .editorial-case { position: relative; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: stretch; min-height: 485px; border-top: 1px solid rgba(255,255,255,.14); padding-top: 24px; gap: clamp(24px,5vw,70px); }
 .editorial-case:nth-child(even) { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); }
-.editorial-case:nth-child(even) .editorial-media { order: 2; }
+.editorial-case:nth-child(even) .editorial-media-stack { order: 2; }
 .editorial-case:nth-child(even) .editorial-content { order: 1; }
 .editorial-media { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; min-width: 0; height: 100%; min-height: 460px; max-height: 630px; isolation: isolate; background: radial-gradient(ellipse at 50% 44%, rgba(207,230,90,.07), transparent 57%),#0a0d0e; border: 1px solid rgba(255,255,255,.085); border-radius: 9px; }
 .editorial-media video { display: block; width: 100%; height: 100%; max-height: 630px; min-height: 460px; object-fit: contain; background: #080a0b; }
 .editorial-media video,#projects .project-video,#top .hero-video,#caseMyWay .club-workflow-video { cursor:pointer; }
 .editorial-media video:focus-visible,#projects .project-video:focus-visible,#top .hero-video:focus-visible,#caseMyWay .club-workflow-video:focus-visible { outline:2px solid #CFE65A;outline-offset:-4px; }
 .editorial-media::after { content:""; position:absolute; pointer-events:none; inset:0; border:1px solid rgba(255,255,255,.08); border-radius:inherit; }
+.editorial-media-stack { display:flex; flex-direction:column; align-items:center; align-self:center; min-width:0; width:100%; }
+.portfolio-audio-prompt { display:flex; align-items:center; justify-content:center; gap:9px; width:min(100%,340px); min-height:42px; margin:11px auto 0; padding:9px 15px; border:1px solid rgba(207,230,90,.25); border-radius:10px; background:rgba(207,230,90,.065); color:#e7eddf; font:600 12px/1.2 system-ui,sans-serif; cursor:pointer; transition:background .18s ease,border-color .18s ease,color .18s ease; }
+.portfolio-audio-prompt:hover,.portfolio-audio-prompt[aria-pressed="true"] { border-color:rgba(207,230,90,.62); background:rgba(207,230,90,.12); color:#f3f7e8; }
+.portfolio-audio-prompt:focus-visible { outline:2px solid #cfe65a; outline-offset:3px; }
+.portfolio-audio-prompt>span:first-child { display:grid; place-items:center; width:21px; height:21px; border-radius:50%; background:#cfe65a; color:#12150e; font-size:15px; line-height:1; }
+.portfolio-audio-prompt[aria-pressed="true"]>span:first-child { animation:club-audio-pulse 1.3s ease-in-out infinite; }
+.project-audio-prompt { margin:12px auto 0; }
 .editorial-content { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 36px 0; min-width: 0; }
 .editorial-content h4 { color: #f3f4f2; font-size:clamp(2.05rem,3.6vw,4.1rem); font-weight:700; letter-spacing:-.06em; line-height:1.05; margin:18px 0 22px; text-align:left; }
 .editorial-content > p { color:#c2c9c8; font-size:clamp(15px,1.35vw,17px); line-height:1.7; margin:0 0 24px; max-width:480px; text-align:left; }
@@ -84,7 +91,7 @@ html { scroll-padding-top: 78px; }
   .editorial-intro h3 { font-size:clamp(1.65rem,7.2vw,2.15rem); margin-inline:auto; }
   .editorial-intro p { font-size:14px; margin-inline:auto; }
   .editorial-case,.editorial-case:nth-child(even) { display:flex; flex-direction:column; gap:0; padding-top:15px; }
-  .editorial-case:nth-child(even) .editorial-media { order:0; }
+  .editorial-case:nth-child(even) .editorial-media-stack { order:0; }
   .editorial-case:nth-child(even) .editorial-content { order:1; }
   .editorial-media { width:100%; height:auto; min-height:0; aspect-ratio: 4/5; max-height:610px; }
   .editorial-media video { width:100%; height:100%; min-height:0; max-height:none; aspect-ratio:4/5; }
@@ -646,6 +653,7 @@ html { scroll-padding-top: 78px; }
 #projects .phone-screen video,#projects .clean-media-frame video,#projects .desktop-frame video {
   display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;border:0!important;border-radius:4px!important;background:transparent!important;box-shadow:none!important;
 }
+#projects .editorial-media-stack { gap:0; }
 #projects .editorial-media {
   width:min(100%,340px);height:auto;min-height:0;max-height:none;aspect-ratio:9/16;margin:0 auto;align-self:center;
   overflow:hidden;border:0;border-radius:4px;background:transparent;

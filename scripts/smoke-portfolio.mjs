@@ -69,7 +69,7 @@ for (const file of ["assets/site.css","assets/site.js","assets/premium-lab.css",
   assert.ok(fs.existsSync(file), "Missing local asset "+file);
   has(html, "./"+file);
 }
-for (const file of ["assets/club-case.css","assets/club-case.js","assets/cases/club-del-coctel-01/character-sheet.webp","assets/cases/club-del-coctel-01/kitchen-anchor.webp","assets/cases/club-del-coctel-01/generated-scene.mp4","assets/cases/club-del-coctel-01/edit-shot-01.webp","assets/cases/club-del-coctel-01/edit-shot-02.webp","assets/cases/club-del-coctel-01/edit-shot-03.webp"]) {
+for (const file of ["assets/club-case.css","assets/club-case.js","assets/cases/club-del-coctel-01/character-sheet.webp","assets/cases/club-del-coctel-01/kitchen-anchor.webp","assets/cases/club-del-coctel-01/generated-scene.mp4","assets/cases/club-del-coctel-01/edit-shot-01.webp","assets/cases/club-del-coctel-01/edit-shot-02.webp","assets/cases/club-del-coctel-01/edit-shot-03.webp","assets/videos/ugc-beauty.mp4","assets/videos/ugc-fashion.mp4","assets/videos/hyperreal-portrait.mp4"]) {
   assert.ok(fs.existsSync(file), "Missing Club case asset "+file);
 }
 assert.ok(fs.existsSync("assets/google-meet-logo.png"), "Asset google-meet-logo.png retained in repository for backward compatibility");
@@ -86,7 +86,7 @@ for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 
   assert.equal(occurrences(html, price), count, "pack price and base disclosures: "+price);
 }
 assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed");
-for(const phrase of ['1 reel vertical 9:16','2 reels verticales 9:16','4 reels verticales 9:16','panel visual personalizado','Antes de generar','Digitalización y cierre en campaña','SILO, de cerca.'])has(html,phrase);
+for(const phrase of ['1 reel vertical 9:16','2 reels verticales 9:16','4 reels verticales 9:16','panel visual personalizado','Antes de generar','Digitalización y cierre en campaña'])has(html,phrase);
 assert.equal(occurrences(html,'data-sample-video'),0,"no duplicated samples");
 has(html,'<title>Pato Creando | Reels UGC y anuncios de producto con IA</title>');
 has(html,'<meta property="og:title" content="Pato Creando | Reels UGC y anuncios de producto con IA" />');
@@ -104,7 +104,7 @@ assert.equal(occurrences(html,'Perfumería de nicho'),0,"removed conceptual perf
 assert.equal(occurrences(html,'SPEC AD · FICTICIO'),0,"Unlicensed spec ads never shipped");
 assert.equal(occurrences(html,'project-item-piero'),0,"Piero media excluded from public build");
 assert.equal(occurrences(html,'editorial-case-ls2'),0,"LS2 media excluded from public build");
-has(html,'./assets/lote-02.css?v=20261027-club-case-2');
+has(html,'./assets/lote-02.css?v=20261027-club-case-3');
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
@@ -121,12 +121,17 @@ assert.equal(occurrences(html,'data-club-step'),4,'four interactive Club stages'
 assert.equal(occurrences(html,'Una lámpara que no existe.'),0,'replaced the UMBRAL project copy');
 assert.equal(occurrences(html,'UMBRAL / 01'),0,'no UMBRAL project heading remains');
 has(html,'De la idea <span>al archivo final.</span>');
-has(html,'Qué recibís / Producción con IA · CLUB DEL CÓCTEL');
+has(html,'QUÉ RECIBÍS / PRODUCCIÓN CON IA · CLUB DEL CÓCTEL');
 has(html,'./assets/cases/club-del-coctel-01/character-sheet.webp');
 has(html,'./assets/cases/club-del-coctel-01/generated-scene.mp4');
 has(html,'./assets/videos/club-del-coctel.mp4');
-has(html,'./assets/club-case.css?v=20261027-2');
-has(html,'./assets/club-case.js?v=20261027-2');
+has(html,'./assets/club-case.css?v=20261027-3');
+has(html,'./assets/club-case.js?v=20261027-3');
+has(html,'data-club-audio');
+has(fs.readFileSync('assets/club-case.js','utf8'),'intervalMs = 6500');
+assert.equal(occurrences(html,'edit-shot-02.webp'),0,'the editing mockup omits the B-roll insert');
+for(const file of ['ugc-beauty.mp4','ugc-fashion.mp4','hyperreal-portrait.mp4'])has(html,'./assets/videos/'+file);
+for(const phrase of ['Uso realista, sin perder naturalidad.','Detalle que resiste el primer plano.','Avatar de moda aplicado a una campaña.'])assert.equal(occurrences(html,phrase),0,'gallery video copy removed: '+phrase);
 assert.equal(occurrences(html,'./assets/umbral-compact.css'),0,'obsolete UMBRAL presentation stylesheet is no longer loaded');
 assert.equal(occurrences(js,'function umbralAutoSequence()'),0,'obsolete UMBRAL playback code removed');
 assert.equal(occurrences(html,'03 / PRODUCTO IA · PERFUMERÍA'),0,'old case replaced');
@@ -135,7 +140,7 @@ assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should no
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
 has(js, 'soundToggle.addEventListener("click", toggleAudio)');
 has(js, 'button.addEventListener("keydown"');
-assert.equal(occurrences(html, 'src="./assets/site.js?v=20261027-club-case-2"'),1);
+assert.equal(occurrences(html, 'src="./assets/site.js?v=20261027-club-case-3"'),1);
 assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
 // Compare against main as ground truth for preservation.
 try {
@@ -207,8 +212,8 @@ assert.equal(occurrences(html,'editorial-campaign-tag'),0,'video copy is not inj
 assert.equal(occurrences(html,'editorial-play-control'),0,'video pause/play buttons are removed');
 assert.equal(occurrences(html,'data-audio-available="true"'),4,'all local portfolio videos with original audio expose it');
 assert.equal(occurrences(html,'data-umbral-audio'),0,'no obsolete UMBRAL audio UI remains');
-assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261027-club-case-2"'),1);
-assert.equal(occurrences(html,'href="./assets/lote-02.css?v=20261027-club-case-2"'),1);
+assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261027-club-case-3"'),1);
+assert.equal(occurrences(html,'href="./assets/lote-02.css?v=20261027-club-case-3"'),1);
 assert.equal(occurrences(html,'id="clubWorkflowTitle"'),1,'interactive project title has a unique id');
 assert.equal(occurrences(html,'id="portfolio-nav-critical"'),1,"critical navbar rules embedded in delivered HTML");
 const criticalNavStyle=html.slice(html.indexOf('<style id="portfolio-nav-critical">'),html.indexOf('</style>',html.indexOf('<style id="portfolio-nav-critical">')));

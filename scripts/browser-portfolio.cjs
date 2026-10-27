@@ -225,7 +225,7 @@ async function test() {
       await page.locator('[aria-labelledby="siloCaseTitle"]').screenshot({path:"artifacts/silo-featured-"+spec.name+".png",animations:"disabled"});
       await page.locator('[data-filter="product"]').click();
       assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product filter is selected");
-      const siloCard=page.locator('#projectGrid .project-item[data-category="product"]').filter({hasText:"SILO, de cerca."});
+      const siloCard=page.locator('#projectGrid .project-item--silo');
       assert.equal(await siloCard.count(),1,"Second SILO ad appears in product gallery");
       assert.equal(await siloCard.evaluate(el=>el.classList.contains("is-hidden")),false,"SILO ad becomes visible in product gallery");
       await siloCard.screenshot({path:"artifacts/silo-gallery-"+spec.name+".png",animations:"disabled"});
