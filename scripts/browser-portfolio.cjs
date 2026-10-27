@@ -159,16 +159,19 @@ async function test() {
       assert.equal(await clubTabs.count(),4,"Four interactive Club stages");
       assert.equal(await page.locator("#caseMyWay video[controls]").count(),0,"No visible native video controls");
       assert.equal(await page.locator("#caseMyWay .club-workflow-video").count(),1,"One video element is reused for production and delivery");
-      assert.equal(await page.locator("#caseMyWay [data-club-title]").textContent(),"Propuesta visual","Proposal is shown first");
+      assert.equal(await page.locator("#caseMyWay .club-workflow-step[aria-selected='true'] .club-workflow-step-copy strong").textContent(),"Propuesta visual","Proposal is shown first");
       await clubTabs.nth(1).click();
-      assert.equal(await page.locator("#caseMyWay [data-club-title]").textContent(),"Producción","Production step selected");
+      assert.equal(await page.locator("#caseMyWay .club-workflow-step[aria-selected='true'] .club-workflow-step-copy strong").textContent(),"Producción","Production step selected");
       assert.equal(await page.locator("#caseMyWay .club-workflow-video").isVisible(),true,"Generated scene is visible");
       assert.ok((await page.locator("#caseMyWay .club-workflow-video").getAttribute("src")).endsWith("generated-scene.mp4"),"Production uses its actual generated clip");
+      const audioPrompt=page.locator("#caseMyWay [data-club-audio]");
+      assert.equal(await audioPrompt.textContent().then(text=>text.trim()),"Escuchar audio","Audio control is concise and has no emoji");
+      assert.equal(await audioPrompt.locator("svg").count(),1,"Audio control uses a drawn icon");
       await clubTabs.nth(2).click();
-      assert.equal(await page.locator("#caseMyWay [data-club-title]").textContent(),"Edición","Edit step selected");
+      assert.equal(await page.locator("#caseMyWay .club-workflow-step[aria-selected='true'] .club-workflow-step-copy strong").textContent(),"Edición","Edit step selected");
       assert.equal(await page.locator("#caseMyWay [data-club-edit]").isVisible(),true,"Editing mockup is visible");
       await clubTabs.nth(3).click();
-      assert.equal(await page.locator("#caseMyWay [data-club-title]").textContent(),"Archivo final","Final delivery selected");
+      assert.equal(await page.locator("#caseMyWay .club-workflow-step[aria-selected='true'] .club-workflow-step-copy strong").textContent(),"Archivo final","Final delivery selected");
       assert.ok((await page.locator("#caseMyWay .club-workflow-video").getAttribute("src")).endsWith("club-del-coctel.mp4"),"Delivery stage reuses the unmodified final reel");
       const viewerMetrics=await page.locator("#caseMyWay [data-club-viewer]").evaluate(el=>{
         const area=el.getBoundingClientRect();

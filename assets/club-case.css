@@ -1,23 +1,24 @@
 /* Club del Cóctel — a compact, interactive production walkthrough. */
-#caseMyWay.club-case{
-  position:relative;
-  isolation:isolate;
-  overflow:hidden;
-  padding:clamp(72px,8vw,116px) 0;
-  border-top:1px solid rgba(255,255,255,.09);
-  background:radial-gradient(ellipse at 28% 58%,rgba(207,230,90,.055),transparent 48%);
-}
+#caseMyWay.club-case{position:relative;isolation:isolate;overflow:hidden;padding:clamp(72px,8vw,116px) 0;border-top:1px solid rgba(255,255,255,.09);background:linear-gradient(135deg,#101617 0%,#0a0e10 52%,#101416 100%)}
+#caseMyWay.club-case::before{position:absolute;z-index:-2;inset:-18% -10%;content:"";pointer-events:none;opacity:.72;filter:blur(24px);background:radial-gradient(ellipse at 19% 34%,rgba(207,230,90,.14),transparent 32%),radial-gradient(ellipse at 76% 23%,rgba(74,128,122,.18),transparent 34%),radial-gradient(ellipse at 61% 86%,rgba(185,129,67,.09),transparent 32%);animation:club-aurora-drift 20s ease-in-out infinite alternate}
+#caseMyWay.club-case::after{position:absolute;z-index:-1;inset:0;content:"";pointer-events:none;opacity:.17;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:68px 68px;mask-image:linear-gradient(180deg,transparent 0%,#000 20%,#000 76%,transparent 100%)}
+@keyframes club-aurora-drift{0%{transform:translate3d(-1.5%,0,0) scale(1)}100%{transform:translate3d(1.5%,-2%,0) scale(1.04)}}
 #caseMyWay #deliverables{scroll-margin-top:96px}
-#caseMyWay .club-case-shell{max-width:1260px}
-#caseMyWay .club-case-head{max-width:940px;margin:0 auto clamp(34px,5vw,58px)}
+#caseMyWay .club-case-shell{position:relative;z-index:1;max-width:1260px}
+#caseMyWay .club-case-head{max-width:1120px;margin:0 auto clamp(34px,5vw,52px)}
 #caseMyWay .club-case-head .case-study-kicker{color:#cfe65a;font-size:10px;font-weight:760;letter-spacing:.18em;text-transform:uppercase}
-#caseMyWay .club-case-head .case-study-title{max-width:850px;margin:16px 0 15px;font-size:clamp(2.8rem,6vw,5.6rem);line-height:.98;letter-spacing:-.065em}
+#caseMyWay .club-case-head .case-study-title{max-width:900px;margin:16px 0 15px;font-size:clamp(2.8rem,6vw,5.6rem);line-height:.98;letter-spacing:-.065em}
 #caseMyWay .club-case-head .case-study-title span{color:#aeb5ac}
 #caseMyWay .club-case-head p{max-width:690px;margin:0;color:#b8c1bd;font-size:clamp(14px,1.3vw,16px);line-height:1.65}
-#caseMyWay .club-workflow{--club-cycle-seconds:6.5s;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(310px,.82fr);align-items:center;gap:clamp(28px,6vw,82px);max-width:1120px;margin:0 auto}
+#caseMyWay .club-workflow{--club-cycle-seconds:6.5s;position:relative;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(300px,.88fr);align-items:center;gap:clamp(24px,4vw,54px);max-width:1180px;margin:0 auto;padding:clamp(14px,2.2vw,24px);overflow:hidden;border:1px solid rgba(255,255,255,.12);border-radius:20px;background:linear-gradient(145deg,rgba(24,30,30,.86),rgba(10,14,15,.91) 56%,rgba(17,22,22,.82));box-shadow:0 30px 88px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.07);backdrop-filter:blur(14px)}
+#caseMyWay .club-workflow-topbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:40px;padding:0 7px 13px;border-bottom:1px solid rgba(255,255,255,.10)}
+#caseMyWay .club-workflow-topbar>strong{color:#eff2ec;font-size:13px;font-weight:680;letter-spacing:-.01em}
+#caseMyWay .club-workflow-topbar>span{display:flex;align-items:center;gap:9px;color:#9ca7a2;font-size:10px;font-weight:650;letter-spacing:.08em}
+#caseMyWay .club-workflow-topbar b{color:#cfe65a;font-size:10px;font-weight:750}
+#caseMyWay .club-workflow-topbar i{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.35)}
 #caseMyWay .club-workflow-stage{display:flex;flex-direction:column;align-items:center;min-width:0;overflow:hidden}
-#caseMyWay .club-workflow-screen{position:relative;display:block;width:min(100%,340px);aspect-ratio:9/16;margin-inline:auto;overflow:hidden;background:transparent}
-#caseMyWay .club-workflow-screen>video[data-club-video]{display:block;width:100%;height:100%;object-fit:cover;border-radius:4px;background:transparent;cursor:pointer}
+#caseMyWay .club-workflow-screen{position:relative;display:block;width:min(100%,350px);aspect-ratio:9/16;margin-inline:auto;overflow:hidden;border:1px solid rgba(255,255,255,.11);border-radius:10px;background:#090c0d;box-shadow:0 22px 58px rgba(0,0,0,.34)}
+#caseMyWay .club-workflow-screen>video[data-club-video]{display:block;width:100%;height:100%;object-fit:cover;border-radius:9px;background:transparent;cursor:pointer}
 #caseMyWay .club-workflow-screen>video[data-club-video]:focus-visible{outline:2px solid #cfe65a;outline-offset:4px}
 #caseMyWay .club-workflow-screen [hidden],#caseMyWay .club-workflow-audio-prompt[hidden]{display:none!important}
 #caseMyWay .club-workflow-screen.is-entering>:not([hidden]){animation:club-stage-enter .42s cubic-bezier(.2,.8,.2,1) both}
@@ -39,26 +40,26 @@
 #caseMyWay .club-edit-audio i:nth-child(3n){--wave-h:14px}
 #caseMyWay .club-edit-audio i:nth-child(4n){--wave-h:5px}
 #caseMyWay .club-edit-audio i:nth-child(5n){--wave-h:11px}
-#caseMyWay .club-workflow-audio-prompt{display:flex;align-items:center;justify-content:center;gap:9px;width:min(100%,340px);min-height:42px;margin:11px auto 0;padding:9px 15px;border:1px solid rgba(207,230,90,.25);border-radius:10px;background:rgba(207,230,90,.065);color:#e7eddf;font:600 12px/1.2 system-ui,sans-serif;cursor:pointer;transition:background .18s ease,border-color .18s ease,color .18s ease}
-#caseMyWay .club-workflow-audio-prompt:hover,#caseMyWay .club-workflow-audio-prompt[aria-pressed="true"]{border-color:rgba(207,230,90,.62);background:rgba(207,230,90,.12);color:#f3f7e8}
+#caseMyWay .club-workflow-audio-prompt{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:auto;min-height:34px;margin:10px auto 0;padding:6px 11px;border:1px solid rgba(255,255,255,.13);border-radius:999px;background:rgba(9,13,14,.62);color:#cfe65a;font:600 11px/1.2 system-ui,sans-serif;cursor:pointer;transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease}
+#caseMyWay .club-workflow-audio-prompt:hover,#caseMyWay .club-workflow-audio-prompt[aria-pressed="true"]{transform:translateY(-1px);border-color:rgba(207,230,90,.6);background:rgba(207,230,90,.1);color:#e7f5ad}
 #caseMyWay .club-workflow-audio-prompt:focus-visible{outline:2px solid #cfe65a;outline-offset:3px}
-#caseMyWay .club-workflow-audio-icon{display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:#cfe65a;color:#12150e;font-size:15px;line-height:1}
-#caseMyWay .club-workflow-audio-prompt[aria-pressed="true"] .club-workflow-audio-icon{animation:club-audio-pulse 1.3s ease-in-out infinite}
-@keyframes club-audio-pulse{50%{box-shadow:0 0 0 5px rgba(207,230,90,.13)}}
-#caseMyWay .club-workflow-caption{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:start;gap:16px;width:min(100%,340px);padding:16px 0 0}
-#caseMyWay .club-workflow-caption>span{padding-top:3px;color:#cfe65a;font-size:9px;font-weight:760;letter-spacing:.13em;white-space:nowrap}
-#caseMyWay .club-workflow-caption strong{display:block;color:#f0f2ed;font-size:16px;font-weight:680;letter-spacing:-.02em;line-height:1.2}
-#caseMyWay .club-workflow-caption p{margin:6px 0 0;color:#aab4b0;font-size:12px;line-height:1.5}
-#caseMyWay .club-workflow-side{min-width:0}
-#caseMyWay .club-workflow-steps{display:grid;border-top:1px solid rgba(255,255,255,.12)}
-#caseMyWay .club-workflow-step{position:relative;display:grid;grid-template-columns:36px minmax(0,1fr) 20px;align-items:center;gap:13px;width:100%;min-height:69px;padding:10px;text-align:left;border:0;border-bottom:1px solid rgba(255,255,255,.10);border-radius:0;background:transparent;color:#e9ede8;cursor:pointer;transition:background .18s ease,border-color .18s ease}
-#caseMyWay .club-workflow-step::after{position:absolute;inset:auto 0 -1px;height:2px;content:"";background:#cfe65a;transform:scaleX(0);transform-origin:left;opacity:0}
+#caseMyWay .club-workflow-audio-icon{width:15px;height:15px;flex:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#caseMyWay .club-workflow-audio-icon path:not(:first-child){stroke-dasharray:15 20;stroke-dashoffset:0;transition:opacity .18s ease}
+#caseMyWay .club-workflow-audio-prompt[aria-pressed="true"] .club-workflow-audio-icon path:not(:first-child){animation:club-audio-wave 1s ease-in-out infinite alternate}
+@keyframes club-audio-wave{to{opacity:.38;stroke-dashoffset:4}}
+#caseMyWay .club-workflow-detail{display:flex;align-items:flex-start;gap:10px;width:min(100%,350px);margin:14px auto 0;padding:11px 13px;border:1px solid rgba(255,255,255,.075);border-radius:9px;background:rgba(255,255,255,.025)}
+#caseMyWay .club-workflow-detail-dot{width:6px;height:6px;flex:none;margin-top:5px;border-radius:50%;background:#cfe65a;box-shadow:0 0 12px rgba(207,230,90,.42)}
+#caseMyWay .club-workflow-detail p{margin:0;color:#b9c2bd;font-size:11px;line-height:1.5}
+#caseMyWay .club-workflow-side{min-width:0;padding:clamp(12px,2vw,20px);border:1px solid rgba(255,255,255,.075);border-radius:14px;background:rgba(5,9,10,.28)}
+#caseMyWay .club-workflow-steps{display:grid;gap:4px}
+#caseMyWay .club-workflow-step{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr) 18px;align-items:center;gap:11px;width:100%;min-height:62px;padding:9px 10px;text-align:left;border:1px solid transparent;border-radius:10px;background:transparent;color:#e9ede8;cursor:pointer;transition:background .18s ease,border-color .18s ease,transform .18s ease}
+#caseMyWay .club-workflow-step::after{position:absolute;inset:auto 10px -1px;height:2px;content:"";background:#cfe65a;transform:scaleX(0);transform-origin:left;opacity:0}
 #caseMyWay .club-workflow-step.is-counting::after{opacity:1;animation:club-step-progress var(--club-cycle-seconds) linear both}
 #caseMyWay .club-workflow.is-auto-paused .club-workflow-step.is-counting::after{animation-play-state:paused}
 @keyframes club-step-progress{to{transform:scaleX(1)}}
-#caseMyWay .club-workflow-step:hover,#caseMyWay .club-workflow-step.is-active{background:linear-gradient(90deg,rgba(207,230,90,.075),transparent 92%)}
-#caseMyWay .club-workflow-number{display:grid;place-items:center;width:32px;height:32px;border:1px solid rgba(255,255,255,.15);border-radius:50%;color:#9da8a4;font-size:10px;font-weight:700;transition:color .18s ease,border-color .18s ease,background .18s ease}
-#caseMyWay .club-workflow-step.is-active .club-workflow-number{border-color:#cfe65a;background:#cfe65a;color:#111512}
+#caseMyWay .club-workflow-step:hover,#caseMyWay .club-workflow-step.is-active{transform:translateX(2px);border-color:rgba(207,230,90,.18);background:linear-gradient(105deg,rgba(207,230,90,.10),rgba(255,255,255,.018) 78%)}
+#caseMyWay .club-workflow-number{display:grid;place-items:center;width:30px;height:30px;border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#9da8a4;font-size:10px;font-weight:700;transition:color .18s ease,border-color .18s ease,background .18s ease}
+#caseMyWay .club-workflow-step.is-active .club-workflow-number{border-color:rgba(207,230,90,.72);background:rgba(207,230,90,.14);color:#dff180}
 #caseMyWay .club-workflow-step-copy{display:grid;min-width:0}
 #caseMyWay .club-workflow-step-copy strong{color:#f0f2ed;font-size:14px;font-weight:700;line-height:1.2}
 #caseMyWay .club-workflow-arrow{color:#88928e;font-size:16px;transition:color .18s ease,transform .18s ease}
@@ -74,13 +75,13 @@
   #caseMyWay.club-case{padding:62px 0 70px}
   #caseMyWay .club-case-head{margin-bottom:27px}
   #caseMyWay .club-case-head .case-study-title{font-size:clamp(2.65rem,11vw,3.8rem)}
-  #caseMyWay .club-workflow{grid-template-columns:minmax(0,1fr);gap:24px}
+  #caseMyWay .club-workflow{grid-template-columns:minmax(0,1fr);gap:18px;padding:12px;border-radius:15px}
+  #caseMyWay .club-workflow-topbar{min-height:34px;padding:0 4px 10px}
+  #caseMyWay .club-workflow-topbar>strong{font-size:12px}
+  #caseMyWay .club-workflow-topbar>span{font-size:9px}
   #caseMyWay .club-workflow-screen{width:min(100%,340px)}
-  #caseMyWay .club-workflow-caption{gap:10px}
-  #caseMyWay .club-workflow-caption>span{font-size:8px}
-  #caseMyWay .club-workflow-caption strong{font-size:15px}
-  #caseMyWay .club-workflow-caption p{font-size:11px}
-  #caseMyWay .club-workflow-step{min-height:67px}
+  #caseMyWay .club-workflow-side{padding:9px;border-radius:11px}
+  #caseMyWay .club-workflow-step{min-height:58px}
   #caseMyWay .club-case-cta{width:100%}
 }
-@media(prefers-reduced-motion:reduce){#caseMyWay .club-workflow-step,#caseMyWay .club-workflow-number,#caseMyWay .club-workflow-arrow,#caseMyWay .club-case-cta,#caseMyWay .club-workflow-audio-prompt{transition:none}#caseMyWay .club-workflow-screen.is-entering>:not([hidden]){animation:none}#caseMyWay .club-workflow-step.is-counting::after,#caseMyWay .club-workflow-audio-prompt[aria-pressed="true"] .club-workflow-audio-icon{animation:none}}
+@media(prefers-reduced-motion:reduce){#caseMyWay.club-case::before{animation:none}#caseMyWay .club-workflow-step,#caseMyWay .club-workflow-number,#caseMyWay .club-workflow-arrow,#caseMyWay .club-case-cta,#caseMyWay .club-workflow-audio-prompt{transition:none}#caseMyWay .club-workflow-screen.is-entering>:not([hidden]){animation:none}#caseMyWay .club-workflow-step.is-counting::after,#caseMyWay .club-workflow-audio-prompt[aria-pressed="true"] .club-workflow-audio-icon path:not(:first-child){animation:none}}

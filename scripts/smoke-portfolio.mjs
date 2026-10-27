@@ -120,13 +120,13 @@ assert.equal(occurrences(html,'class="club-workflow-video"'),1,'one video player
 assert.equal(occurrences(html,'data-club-step'),4,'four interactive Club stages');
 assert.equal(occurrences(html,'Una lámpara que no existe.'),0,'replaced the UMBRAL project copy');
 assert.equal(occurrences(html,'UMBRAL / 01'),0,'no UMBRAL project heading remains');
-has(html,'De la idea <span>al archivo final.</span>');
-has(html,'QUÉ RECIBÍS / PRODUCCIÓN CON IA · CLUB DEL CÓCTEL');
+has(html,'Del primer ancla <span>al montaje.</span>');
+has(html,'CASO DE ESTUDIO');
 has(html,'./assets/cases/club-del-coctel-01/character-sheet.webp');
 has(html,'./assets/cases/club-del-coctel-01/generated-scene.mp4');
 has(html,'./assets/videos/club-del-coctel.mp4');
-has(html,'./assets/club-case.css?v=20261027-3');
-has(html,'./assets/club-case.js?v=20261027-3');
+has(html,'./assets/club-case.css?v=20261027-club-dashboard-1');
+has(html,'./assets/club-case.js?v=20261027-club-dashboard-1');
 has(html,'data-club-audio');
 has(fs.readFileSync('assets/club-case.js','utf8'),'intervalMs = 6500');
 assert.equal(occurrences(html,'edit-shot-02.webp'),0,'the editing mockup omits the B-roll insert');
@@ -152,13 +152,13 @@ try {
   if (!["ENOENT","EPERM"].includes(error?.code)) throw error;
   console.warn("Git unavailable: external URL baseline check omitted.");
 }
-assert.equal(occurrences(html,'data-editorial-reel'),2,"two additional curated reel previews");
+assert.equal(occurrences(html,'data-editorial-reel'),1,"SILO campaign appears once in the curated showcase");
 const archivedProjects = [...html.matchAll(/<article\b[^>]*class="[^"]*\bproject-item\b[^"]*"[^>]*>[\s\S]*?<\/article>/g)].map(match => match[0]);
 assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,2,"two unique campaign cards");
 assert.equal(occurrences(html,"silo-campana-producto-recortado.mp4"),1,"SILO reel appears once");
-assert.equal(occurrences(html,"club-del-coctel.mp4"),2,"Club reel is reused in its project and final delivery stage");
+assert.equal(occurrences(html,"club-del-coctel.mp4"),1,"Club reel appears once in its interactive walkthrough");
 for (const name of ["silo-campana-producto-recortado.mp4","club-del-coctel.mp4"])
   assert.ok(!archivedProjects.some(card=>card.includes(name)),"archive must not repeat featured video: "+name);
 assert.ok(fs.existsSync("assets/videos/club-del-coctel.mp4"), "Club del Cóctel reel asset exists");
@@ -201,7 +201,7 @@ assert.equal(occurrences(html,'social-proof'),0,"no social proof placeholders");
 
 has(html,'id="projectFilters"');
 has(html,'aria-labelledby="siloCaseTitle"');
-has(html,'aria-labelledby="clubCaseTitle"');
+assert.equal(occurrences(html,'aria-labelledby="clubCaseTitle"'),0,"Club project is not duplicated in the showcase");
 has(html,'aria-labelledby="clubWorkflowTitle"');
 has(premiumCss,'.editorial-showcase');
 assert.equal(occurrences(premiumCss,'.editorial-media-note'),0,'no floating caption style over featured videos');
@@ -212,7 +212,7 @@ assert.equal(occurrences(html,'editorial-campaign-tag'),0,'video copy is not inj
 assert.equal(occurrences(html,'editorial-play-control'),0,'video pause/play buttons are removed');
 assert.equal(occurrences(html,'data-audio-available="true"'),4,'all local portfolio videos with original audio expose it');
 assert.equal(occurrences(html,'data-umbral-audio'),0,'no obsolete UMBRAL audio UI remains');
-assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261027-club-case-3"'),1);
+assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261027-club-dashboard-1"'),1);
 assert.equal(occurrences(html,'href="./assets/lote-02.css?v=20261027-club-case-3"'),1);
 assert.equal(occurrences(html,'id="clubWorkflowTitle"'),1,'interactive project title has a unique id');
 assert.equal(occurrences(html,'id="portfolio-nav-critical"'),1,"critical navbar rules embedded in delivered HTML");

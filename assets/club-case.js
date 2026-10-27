@@ -11,14 +11,12 @@
   var edit = root.querySelector("[data-club-edit]");
   var audioButton = root.querySelector("[data-club-audio]");
   var audioLabel = root.querySelector("[data-club-audio-label]");
-  var kicker = root.querySelector("[data-club-kicker]");
-  var title = root.querySelector("[data-club-title]");
   var description = root.querySelector("[data-club-description]");
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   var intervalMs = 6500;
   var timer = null;
   var isInView = true;
-  if (!tabs.length || !stage || !proposal || !edit || !video || !audioButton || !audioLabel || !kicker || !title || !description) return;
+  if (!tabs.length || !stage || !proposal || !edit || !video || !audioButton || !audioLabel || !description) return;
 
   video.dataset.userPaused = "true";
 
@@ -56,14 +54,14 @@
   function resetAudioPrompt() {
     audioButton.hidden = true;
     audioButton.setAttribute("aria-pressed", "false");
-    audioLabel.textContent = "Presiona para escuchar";
+    audioLabel.textContent = "Escuchar audio";
     root.classList.remove("is-audio-active");
   }
 
   function syncAudioPrompt() {
     var active = audioIsActive();
     audioButton.setAttribute("aria-pressed", String(active));
-    audioLabel.textContent = active ? "Escuchando · presiona para pausar" : "Presiona para escuchar";
+    audioLabel.textContent = active ? "Pausar audio" : "Escuchar audio";
     root.classList.toggle("is-audio-active", active);
     scheduleRotation();
   }
@@ -101,15 +99,14 @@
 
     var kind = tab.dataset.kind;
     var isVideo = kind === "video";
-    kicker.textContent = tab.dataset.kicker || "";
-    title.textContent = tab.dataset.title || "";
     description.textContent = tab.dataset.description || "";
     if (isVideo) {
       proposal.hidden = true;
       edit.hidden = true;
       video.hidden = false;
       audioButton.hidden = false;
-      video.setAttribute("aria-label", (tab.dataset.alt || tab.dataset.title || "Video") + ". Presiona para escuchar el audio original; vuelve a presionar para pausar.");
+      var stageName = tab.dataset.alt || (tab.querySelector(".club-workflow-step-copy strong") || {}).textContent || "Video";
+      video.setAttribute("aria-label", stageName + ". Presiona para escuchar el audio original; vuelve a presionar para pausar.");
       var nextSrc = tab.dataset.src || "";
       if (video.getAttribute("src") !== nextSrc) {
         video.setAttribute("src", nextSrc);

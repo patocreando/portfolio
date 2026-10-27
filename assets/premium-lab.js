@@ -16,7 +16,7 @@
     var active=window.__PATO_SOUND_ACTIVE_VIDEO__===video&&!video.muted&&!video.paused;
     button.setAttribute("aria-pressed",String(active));
     var label=button.querySelector("[data-audio-prompt-label]");
-    if(label)label.textContent=active?"Escuchando · presiona para pausar":"Presiona para escuchar";
+    if(label)label.textContent=active?"Pausar audio":"Escuchar audio";
   }
   function setMuted(video,muted) {
     var shouldMute=muted||video.dataset.audioAvailable!=="true";

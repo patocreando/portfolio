@@ -41,12 +41,14 @@ html { scroll-padding-top: 78px; }
 .editorial-media video:focus-visible,#projects .project-video:focus-visible,#top .hero-video:focus-visible,#caseMyWay .club-workflow-video:focus-visible { outline:2px solid #CFE65A;outline-offset:-4px; }
 .editorial-media::after { content:""; position:absolute; pointer-events:none; inset:0; border:1px solid rgba(255,255,255,.08); border-radius:inherit; }
 .editorial-media-stack { display:flex; flex-direction:column; align-items:center; align-self:center; min-width:0; width:100%; }
-.portfolio-audio-prompt { display:flex; align-items:center; justify-content:center; gap:9px; width:min(100%,340px); min-height:42px; margin:11px auto 0; padding:9px 15px; border:1px solid rgba(207,230,90,.25); border-radius:10px; background:rgba(207,230,90,.065); color:#e7eddf; font:600 12px/1.2 system-ui,sans-serif; cursor:pointer; transition:background .18s ease,border-color .18s ease,color .18s ease; }
-.portfolio-audio-prompt:hover,.portfolio-audio-prompt[aria-pressed="true"] { border-color:rgba(207,230,90,.62); background:rgba(207,230,90,.12); color:#f3f7e8; }
+.portfolio-audio-prompt { display:flex; align-items:center; justify-content:center; gap:7px; width:max-content; min-height:34px; margin:10px auto 0; padding:6px 11px; border:1px solid rgba(255,255,255,.13); border-radius:999px; background:rgba(9,13,14,.62); color:#cfe65a; font:600 11px/1.2 system-ui,sans-serif; cursor:pointer; transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease; }
+.portfolio-audio-prompt:hover,.portfolio-audio-prompt[aria-pressed="true"] { transform:translateY(-1px); border-color:rgba(207,230,90,.6); background:rgba(207,230,90,.1); color:#e7f5ad; }
 .portfolio-audio-prompt:focus-visible { outline:2px solid #cfe65a; outline-offset:3px; }
-.portfolio-audio-prompt>span:first-child { display:grid; place-items:center; width:21px; height:21px; border-radius:50%; background:#cfe65a; color:#12150e; font-size:15px; line-height:1; }
-.portfolio-audio-prompt[aria-pressed="true"]>span:first-child { animation:club-audio-pulse 1.3s ease-in-out infinite; }
-.project-audio-prompt { margin:12px auto 0; }
+.portfolio-audio-prompt .audio-prompt-icon { width:15px; height:15px; flex:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.portfolio-audio-prompt .audio-prompt-icon path:not(:first-child) { stroke-dasharray:15 20; stroke-dashoffset:0; transition:opacity .18s ease; }
+.portfolio-audio-prompt[aria-pressed="true"] .audio-prompt-icon path:not(:first-child) { animation:portfolio-audio-wave 1s ease-in-out infinite alternate; }
+@keyframes portfolio-audio-wave { to { opacity:.38; stroke-dashoffset:4; } }
+.project-audio-prompt { margin:10px auto 0; }
 .editorial-content { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 36px 0; min-width: 0; }
 .editorial-content h4 { color: #f3f4f2; font-size:clamp(2.05rem,3.6vw,4.1rem); font-weight:700; letter-spacing:-.06em; line-height:1.05; margin:18px 0 22px; text-align:left; }
 .editorial-content > p { color:#c2c9c8; font-size:clamp(15px,1.35vw,17px); line-height:1.7; margin:0 0 24px; max-width:480px; text-align:left; }
@@ -107,7 +109,8 @@ html { scroll-padding-top: 78px; }
   #caseMyWay { padding-top:70px; padding-bottom:70px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  .editorial-project-link { transition:none; }
+  .editorial-project-link,.portfolio-audio-prompt { transition:none; }
+  .portfolio-audio-prompt[aria-pressed="true"] .audio-prompt-icon path:not(:first-child) { animation:none; }
 }
 
 /* Perfume process board: shared visual case layout. */
