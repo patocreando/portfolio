@@ -91,6 +91,31 @@ assert.equal(occurrences(html,'data-sample-video'),0,"no duplicated samples");
 has(html,'<title>Pato Creando | Reels UGC y anuncios de producto con IA</title>');
 has(html,'<meta property="og:title" content="Pato Creando | Reels UGC y anuncios de producto con IA" />');
 has(html,'<meta name="twitter:title" content="Pato Creando | Reels UGC y anuncios de producto con IA" />');
+
+// Block 1: sharing preview must use an existing lightweight, branded asset.
+const shareImage = "assets/images/pato-creando-ia-content-v4.png";
+const shareImageUrl = "https://patocreando.github.io/portfolio/" + shareImage;
+for (const tag of [
+  '<meta property="og:image" content="' + shareImageUrl + '" />',
+  '<meta property="og:image:type" content="image/png" />',
+  '<meta property="og:image:width" content="1550" />',
+  '<meta property="og:image:height" content="600" />',
+  '<meta name="twitter:card" content="summary_large_image" />',
+  '<meta name="twitter:image" content="' + shareImageUrl + '" />'
+]) has(html,tag,"Social preview metadata: " + tag);
+has(html,'<meta property="og:image:alt" content="Pato Creando: producción audiovisual y contenido comercial con IA" />');
+has(html,'<meta name="twitter:image:alt" content="Pato Creando: producción audiovisual y contenido comercial con IA" />');
+const brandedPng = fs.readFileSync(shareImage);
+assert.deepEqual([...brandedPng.subarray(0,8)],[137,80,78,71,13,10,26,10],"Valid PNG preview asset");
+assert.equal(brandedPng.readUInt32BE(16),1550,"Social image width matches declared metadata");
+assert.equal(brandedPng.readUInt32BE(20),600,"Social image height matches declared metadata");
+assert.ok(brandedPng.length < 100_000,"Share image remains under 100 KB");
+for (const video of ["ugc-beauty.mp4","ugc-fashion.mp4","hyperreal-portrait.mp4"]) {
+  const videoMatch = html.match(new RegExp('<video[^>]*aria-label="[^"]+"[^>]*>\\s*<source src="\\./assets/videos/'+video.replace(".","\\.")+'"'));
+  assert.ok(videoMatch,"Gallery video has accessible descriptive name: "+video);
+}
+assert.ok(/<video[^>]*class="hero-video" aria-label="[^"]+"[^>]*>/.test(html),"Hero showreel has descriptive name");
+
 has(html,'class="pricing-secondary-contact section-reveal"');
 has(html,'href="#contact" aria-label="Ir al formulario de contacto para enviar tu consulta"');
 has(html,'class="contact-brief-hint"');
