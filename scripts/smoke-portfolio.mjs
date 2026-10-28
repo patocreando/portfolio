@@ -78,7 +78,11 @@ assert.equal(occurrences(html,'data-club-step'),4,"four interactive production s
 assert.equal(occurrences(html,'class="club-proposal-board"'),1,"proposal board is a visual mockup");
 assert.equal(occurrences(html,'class="club-edit-board"'),1,"editing timeline is a visual mockup");
 assert.equal(occurrences(html,'class="cloud-node'),0,"separate deliverables cloud removed");
-for(const label of ["Panel previo a generar","Generación controlada","Ritmo, audio y calidad","Clip sin copy ni subtítulos añadidos"])has(html,label);
+// The current Club case exposes four actionable stage tabs, not the retired copy.
+for(const label of ["Propuesta visual","Producción","Edición","Archivo final"]) {
+  assert.equal(occurrences(html,'<strong>'+label+'</strong>'),1,"Club stage label occurs once: "+label);
+}
+for(const kind of ['data-kind="proposal"','data-kind="edit"'])has(html,kind,"Club stage kind: "+kind);
 has(fs.readFileSync("assets/club-case.css","utf8"),"@media(prefers-reduced-motion:reduce)","reduced-motion interactive case");
 
 for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 200.000",1]]) {
@@ -86,6 +90,14 @@ for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 
   assert.equal(occurrences(html, price), count, "pack price and base disclosures: "+price);
 }
 assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed");
+// Commercial copy: preserve base scope and the three fixed plan amounts.
+has(html,'<strong>Anuncios de producto, UGC y campañas visuales con IA.</strong>');
+has(html,'De la idea al video final: dirección creativa, generación realista y postproducción');
+has(html,'<strong>De una pieza a una campaña visual.</strong>');
+assert.equal(occurrences(html,'<span><i data-lucide="check"></i>Propuesta visual previa</span>'),3,"Preproduction included in three plans");
+has(html,'Los planes base no incluyen copy ni subtítulos; pueden cotizarse por separado, al igual que imágenes, carruseles o variantes adicionales.');
+assert.ok(!html.includes('Pagás por el clip terminado, sin copy ni subtítulos añadidos.'),"Retired limitation is no longer a headline");
+
 for(const phrase of ['1 reel vertical 9:16','2 reels verticales 9:16','4 reels verticales 9:16','panel visual personalizado','Antes de generar','Digitalización y cierre en campaña'])has(html,phrase);
 assert.equal(occurrences(html,'data-sample-video'),0,"no duplicated samples");
 has(html,'<title>Pato Creando | Reels UGC y anuncios de producto con IA</title>');
@@ -191,9 +203,9 @@ assert.ok(fs.statSync("assets/videos/club-del-coctel.mp4").size > 1_000_000, "Cl
 assert.ok(fs.existsSync("assets/images/club-del-coctel.jpg"), "Club del Cóctel poster exists");
 assert.equal(occurrences(html,"Perfume real llevado a una estética cinematográfica."),0,"remove duplicate Perfumería IA copy");
 assert.equal(occurrences(html,"Lenguaje de campaña en clave UGC."),0,"remove duplicate UGC perfume copy");
-assert.equal((html.match(/class="editorial-case(?: editorial-case--silo)?"/g)||[]).length,2,"two editorial showcases");
+assert.equal((html.match(/class="editorial-case(?: editorial-case--silo)?"/g)||[]).length,1,"one curated SILO editorial showcase");
 has(html,'Digitalización y cierre en campaña');
-has(html,'Una receta, contada desde la barra.');
+has(html,'<strong>Club del Cóctel</strong>', 'Club case identifies its real project');
 assert.equal(occurrences(html,'03 / PRODUCTO IA · DIRECCIÓN CREATIVA'),0,'old UMBRAL project heading removed');
 assert.equal(occurrences(html,'Una campaña que sí.'),0,'old UMBRAL project copy removed');
 assert.equal(occurrences(html,'Workflow aplicado · My Way'),0,"redundant My Way project card should be removed");
@@ -235,7 +247,7 @@ has(premiumJs,'video.dataset.userUnmuted');
 has(premiumJs,'window.__PATO_ACTIVATE_VIDEO_AUDIO__=activate');
 assert.equal(occurrences(html,'editorial-campaign-tag'),0,'video copy is not injected as an HTML badge');
 assert.equal(occurrences(html,'editorial-play-control'),0,'video pause/play buttons are removed');
-assert.equal(occurrences(html,'data-audio-available="true"'),4,'all local portfolio videos with original audio expose it');
+assert.equal(occurrences(html,'data-audio-available="true"'),3,'three current original-audio videos expose their audio');
 assert.equal(occurrences(html,'data-umbral-audio'),0,'no obsolete UMBRAL audio UI remains');
 assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261027-club-dashboard-1"'),1);
 assert.equal(occurrences(html,'href="./assets/lote-02.css?v=20261027-club-case-3"'),1);
@@ -246,7 +258,7 @@ for(const rule of ['#portfolioHeader .portfolio-nav-layout','#portfolioHeader .p
 assert.ok(html.indexOf('id="portfolio-nav-critical"') < html.indexOf('</head>'),"critical navbar styles load before any page content");
 assert.ok(criticalNavStyle.includes('position:fixed;inset:0 0 auto;z-index:1000;'),"navbar position does not depend on Tailwind runtime");
 
-assert.equal(occurrences(html,'src="./assets/premium-lab.js"'),1);
+assert.equal(occurrences(html,'src="./assets/premium-lab.js?v=20261027-club-dashboard-1"'),1,'versioned premium runtime is loaded exactly once');
 has(html,'class="method-brief-grid"');
 assert.equal(occurrences(html,'class="method-brief-grid"'),1,"single short collaboration timeline");
 assert.equal(occurrences(html,'class="method-brief-grid"'),1,"three-step timeline component");
