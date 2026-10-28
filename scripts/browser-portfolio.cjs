@@ -276,6 +276,12 @@ async function test() {
       assert.equal(await page.locator("#launchOffer .pricing-secondary-contact a[href='#contact']").count(),1,"Visitor can use contact form instead of Instagram");
       assert.equal(await page.locator("#submitLabel").textContent(),"Enviar consulta","Contact button invites a consultation");
       assert.equal(await page.locator("#contactForm .contact-brief-hint").count(),1,"Brief helper appears above form");
+      const pricingTerms=await page.locator("#launchOffer .pricing-packs-disclaimer").evaluate(el=>{
+        const rect=el.getBoundingClientRect();
+        return {size:parseFloat(getComputedStyle(el).fontSize),width:rect.width,scrollWidth:el.scrollWidth,clientWidth:el.clientWidth};
+      });
+      assert.ok(pricingTerms.size>=12,"Pricing scope stays at a readable font size");
+      assert.ok(pricingTerms.scrollWidth<=pricingTerms.clientWidth+2,"Pricing scope does not overflow horizontally");
       await page.locator("#launchOffer").screenshot({path:"artifacts/packs-"+spec.name+".png",animations:"disabled"});
       assert.equal(state.clubStepCount,4,"Club project shows the four expected stages");
       assert.equal(await page.locator("#caseMyWay .club-workflow-step[aria-selected='true']").count(),1,"One stage is active at a time");
