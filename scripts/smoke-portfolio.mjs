@@ -78,7 +78,11 @@ assert.equal(occurrences(html,'data-club-step'),4,"four interactive production s
 assert.equal(occurrences(html,'class="club-proposal-board"'),1,"proposal board is a visual mockup");
 assert.equal(occurrences(html,'class="club-edit-board"'),1,"editing timeline is a visual mockup");
 assert.equal(occurrences(html,'class="cloud-node'),0,"separate deliverables cloud removed");
-for(const label of ["Panel previo a generar","Generación controlada","Ritmo, audio y calidad","Clip sin copy ni subtítulos añadidos"])has(html,label);
+// The current Club case exposes four actionable stage tabs, not the retired copy.
+for(const label of ["Propuesta visual","Producción","Edición","Archivo final"]) {
+  assert.equal(occurrences(html,'<strong>'+label+'</strong>'),1,"Club stage label occurs once: "+label);
+}
+for(const kind of ['data-kind="proposal"','data-kind="edit"'])has(html,kind,"Club stage kind: "+kind);
 has(fs.readFileSync("assets/club-case.css","utf8"),"@media(prefers-reduced-motion:reduce)","reduced-motion interactive case");
 
 for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 200.000",1]]) {
