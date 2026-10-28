@@ -190,6 +190,25 @@ try {
   console.warn("Git unavailable: external URL baseline check omitted.");
 }
 assert.equal(occurrences(html,'data-editorial-reel'),2,"SILO and Mariana each have one curated video");
+
+// Below-fold media loads on visibility; the hero intentionally retains immediate playback.
+const videoTags=html.split("<video ").slice(1).map(chunk=>"<video "+chunk.split(">")[0]+">");
+const curatedVideoTags=videoTags.filter(tag=>tag.includes("data-editorial-reel"));
+assert.equal(curatedVideoTags.length,2,"Two curated video tags exist");
+for(const videoTag of curatedVideoTags){
+  assert.ok(!videoTag.includes(" autoplay"),"Featured reels must not bypass viewport observer via autoplay attribute");
+  assert.ok(videoTag.includes('preload="none"'),"Featured reel defers network preload");
+  assert.ok(videoTag.includes('poster="./assets/images/'),"Featured reel retains real poster");
+}
+const heroTag=videoTags.find(tag=>tag.includes('class="hero-video"'));
+assert.ok(heroTag && heroTag.includes(" autoplay"),"First-screen showreel still autoplays");
+const clubImages=html.split("<img ").slice(1).map(chunk=>"<img "+chunk.split(">")[0]+">").filter(tag=>tag.includes("./assets/cases/club-del-coctel-01/"));
+assert.equal(clubImages.length,5,"Five existing case-study images retained");
+for(const img of clubImages){
+  assert.ok(img.includes('loading="lazy"') && img.includes('decoding="async"'),"Offscreen case study image is lazy and async");
+}
+has(premiumJs,'IntersectionObserver');
+
 const archivedProjects = [...html.matchAll(/<article\b[^>]*class="[^"]*\bproject-item\b[^"]*"[^>]*>[\s\S]*?<\/article>/g)].map(match => match[0]);
 assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
