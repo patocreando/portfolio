@@ -135,6 +135,8 @@ has(html,'<label for="projectType">Tipo y cantidad de piezas</label>');
 has(html,'<span id="submitLabel">Enviar consulta</span>');
 has(html,'<strong id="formStatusTitle">Consulta enviada</strong>');
 has(js,'submitLabel.textContent = "Enviar consulta"');
+has(js,'data.success !== true && data.success !== "true"', "Form provider success field must explicitly confirm delivery");
+has(js,'throw new Error("submit_not_accepted")', "HTTP 200 with rejected payload must open the error/fallback path");
 assert.equal(occurrences(js,'"Enviar propuesta"'),0,"obsolete submission wording removed");
 assert.equal(occurrences(html,'aria-labelledby="siloCaseTitle"'),1,"SILO featured campaign replaces the perfume concept");
 assert.equal(occurrences(html,'Perfumería de nicho'),0,"removed conceptual perfume card stays removed");

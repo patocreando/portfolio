@@ -404,6 +404,51 @@ async function test() {
       await mediaContext.close();
     }
 
+    // Commercial conversion regression: mock the provider; never send a real lead.
+    // FormSubmit may answer HTTP 200 and success:"false" for a rejected submission.
+    const leadContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:"reduce"});
+    const providerReplies=[
+      {success:"false",message:"This form needs Activation"},
+      {success:"true",message:"Form submission successful"}
+    ];
+    const submittedPayloads=[];
+    await leadContext.route("**/*.mp4",route=>route.abort());
+    await leadContext.route("https://formsubmit.co/ajax/**",async route=>{
+      assert.equal(route.request().method(),"POST","Lead form sends POST");
+      submittedPayloads.push(JSON.parse(route.request().postData()));
+      const data=providerReplies.shift();
+      assert.ok(data,"Unexpected extra form submission");
+      await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify(data)});
+    });
+    try {
+      const leadPage=await leadContext.newPage();
+      await leadPage.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
+      await leadPage.locator("#name").fill("Marca prueba QA");
+      await leadPage.locator("#email").fill("cliente@example.com");
+      await leadPage.locator("#projectType").fill("2 reels UGC");
+      await leadPage.locator("#message").fill("Quiero consultar por dos anuncios de producto.");
+      await leadPage.locator('#contactForm button[type="submit"]').click();
+      await leadPage.locator("#formStatus.is-error").waitFor({state:"visible",timeout:10000});
+      assert.equal(await leadPage.locator("#formStatusTitle").textContent(),"No pude enviar la consulta",
+        "Provider rejection never produces a false sent confirmation");
+      assert.equal(await leadPage.locator("#message").inputValue(),"Quiero consultar por dos anuncios de producto.",
+        "Form content is preserved when provider rejects the submission");
+      assert.ok(await leadPage.locator("#mailProviderPicker").isVisible(),
+        "Email fallback becomes available after provider rejection");
+
+      await leadPage.locator('#contactForm button[type="submit"]').click();
+      await leadPage.locator("#formStatus:not(.is-error)").waitFor({state:"visible",timeout:10000});
+      assert.equal(await leadPage.locator("#formStatusTitle").textContent(),"Consulta enviada",
+        "Only accepted provider response displays sent confirmation");
+      assert.equal(await leadPage.locator("#message").inputValue(),"",
+        "Form resets only on confirmed success");
+      assert.equal(submittedPayloads.length,2,"Exactly two intercepted submissions");
+      assert.equal(submittedPayloads[0].project,"2 reels UGC","Project context reaches the provider");
+      console.log(JSON.stringify({formConversionQA:"rejected and accepted provider responses verified",realEmailsSent:0}));
+    } finally {
+      await leadContext.close();
+    }
+
     // Regression: emulate a browser holding the older premium stylesheet.
     // The navbar must still be correctly laid out from critical styles in HTML.
     const cachedPremiumCss=(await fs.readFile("assets/premium-lab.css","utf8")).split("/* Unified navigation / 2026-10-09")[0];
