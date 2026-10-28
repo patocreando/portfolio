@@ -354,7 +354,9 @@ async function test() {
       await mediaPage.waitForTimeout(600);
       assert.equal(mediaRequests.length,0,"Below-fold SILO and Mariana video bytes not requested on initial mobile load");
       await mediaPage.locator(".editorial-case--silo video").scrollIntoViewIfNeeded();
-      await mediaPage.waitForTimeout(650);
+      await mediaPage.waitForTimeout(900);
+      const siloState=await mediaPage.locator(".editorial-case--silo video").evaluate(el=>({preload:el.preload,paused:el.paused,readyState:el.readyState,rect:{top:el.getBoundingClientRect().top,bottom:el.getBoundingClientRect().bottom},reduced:matchMedia("(prefers-reduced-motion: reduce)").matches,autoplay:el.autoplay}));
+      console.log(JSON.stringify({siloState,mediaRequests}));
       assert.ok(mediaRequests.some(p=>p.includes("silo-campana-producto-recortado.mp4")),"SILO requests media when visible");
       await mediaPage.locator(".editorial-case--mariana video").scrollIntoViewIfNeeded();
       await mediaPage.waitForTimeout(650);
