@@ -5307,8 +5307,8 @@
     .pricing-packs-disclaimer {
       margin-top: 18px;
       color: #858C94;
-      font-size: 10.5px;
-      line-height: 1.5;
+      font-size: 12px;
+      line-height: 1.6;
       text-align: center;
     }
 
@@ -11122,7 +11122,7 @@
       .pricing-pack-extra { font-size: 12.5px; }
       .pricing-pack-list span { font-size: 12px; line-height: 1.5; }
       .pricing-pack-note { font-size: 11.5px; }
-      .pricing-packs-disclaimer { font-size: 10px; }
+      .pricing-packs-disclaimer { font-size: 12.5px; }
       .pricing-pack-shared-cta-wrap { margin-top: 20px; padding-inline: 4px; }
       .pricing-pack-shared-cta { min-height: 54px; font-size: 13px; }
     }
