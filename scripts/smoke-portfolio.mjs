@@ -205,6 +205,13 @@ assert.equal(occurrences(html,"Perfume real llevado a una estética cinematográ
 assert.equal(occurrences(html,"Lenguaje de campaña en clave UGC."),0,"remove duplicate UGC perfume copy");
 assert.equal((html.match(/class="editorial-case(?: editorial-case--silo)?"/g)||[]).length,1,"one curated SILO editorial showcase");
 has(html,'Digitalización y cierre en campaña');
+// Curated cases: concrete client and production context without visual overlays.
+has(html,'SILO · CAMPAÑA DE PRODUCTO / 2026');
+has(html,'Una campaña para SILO donde el producto dirige la puesta en escena');
+has(html,'Del detalle de los frascos al cierre de marca');
+has(html,'Del personaje y la cocina definidos en imágenes ancla a la generación, la edición con audio y el reel final.');
+assert.equal(occurrences(html,'class="editorial-overline"'),1,"one featured editorial overline");
+
 has(html,'<strong>Club del Cóctel</strong>', 'Club case identifies its real project');
 assert.equal(occurrences(html,'03 / PRODUCTO IA · DIRECCIÓN CREATIVA'),0,'old UMBRAL project heading removed');
 assert.equal(occurrences(html,'Una campaña que sí.'),0,'old UMBRAL project copy removed');
