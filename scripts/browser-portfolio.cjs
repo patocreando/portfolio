@@ -143,14 +143,18 @@ async function test() {
 
       assert.equal(await page.locator(".editorial-play-control, .content-audio-toggle").count(),0,"Video controls stay off-screen");
       assert.equal(state.clippedDecisionLabels,0,"Case decision labels must fit available grid columns");
-      assert.equal(state.premiumCaseCount,1,"Exactly one current curated editorial campaign (SILO) must render");
+      assert.equal(state.premiumCaseCount,2,"Two distinct featured cases: SILO and Mariana");
       assert.equal(state.archiveTotal,4,"Archive contains four non-duplicated projects");
       assert.equal(state.archiveUGC,2,"UGC archive retains two distinct pieces");
       assert.equal(state.archiveProduct,2,"Campaign archive retains two distinct pieces");
       assert.equal(state.siloFeaturedSources,1,"First SILO ad appears in featured campaign");
        assert.equal(state.siloGallerySources,1,"Second SILO ad appears in campaign gallery");
       assert.equal(state.ugcPerfumeSources,0,"Retired external perfume UGC source stays excluded");
-      assert.equal(state.editorialHeadings.length,1,"Single curated SILO editorial heading must render");
+      assert.equal(state.editorialHeadings.length,2,"SILO and Mariana editorial headings must render");
+      assert.equal(await page.locator(".editorial-case--mariana video[data-editorial-reel] source[src='./assets/videos/mariana-omelette-ugc.mp4']").count(),1,"Mariana has its own playable media");
+      assert.equal(await page.locator(".editorial-case--mariana video[poster='./assets/images/mariana-omelette-ugc.webp']").count(),1,"Mariana has authentic poster");
+      assert.equal(await page.locator(".editorial-case--mariana [data-video-audio-prompt]").count(),1,"Mariana audio has an accessible control");
+
       assert.deepEqual(state.premiumLinks,[],"No redundant editorial gallery CTAs remain");
       assert.equal(await page.locator(".editorial-project-link").count(),0,"Remove the remaining editorial gallery button");
       assert.equal(await page.locator("#projectFilters").count(),1,"Keep the gallery filters section");

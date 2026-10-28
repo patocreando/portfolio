@@ -189,7 +189,7 @@ try {
   if (!["ENOENT","EPERM"].includes(error?.code)) throw error;
   console.warn("Git unavailable: external URL baseline check omitted.");
 }
-assert.equal(occurrences(html,'data-editorial-reel'),1,"SILO campaign appears once in the curated showcase");
+assert.equal(occurrences(html,'data-editorial-reel'),2,"SILO and Mariana each have one curated video");
 const archivedProjects = [...html.matchAll(/<article\b[^>]*class="[^"]*\bproject-item\b[^"]*"[^>]*>[\s\S]*?<\/article>/g)].map(match => match[0]);
 assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
@@ -203,14 +203,22 @@ assert.ok(fs.statSync("assets/videos/club-del-coctel.mp4").size > 1_000_000, "Cl
 assert.ok(fs.existsSync("assets/images/club-del-coctel.jpg"), "Club del Cóctel poster exists");
 assert.equal(occurrences(html,"Perfume real llevado a una estética cinematográfica."),0,"remove duplicate Perfumería IA copy");
 assert.equal(occurrences(html,"Lenguaje de campaña en clave UGC."),0,"remove duplicate UGC perfume copy");
-assert.equal((html.match(/class="editorial-case(?: editorial-case--silo)?"/g)||[]).length,1,"one curated SILO editorial showcase");
+assert.equal((html.match(/class="editorial-case(?: editorial-case--silo| editorial-case--mariana)?"/g)||[]).length,2,"two curated client campaigns");
 has(html,'Digitalización y cierre en campaña');
 // Curated cases: concrete client and production context without visual overlays.
-has(html,'SILO · CAMPAÑA DE PRODUCTO / 2026');
-has(html,'Una campaña para SILO donde el producto dirige la puesta en escena');
+has(html,'PRODUCCIÓN PUBLICITARIA CON IA / 2026');
+has(html,'Dos lenguajes para un mismo objetivo: una campaña sensorial de producto para SILO y un anuncio UGC de cocina con Mariana.');
 has(html,'Del detalle de los frascos al cierre de marca');
+has(html,'id="marianaCaseTitle"');
+has(html,'Del omelette al anuncio UGC.');
+has(html,'./assets/videos/mariana-omelette-ugc.mp4');
+has(html,'./assets/images/mariana-omelette-ugc.webp');
+assert.ok(fs.statSync('assets/videos/mariana-omelette-ugc.mp4').size > 2_000_000,"Mariana web video is not a stub");
+assert.ok(fs.statSync('assets/images/mariana-omelette-ugc.webp').size > 10_000,"Mariana poster exists");
+assert.equal(occurrences(html,'id="marianaCaseTitle"'),1,"single Mariana case heading");
+
 has(html,'Del personaje y la cocina definidos en imágenes ancla a la generación, la edición con audio y el reel final.');
-assert.equal(occurrences(html,'class="editorial-overline"'),1,"one featured editorial overline");
+assert.equal(occurrences(html,'class="editorial-overline"'),1,"one shared editorial overline");
 
 has(html,'<strong>Club del Cóctel</strong>', 'Club case identifies its real project');
 assert.equal(occurrences(html,'03 / PRODUCTO IA · DIRECCIÓN CREATIVA'),0,'old UMBRAL project heading removed');
@@ -254,7 +262,7 @@ has(premiumJs,'video.dataset.userUnmuted');
 has(premiumJs,'window.__PATO_ACTIVATE_VIDEO_AUDIO__=activate');
 assert.equal(occurrences(html,'editorial-campaign-tag'),0,'video copy is not injected as an HTML badge');
 assert.equal(occurrences(html,'editorial-play-control'),0,'video pause/play buttons are removed');
-assert.equal(occurrences(html,'data-audio-available="true"'),3,'three current original-audio videos expose their audio');
+assert.equal(occurrences(html,'data-audio-available="true"'),4,'four current original-audio videos expose their audio');
 assert.equal(occurrences(html,'data-umbral-audio'),0,'no obsolete UMBRAL audio UI remains');
 assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261027-club-dashboard-1"'),1);
 assert.equal(occurrences(html,'href="./assets/lote-02.css?v=20261027-club-case-3"'),1);
