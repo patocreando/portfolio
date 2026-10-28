@@ -90,6 +90,14 @@ for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 
   assert.equal(occurrences(html, price), count, "pack price and base disclosures: "+price);
 }
 assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed");
+// Commercial copy: preserve base scope and the three fixed plan amounts.
+has(html,'<strong>Anuncios de producto, UGC y campañas visuales con IA.</strong>');
+has(html,'De la idea al video final: dirección creativa, generación realista y postproducción');
+has(html,'<strong>De una pieza a una campaña visual.</strong>');
+assert.equal(occurrences(html,'<span><i data-lucide="check"></i>Propuesta visual previa</span>'),3,"Preproduction included in three plans");
+has(html,'Los planes base no incluyen copy ni subtítulos; pueden cotizarse por separado, al igual que imágenes, carruseles o variantes adicionales.');
+assert.ok(!html.includes('Pagás por el clip terminado, sin copy ni subtítulos añadidos.'),"Retired limitation is no longer a headline");
+
 for(const phrase of ['1 reel vertical 9:16','2 reels verticales 9:16','4 reels verticales 9:16','panel visual personalizado','Antes de generar','Digitalización y cierre en campaña'])has(html,phrase);
 assert.equal(occurrences(html,'data-sample-video'),0,"no duplicated samples");
 has(html,'<title>Pato Creando | Reels UGC y anuncios de producto con IA</title>');
