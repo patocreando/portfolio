@@ -1368,7 +1368,9 @@
         var body = encodeURIComponent(mail.body);
         var url = "";
 
-        if (provider === "gmail") {
+        if (provider === "default") {
+          url = "mailto:" + mail.to + "?subject=" + subject + "&body=" + body;
+        } else if (provider === "gmail") {
           url = "https://mail.google.com/mail/?view=cm&fs=1&to=" + to + "&su=" + subject + "&body=" + body;
         } else if (provider === "outlook") {
           url = "https://outlook.live.com/mail/0/deeplink/compose?to=" + to + "&subject=" + subject + "&body=" + body;
@@ -1377,7 +1379,11 @@
         }
 
         if (url) {
-          window.open(url, "_blank", "noopener,noreferrer");
+          if (provider === "default") {
+            window.location.href = url;
+          } else {
+            window.open(url, "_blank", "noopener,noreferrer");
+          }
         }
       }
 
