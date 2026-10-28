@@ -1,0 +1,56 @@
+name: TEMP import Mariana omelette media
+on:
+  push:
+    branches:
+      - feature/mariana-omelette-ugc-20261027
+permissions:
+  contents: write
+jobs:
+  build-media:
+    if: "!contains(github.event.head_commit.message, 'Import verified Mariana media')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: feature/mariana-omelette-ugc-20261027
+      - name: Reconstruct original from Git blobs and verify checksum
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'PY'
+          import base64,hashlib,json,os,urllib.request
+          chunks = ["2d8076f7c7681aef13935c5638cce3961b47e689","5ed5b05a17f4b060592d5507c4f835b8acfbff7c","b6860fe1c3af656dff7e55a2cb48adeba806fe15","b83af3c7cbc0329b5d846dcf07b801c629095404","d0a610bd031f25fab79952365851f606f93d01b5","9c8d99627a90296c1fb4e3d59a9eb952ae7214f6","052017c02c52e0391d7e0a71fab005519f2fce61","53d9ddd9d6b0277fbdc8191ecef3733cd491c0ff","479bfe9b68582b94d6479cba38197b743b277a79","0c6d245c9f29833f937fdf1217fe5c9e304cdd44","8891ecb2312eb6962093aec23743047d6103f180","e4d93895ddb437c34b479e7f91ae10226121e2d3","ce2ebbdc300127b1b7449a51b4af5521dce627e0"]
+          parts=[]
+          for sha in chunks:
+              req=urllib.request.Request(f"https://api.github.com/repos/patocreando/portfolio/git/blobs/{sha}",headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],"Accept":"application/vnd.github+json","User-Agent":"PatoCreando-Portfolio-Media-Import"})
+              with urllib.request.urlopen(req,timeout=30) as response:
+                  data=json.load(response)
+              assert data["encoding"]=="base64"
+              parts.append(base64.b64decode(data["content"]).decode("ascii"))
+          raw=base64.b64decode("".join(parts),validate=True)
+          expected="14403760cab72beb65a789e75dc490ad51c6a1d254e1d5c3a51386099a7afec2"
+          assert hashlib.sha256(raw).hexdigest()==expected,"Source checksum mismatch"
+          with open("/tmp/mariana-omelette-source.mp4","wb") as f:f.write(raw)
+          print(f"Source verified: {len(raw)} bytes")
+          PY
+      - name: Transcode video and extract real poster
+        run: |
+          set -euo pipefail
+          command -v ffmpeg
+          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/mariana-omelette-source.mp4 \\
+            -map 0:v:0 -map 0:a:0 -vf "scale=720:1280:flags=lanczos,format=yuv420p" \\
+            -c:v libx264 -preset medium -crf 27 -maxrate 1800k -bufsize 3600k -g 60 \\
+            -movflags +faststart -c:a aac -b:a 96k assets/videos/mariana-omelette-ugc.mp4
+          ffmpeg -nostdin -hide_banner -loglevel error -y -ss 2.15 -i /tmp/mariana-omelette-source.mp4 \\
+            -frames:v 1 -vf "scale=540:-2" -c:v libwebp -quality 84 assets/images/mariana-omelette-ugc.webp
+          test -s assets/videos/mariana-omelette-ugc.mp4
+          test -s assets/images/mariana-omelette-ugc.webp
+          ffprobe -v error -show_entries stream=codec_name,width,height -of default=noprint_wrappers=1 assets/videos/mariana-omelette-ugc.mp4
+          ls -lh assets/videos/mariana-omelette-ugc.mp4 assets/images/mariana-omelette-ugc.webp
+      - name: Commit reconstructed media on feature branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/videos/mariana-omelette-ugc.mp4 assets/images/mariana-omelette-ugc.webp
+          git commit -m "Import verified Mariana media: 45.57s UGC and own poster"
+          git push origin HEAD:refs/heads/feature/mariana-omelette-ugc-20261027
