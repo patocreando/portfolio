@@ -250,7 +250,7 @@ for(const rule of ['#portfolioHeader .portfolio-nav-layout','#portfolioHeader .p
 assert.ok(html.indexOf('id="portfolio-nav-critical"') < html.indexOf('</head>'),"critical navbar styles load before any page content");
 assert.ok(criticalNavStyle.includes('position:fixed;inset:0 0 auto;z-index:1000;'),"navbar position does not depend on Tailwind runtime");
 
-assert.equal(occurrences(html,'src="./assets/premium-lab.js"'),1);
+assert.equal(occurrences(html,'src="./assets/premium-lab.js?v=20261027-club-dashboard-1"'),1,'versioned premium runtime is loaded exactly once');
 has(html,'class="method-brief-grid"');
 assert.equal(occurrences(html,'class="method-brief-grid"'),1,"single short collaboration timeline");
 assert.equal(occurrences(html,'class="method-brief-grid"'),1,"three-step timeline component");
