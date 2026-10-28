@@ -143,14 +143,14 @@ async function test() {
 
       assert.equal(await page.locator(".editorial-play-control, .content-audio-toggle").count(),0,"Video controls stay off-screen");
       assert.equal(state.clippedDecisionLabels,0,"Case decision labels must fit available grid columns");
-      assert.equal(state.premiumCaseCount,2,"Two new curated case chapters and My Way must render");
+      assert.equal(state.premiumCaseCount,1,"Exactly one current curated editorial campaign (SILO) must render");
       assert.equal(state.archiveTotal,4,"Archive contains four non-duplicated projects");
       assert.equal(state.archiveUGC,2,"UGC archive retains two distinct pieces");
       assert.equal(state.archiveProduct,2,"Campaign archive retains two distinct pieces");
       assert.equal(state.siloFeaturedSources,1,"First SILO ad appears in featured campaign");
        assert.equal(state.siloGallerySources,1,"Second SILO ad appears in campaign gallery");
-      assert.equal(state.ugcPerfumeSources,1,"Beauty perfume UGC video is only present in its featured banner");
-      assert.equal(state.editorialHeadings.length,2,"Curated editorial headings must render");
+      assert.equal(state.ugcPerfumeSources,0,"Retired external perfume UGC source stays excluded");
+      assert.equal(state.editorialHeadings.length,1,"Single curated SILO editorial heading must render");
       assert.deepEqual(state.premiumLinks,[],"No redundant editorial gallery CTAs remain");
       assert.equal(await page.locator(".editorial-project-link").count(),0,"Remove the remaining editorial gallery button");
       assert.equal(await page.locator("#projectFilters").count(),1,"Keep the gallery filters section");
