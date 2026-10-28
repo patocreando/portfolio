@@ -663,3 +663,18 @@ html { scroll-padding-top: 78px; }
 }
 #projects .editorial-media video {width:100%;height:100%;min-height:0;max-height:none;object-fit:cover;background:transparent;}
 #projects .editorial-media::after {display:none;}
+
+/* Avatar value banner */
+#system .avatar-brand-banner{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:36px;padding:clamp(26px,4.5vw,60px);border-radius:24px;border:1px solid rgba(207,230,90,.25);background:radial-gradient(ellipse at 100% 0%,rgba(207,230,90,.12),transparent 58%),linear-gradient(125deg,#192121,#101617);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 24px 65px rgba(0,0,0,.17)}
+#system .avatar-brand-banner::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(180deg,transparent,#cfe65a,transparent);pointer-events:none}
+#system .avatar-brand-banner>div{position:relative;max-width:710px}
+#system .avatar-brand-banner .avatar-brand-kicker{display:flex;align-items:center;gap:9px;font-size:10px;letter-spacing:.16em;color:#cfe65a;text-transform:uppercase;font-weight:700}
+#system .avatar-brand-kicker::before{content:"";width:6px;height:6px;border-radius:50%;background:#cfe65a;box-shadow:0 0 15px rgba(207,230,90,.45)}
+#system .avatar-brand-banner h3{font-size:clamp(2rem,4.1vw,3.7rem);line-height:1.04;letter-spacing:-.055em;margin:22px 0 19px;text-wrap:balance}
+#system .avatar-brand-banner h3 em{display:block;font-style:normal;color:#cfe65a}
+#system .avatar-brand-banner p{max-width:570px;font-size:14px;line-height:1.75;color:#b8c6bf}
+#system .avatar-brand-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+#system .avatar-brand-badges span{padding:8px 12px;border:1px solid rgba(207,230,90,.17);border-radius:999px;background:rgba(207,230,90,.045);font-size:11px;font-weight:500;color:#dce6d7;letter-spacing:.01em}
+#system .avatar-brand-banner .studio-system-cta{align-self:end;position:relative;border-radius:999px;min-height:55px;padding-inline:23px}
+@media(max-width:900px){#system .avatar-brand-banner{grid-template-columns:minmax(0,1fr);gap:28px}#system .avatar-brand-banner .studio-system-cta{justify-self:start;width:auto}}
+@media(max-width:480px){#system .avatar-brand-banner{border-radius:19px;padding:28px 22px}#system .avatar-brand-banner .studio-system-cta{width:100%}#system .avatar-brand-banner h3{font-size:2.15rem}}
