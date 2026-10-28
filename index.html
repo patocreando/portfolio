@@ -67,7 +67,7 @@
   <link rel="stylesheet" href="./assets/site.css" />
   <link rel="stylesheet" href="./assets/premium-lab.css?v=20261028-neon-atmosphere-1" />
   <link rel="stylesheet" href="./assets/lote-02.css?v=20261027-club-case-3" />
-  <link rel="stylesheet" href="./assets/club-case.css?v=20261027-club-dashboard-1" />
+  <link rel="stylesheet" href="./assets/club-case.css?v=20261028-dashboard-2" />
   <!-- Critical nav CSS is inlined to prevent stale GitHub Pages stylesheets from unstyling the header. -->
   <style id="portfolio-nav-critical">
 /* Unified navigation / 2026-10-09
@@ -534,21 +534,22 @@
       <div class="site-shell club-case-shell">
         <header class="club-case-head section-reveal">
           <span class="case-study-kicker">CASO DE ESTUDIO</span>
-          <h2 class="display case-study-title" id="clubWorkflowTitle">Del primer ancla <span>al montaje.</span></h2>
+          <h2 class="display case-study-title" id="clubWorkflowTitle">Del primer ancla <span>al montaje final.</span></h2>
           <p>Del personaje y la cocina definidos en imágenes ancla a la generación, la edición con audio y el reel final. Un caso de continuidad visual de principio a fin.</p>
         </header>
 
         <div class="club-workflow section-reveal" id="deliverables" data-club-viewer>
           <div class="club-workflow-topbar" role="group" aria-label="Resumen del proyecto">
-            <strong>Club del Cóctel</strong>
-            <span><b>9:16</b><i aria-hidden="true"></i>33,8 s</span>
+            <strong><span class="club-project-eyebrow">PROYECTO / 01</span>Club del Cóctel</strong>
+            <div class="club-project-specs"><span>FORMATO<b>9:16</b></span><span>DURACIÓN<b>33,8 s</b></span><span>RECORRIDO<b>4 etapas</b></span></div>
           </div>
           <div class="club-workflow-stage">
+            <div class="club-preview-toolbar"><span data-club-stage-title>01 / Propuesta visual</span><button type="button" data-club-auto aria-pressed="false">Recorrido automático</button></div>
             <div class="club-workflow-screen" id="clubStageMedia" role="tabpanel" aria-live="polite" aria-label="Vista de la etapa seleccionada">
               <div class="club-proposal-board" data-club-proposal>
                 <div class="club-proposal-images">
-                  <figure><img src="./assets/cases/club-del-coctel-01/character-sheet.webp" alt="Ficha visual del personaje con tres ángulos y el mismo vestuario" loading="lazy" decoding="async" /></figure>
-                  <figure><img src="./assets/cases/club-del-coctel-01/kitchen-anchor.webp" alt="Ancla de escena con personaje, cocina y coctelera" loading="lazy" decoding="async" /></figure>
+                  <figure><button type="button" class="club-reference-open" data-club-enlarge aria-label="Ampliar: Personaje / Tres ángulos"><img src="./assets/cases/club-del-coctel-01/character-sheet.webp" alt="Ficha visual del personaje con tres ángulos y el mismo vestuario" loading="lazy" decoding="async" /><span>Ampliar ↗</span></button><figcaption>Personaje / Tres ángulos</figcaption></figure>
+                  <figure><button type="button" class="club-reference-open" data-club-enlarge aria-label="Ampliar: Escenario / Imagen ancla"><img src="./assets/cases/club-del-coctel-01/kitchen-anchor.webp" alt="Ancla de escena con personaje, cocina y coctelera" loading="lazy" decoding="async" /><span>Ampliar ↗</span></button><figcaption>Escenario / Imagen ancla</figcaption></figure>
                 </div>
               </div>
 
@@ -574,24 +575,28 @@
           </div>
 
           <div class="club-workflow-side">
+            <p class="club-panel-label">EXPLORÁ EL PROCESO</p>
             <div class="club-workflow-steps" role="tablist" aria-label="Etapas de producción con IA">
               <button class="club-workflow-step is-active" type="button" role="tab" aria-selected="true" aria-controls="clubStageMedia" data-club-step data-kind="proposal" data-description="Personaje, cocina y coctelera definidos antes de animar.">
-                <span class="club-workflow-number">01</span><span class="club-workflow-step-copy"><strong>Propuesta visual</strong></span><span class="club-workflow-arrow" aria-hidden="true">↗</span>
+                <span class="club-workflow-number">01</span><span class="club-workflow-step-copy"><strong>Propuesta visual</strong><small>Personaje · Escenario · Anclas</small></span><span class="club-workflow-arrow" aria-hidden="true">↗</span>
               </button>
               <button class="club-workflow-step" type="button" role="tab" aria-selected="false" aria-controls="clubStageMedia" data-club-step data-kind="video" data-src="./assets/cases/club-del-coctel-01/generated-scene.mp4" data-description="La escena se produce siguiendo esa guía visual.">
-                <span class="club-workflow-number">02</span><span class="club-workflow-step-copy"><strong>Producción</strong></span><span class="club-workflow-arrow" aria-hidden="true">↗</span>
+                <span class="club-workflow-number">02</span><span class="club-workflow-step-copy"><strong>Producción</strong><small>De imagen a movimiento</small></span><span class="club-workflow-arrow" aria-hidden="true">↗</span>
               </button>
               <button class="club-workflow-step" type="button" role="tab" aria-selected="false" aria-controls="clubStageMedia" data-club-step data-kind="edit" data-description="Selección de planos, ritmo y mezcla de voz antes de exportar.">
-                <span class="club-workflow-number">03</span><span class="club-workflow-step-copy"><strong>Edición</strong></span><span class="club-workflow-arrow" aria-hidden="true">↗</span>
+                <span class="club-workflow-number">03</span><span class="club-workflow-step-copy"><strong>Edición</strong><small>Planos · Ritmo · Audio</small></span><span class="club-workflow-arrow" aria-hidden="true">↗</span>
               </button>
               <button class="club-workflow-step" type="button" role="tab" aria-selected="false" aria-controls="clubStageMedia" data-club-step data-kind="video" data-src="./assets/videos/club-del-coctel.mp4" data-description="Audio original preservado en la exportación.">
-                <span class="club-workflow-number">04</span><span class="club-workflow-step-copy"><strong>Archivo final</strong></span><span class="club-workflow-arrow" aria-hidden="true">↗</span>
+                <span class="club-workflow-number">04</span><span class="club-workflow-step-copy"><strong>Archivo final</strong><small>Reel terminado · Audio original</small></span><span class="club-workflow-arrow" aria-hidden="true">↗</span>
               </button>
             </div>
+            <div class="club-stage-insight" aria-live="polite"><span>CRITERIO DE ESTA ETAPA</span><h3 data-club-insight-title>Definir antes de generar.</h3><p data-club-insight-copy>El personaje, su vestuario y la cocina funcionan como referencia común para construir las escenas.</p></div>
+            <div class="club-continuity-tags"><span>Personaje</span><span>Escenario</span><span>Continuidad</span></div>
             <a href="https://ig.me/m/patocreando" target="_blank" rel="noopener noreferrer" class="club-case-cta" aria-label="Consultar por una producción para tu marca en Instagram">Hablemos de tu proyecto <span aria-hidden="true">↗</span></a>
           </div>
         </div>
       </div>
+      <dialog class="club-reference-dialog" aria-label="Referencia visual ampliada"><button type="button" data-club-close aria-label="Cerrar referencia">Cerrar ×</button><img alt="" /><p></p></dialog>
     </section>
 
 
@@ -1105,7 +1110,7 @@
 
   <script src="./assets/site.js?v=20261027-club-case-3"></script>
   <script defer src="./assets/premium-lab.js?v=20261027-club-dashboard-1"></script>
-  <script defer src="./assets/club-case.js?v=20261027-club-dashboard-1"></script>
+  <script defer src="./assets/club-case.js?v=20261028-dashboard-2"></script>
 
   
 
@@ -1134,3 +1139,4 @@
 
 </body>
 </html>
+
