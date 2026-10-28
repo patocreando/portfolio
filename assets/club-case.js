@@ -14,6 +14,8 @@
   var description = root.querySelector("[data-club-description]");
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   var intervalMs = 6500;
+  var autoEnabled = false;
+  var autoButton = root.querySelector("[data-club-auto]");
   var timer = null;
   var isInView = true;
   if (!tabs.length || !stage || !proposal || !edit || !video || !audioButton || !audioLabel || !description) return;
@@ -30,7 +32,7 @@
   }
 
   function shouldPauseRotation() {
-    return reducedMotion.matches || document.hidden || !isInView || root.matches(":hover") || root.contains(document.activeElement) || audioIsActive();
+    return !autoEnabled || (dialog && dialog.open) || reducedMotion.matches || document.hidden || !isInView || root.matches(":hover") || root.contains(document.activeElement) || audioIsActive();
   }
 
   function scheduleRotation() {
@@ -99,6 +101,18 @@
     });
 
     var kind = tab.dataset.kind;
+    var selectedIndex = tabs.indexOf(tab);
+    root.dataset.stage = kind;
+    stage.setAttribute("aria-labelledby", tab.id);
+    root.querySelector("[data-club-stage-title]").textContent = "0" + (selectedIndex + 1) + " / " + tab.querySelector("strong").textContent;
+    var insights = [
+      ["Definir antes de generar.", "El personaje, su vestuario y la cocina funcionan como referencia común para construir las escenas."],
+      ["Dar movimiento a la identidad.", "La generación parte de las anclas visuales para sostener al personaje y su entorno entre tomas."],
+      ["Construir el ritmo.", "Selección de planos y mezcla de voz para unir las escenas. Esta vista es un esquema ilustrativo del montaje."],
+      ["Ver la pieza completa.", "El resultado reúne las etapas anteriores en un reel vertical de 33,8 segundos, con el audio original preservado."]
+    ];
+    root.querySelector("[data-club-insight-title]").textContent = insights[selectedIndex][0];
+    root.querySelector("[data-club-insight-copy]").textContent = insights[selectedIndex][1];
     var isVideo = kind === "video";
     description.textContent = tab.dataset.description || "";
     if (isVideo) {
@@ -161,6 +175,7 @@
   video.addEventListener("volumechange", syncAudioPrompt);
 
   tabs.forEach(function (tab, index) {
+    tab.id = "club-tab-" + index;
     tab.addEventListener("click", function () { selectStage(tab, false); });
     tab.addEventListener("keydown", function (event) {
       var next = null;
@@ -193,6 +208,28 @@
     observer.observe(root);
   }
 
+  autoButton.addEventListener("click", function () {
+    autoEnabled = !autoEnabled;
+    autoButton.setAttribute("aria-pressed", String(autoEnabled));
+    autoButton.textContent = autoEnabled ? "Detener recorrido" : "Recorrido automático";
+    scheduleRotation();
+  });
+  var dialog = document.querySelector(".club-reference-dialog");
+  root.querySelectorAll("[data-club-enlarge]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var image = button.querySelector("img");
+      dialog.querySelector("img").src = image.src;
+      dialog.querySelector("img").alt = image.alt;
+      dialog.querySelector("p").textContent = image.alt;
+      dialog.showModal();
+      clearTimer();
+    });
+  });
+  dialog.querySelector("[data-club-close]").addEventListener("click", function () { dialog.close(); });
+  dialog.addEventListener("click", function (event) { if (event.target === dialog) dialog.close(); });
+  dialog.addEventListener("close", scheduleRotation);
+
   var initial = tabs.find(function (tab) { return tab.getAttribute("aria-selected") === "true"; }) || tabs[0];
   selectStage(initial, false, true);
 })();
+
