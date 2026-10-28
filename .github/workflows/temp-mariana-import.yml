@@ -36,16 +36,17 @@ jobs:
       - name: Transcode video and extract real poster
         run: |
           set -euo pipefail
-          command -v ffmpeg
-          ffmpeg -nostdin -hide_banner -loglevel error -y -i /tmp/mariana-omelette-source.mp4 \\
+          python -m pip install --quiet --disable-pip-version-check imageio-ffmpeg
+          FFMPEG_BIN="$(python -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')"
+          "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -y -i /tmp/mariana-omelette-source.mp4 \\
             -map 0:v:0 -map 0:a:0 -vf "scale=720:1280:flags=lanczos,format=yuv420p" \\
             -c:v libx264 -preset medium -crf 27 -maxrate 1800k -bufsize 3600k -g 60 \\
             -movflags +faststart -c:a aac -b:a 96k assets/videos/mariana-omelette-ugc.mp4
-          ffmpeg -nostdin -hide_banner -loglevel error -y -ss 2.15 -i /tmp/mariana-omelette-source.mp4 \\
+          "$FFMPEG_BIN" -nostdin -hide_banner -loglevel error -y -ss 2.15 -i /tmp/mariana-omelette-source.mp4 \\
             -frames:v 1 -vf "scale=540:-2" -c:v libwebp -quality 84 assets/images/mariana-omelette-ugc.webp
           test -s assets/videos/mariana-omelette-ugc.mp4
           test -s assets/images/mariana-omelette-ugc.webp
-          ffprobe -v error -show_entries stream=codec_name,width,height -of default=noprint_wrappers=1 assets/videos/mariana-omelette-ugc.mp4
+          "$FFMPEG_BIN" -hide_banner -i assets/videos/mariana-omelette-ugc.mp4 -f null - 2>&1 | tail -n 12
           ls -lh assets/videos/mariana-omelette-ugc.mp4 assets/images/mariana-omelette-ugc.webp
       - name: Commit reconstructed media on feature branch
         run: |
