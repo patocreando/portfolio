@@ -678,3 +678,18 @@ html { scroll-padding-top: 78px; }
 #system .avatar-brand-banner .studio-system-cta{align-self:end;position:relative;border-radius:999px;min-height:55px;padding-inline:23px}
 @media(max-width:900px){#system .avatar-brand-banner{grid-template-columns:minmax(0,1fr);gap:28px}#system .avatar-brand-banner .studio-system-cta{justify-self:start;width:auto}}
 @media(max-width:480px){#system .avatar-brand-banner{border-radius:19px;padding:28px 22px}#system .avatar-brand-banner .studio-system-cta{width:100%}#system .avatar-brand-banner h3{font-size:2.15rem}}
+
+/* Brand atmosphere: soft lime orbs across the landing. */
+main > section {position:relative;isolation:isolate}
+main > section > .landing-atmosphere{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:-1;contain:paint}
+.landing-atmosphere::before,.landing-atmosphere::after{content:"";position:absolute;width:clamp(340px,49vw,740px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(207,230,90,.20) 0%,rgba(175,198,63,.10) 28%,rgba(175,198,63,.035) 48%,transparent 69%);animation:landing-orb-drift 24s ease-in-out infinite alternate}
+.landing-atmosphere::before{left:-24%;top:5%}
+.landing-atmosphere::after{right:-25%;bottom:0;opacity:.8;animation-delay:-12s;animation-direction:alternate-reverse}
+main > section:nth-of-type(even) > .landing-atmosphere::before{left:auto;right:-20%;top:12%}
+main > section:nth-of-type(even) > .landing-atmosphere::after{right:auto;left:-26%;bottom:8%}
+#top .hero-orb{opacity:.8!important}
+#top > .landing-atmosphere::before{top:0;left:-25%;opacity:.75}
+#top > .landing-atmosphere::after{bottom:-10%}
+@keyframes landing-orb-drift{from{transform:translate3d(0,-14px,0) scale(.95)}to{transform:translate3d(32px,30px,0) scale(1.08)}}
+@media(max-width:749px){.landing-atmosphere::before,.landing-atmosphere::after{width:390px;opacity:.7;animation:none}.landing-atmosphere::before{left:-260px}.landing-atmosphere::after{right:-260px}main > section:nth-of-type(even) > .landing-atmosphere::before{right:-250px}main > section:nth-of-type(even) > .landing-atmosphere::after{left:-260px}}
+@media(prefers-reduced-motion:reduce){.landing-atmosphere::before,.landing-atmosphere::after{animation:none}}
