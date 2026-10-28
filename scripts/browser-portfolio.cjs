@@ -140,6 +140,19 @@ async function test() {
         assert.equal(await page.locator("#mobileMenu").evaluate(el=>getComputedStyle(el).visibility),"hidden","Mobile menu links are not focusable while closed");
       }
       await page.locator("#portfolioHeader").screenshot({path:"artifacts/nav-"+spec.name+".png",animations:"disabled"});
+      // Check the skip link in ordinary, unfocused state and when keyboard-focused.
+      const skip=page.locator(".skip-link");
+      const skipBefore=await skip.evaluate(el=>{
+        const rect=el.getBoundingClientRect();
+        return {bottom:rect.bottom,top:rect.top,focused:document.activeElement===el,transform:getComputedStyle(el).transform};
+      });
+      console.log(JSON.stringify({skipLinkInitial:spec.name,...skipBefore}));
+      if(!skipBefore.focused)assert.ok(skipBefore.bottom<=2,"Skip link is outside the viewport until focused");
+      await skip.focus();
+      assert.ok(await skip.evaluate(el=>el.getBoundingClientRect().top>=0),
+        "Skip link appears when keyboard focused");
+      await skip.evaluate(el=>el.blur());
+
 
       assert.equal(await page.locator(".editorial-play-control, .content-audio-toggle").count(),0,"Video controls stay off-screen");
       assert.equal(state.clippedDecisionLabels,0,"Case decision labels must fit available grid columns");
@@ -230,6 +243,21 @@ async function test() {
       assert.equal(await page.locator(".editorial-case-ls2").count(),0,"Unlicensed LS2 media is excluded from release");
       assert.equal(await page.locator(".project-item-piero").count(),0,"Unlicensed Piero media is excluded from release");
       await page.locator('[aria-labelledby="siloCaseTitle"]').screenshot({path:"artifacts/silo-featured-"+spec.name+".png",animations:"disabled"});
+      // Keep independent before/after references for the second featured project.
+      const marianaCase=page.locator(".editorial-case--mariana");
+      assert.equal(await marianaCase.count(),1,"Mariana appears as one featured campaign");
+      const marianaGeometry=await marianaCase.evaluate(el=>{
+        const r=el.getBoundingClientRect(),video=el.querySelector("video"),v=video.getBoundingClientRect();
+        return {width:r.width,left:r.left,right:r.right,videoWidth:v.width,videoHeight:v.height,
+          poster:video.getAttribute("poster"),accessibleName:video.getAttribute("aria-label")};
+      });
+      assert.ok(marianaGeometry.left>=-2 && marianaGeometry.right<=spec.width+2,
+        "Mariana case fits the viewport horizontally");
+      assert.ok(marianaGeometry.videoWidth>180 && marianaGeometry.videoHeight>240,
+        "Mariana showcase video has adequate size");
+      assert.ok(marianaGeometry.accessibleName.includes("Mariana"),"Mariana retains descriptive video label");
+      await marianaCase.screenshot({path:"artifacts/mariana-featured-"+spec.name+".png",animations:"disabled"});
+
       await page.locator('[data-filter="product"]').click();
       assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product filter is selected");
       const siloCard=page.locator('#projectGrid .project-item--silo');
