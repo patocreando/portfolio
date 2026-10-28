@@ -140,6 +140,22 @@ async function test() {
         assert.equal(await page.locator("#mobileMenu").evaluate(el=>getComputedStyle(el).visibility),"hidden","Mobile menu links are not focusable while closed");
       }
       await page.locator("#portfolioHeader").screenshot({path:"artifacts/nav-"+spec.name+".png",animations:"disabled"});
+      // Check the skip link in ordinary, unfocused state and when keyboard-focused.
+      const skip=page.locator(".skip-link");
+      const skipBefore=await skip.evaluate(el=>{
+        const rect=el.getBoundingClientRect();
+        return {bottom:rect.bottom,top:rect.top,focused:document.activeElement===el,transform:getComputedStyle(el).transform};
+      });
+      console.log(JSON.stringify({skipLinkInitial:spec.name,...skipBefore}));
+      if(!skipBefore.focused)assert.ok(skipBefore.bottom<=2,"Skip link is outside the viewport until focused");
+      await skip.focus();
+      assert.ok(await skip.evaluate(el=>el.getBoundingClientRect().top>=0),
+        "Skip link appears when keyboard focused");
+      await skip.evaluate(el=>el.blur());
+      await page.waitForTimeout(250);
+      const skipAfter=await skip.evaluate(el=>({bottom:el.getBoundingClientRect().bottom,focused:document.activeElement===el}));
+      assert.ok(!skipAfter.focused && skipAfter.bottom<=2,"Skip link returns outside viewport after focus leaves");
+
 
       assert.equal(await page.locator(".editorial-play-control, .content-audio-toggle").count(),0,"Video controls stay off-screen");
       assert.equal(state.clippedDecisionLabels,0,"Case decision labels must fit available grid columns");
@@ -230,6 +246,21 @@ async function test() {
       assert.equal(await page.locator(".editorial-case-ls2").count(),0,"Unlicensed LS2 media is excluded from release");
       assert.equal(await page.locator(".project-item-piero").count(),0,"Unlicensed Piero media is excluded from release");
       await page.locator('[aria-labelledby="siloCaseTitle"]').screenshot({path:"artifacts/silo-featured-"+spec.name+".png",animations:"disabled"});
+      // Keep independent before/after references for the second featured project.
+      const marianaCase=page.locator(".editorial-case--mariana");
+      assert.equal(await marianaCase.count(),1,"Mariana appears as one featured campaign");
+      const marianaGeometry=await marianaCase.evaluate(el=>{
+        const r=el.getBoundingClientRect(),video=el.querySelector("video"),v=video.getBoundingClientRect();
+        return {width:r.width,left:r.left,right:r.right,videoWidth:v.width,videoHeight:v.height,
+          poster:video.getAttribute("poster"),accessibleName:video.getAttribute("aria-label")};
+      });
+      assert.ok(marianaGeometry.left>=-2 && marianaGeometry.right<=spec.width+2,
+        "Mariana case fits the viewport horizontally");
+      assert.ok(marianaGeometry.videoWidth>180 && marianaGeometry.videoHeight>240,
+        "Mariana showcase video has adequate size");
+      assert.ok(marianaGeometry.accessibleName.includes("Mariana"),"Mariana retains descriptive video label");
+      await marianaCase.screenshot({path:"artifacts/mariana-featured-"+spec.name+".png",animations:"disabled"});
+
       await page.locator('[data-filter="product"]').click();
       assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product filter is selected");
       const siloCard=page.locator('#projectGrid .project-item--silo');
@@ -245,6 +276,12 @@ async function test() {
       assert.equal(await page.locator("#launchOffer .pricing-secondary-contact a[href='#contact']").count(),1,"Visitor can use contact form instead of Instagram");
       assert.equal(await page.locator("#submitLabel").textContent(),"Enviar consulta","Contact button invites a consultation");
       assert.equal(await page.locator("#contactForm .contact-brief-hint").count(),1,"Brief helper appears above form");
+      const pricingTerms=await page.locator("#launchOffer .pricing-packs-disclaimer").evaluate(el=>{
+        const rect=el.getBoundingClientRect();
+        return {size:parseFloat(getComputedStyle(el).fontSize),width:rect.width,scrollWidth:el.scrollWidth,clientWidth:el.clientWidth};
+      });
+      assert.ok(pricingTerms.size>=12,"Pricing scope stays at a readable font size");
+      assert.ok(pricingTerms.scrollWidth<=pricingTerms.clientWidth+2,"Pricing scope does not overflow horizontally");
       await page.locator("#launchOffer").screenshot({path:"artifacts/packs-"+spec.name+".png",animations:"disabled"});
       assert.equal(state.clubStepCount,4,"Club project shows the four expected stages");
       assert.equal(await page.locator("#caseMyWay .club-workflow-step[aria-selected='true']").count(),1,"One stage is active at a time");
