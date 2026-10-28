@@ -192,16 +192,17 @@ try {
 assert.equal(occurrences(html,'data-editorial-reel'),2,"SILO and Mariana each have one curated video");
 
 // Below-fold media loads on visibility; the hero intentionally retains immediate playback.
-const curatedVideoTags=[...html.matchAll(/<video\\b[^>]*data-editorial-reel[^>]*>/g)].map(match=>match[0]);
+const videoTags=html.split("<video ").slice(1).map(chunk=>"<video "+chunk.split(">")[0]+">");
+const curatedVideoTags=videoTags.filter(tag=>tag.includes("data-editorial-reel"));
 assert.equal(curatedVideoTags.length,2,"Two curated video tags exist");
 for(const videoTag of curatedVideoTags){
-  assert.ok(!/\\bautoplay(?:\\s|=|>)/.test(videoTag),"Featured reels must not bypass viewport observer via autoplay attribute");
+  assert.ok(!videoTag.includes(" autoplay"),"Featured reels must not bypass viewport observer via autoplay attribute");
   assert.ok(videoTag.includes('preload="none"'),"Featured reel defers network preload");
-  assert.ok(/poster="\\.\\/assets\\/images\\/[^"]+"/.test(videoTag),"Featured reel retains real poster");
+  assert.ok(videoTag.includes('poster="./assets/images/'),"Featured reel retains real poster");
 }
-const heroTag=html.match(/<video[^>]*class="hero-video"[^>]*>/)?.[0];
-assert.ok(heroTag && heroTag.includes("autoplay"),"First-screen showreel still autoplays");
-const clubImages=[...html.matchAll(/<img src="\\.\\/assets\\/cases\\/club-del-coctel-01\\/[^"]+"[^>]*>/g)].map(match=>match[0]);
+const heroTag=videoTags.find(tag=>tag.includes('class="hero-video"'));
+assert.ok(heroTag && heroTag.includes(" autoplay"),"First-screen showreel still autoplays");
+const clubImages=html.split("<img ").slice(1).map(chunk=>"<img "+chunk.split(">")[0]+">").filter(tag=>tag.includes("./assets/cases/club-del-coctel-01/"));
 assert.equal(clubImages.length,5,"Five existing case-study images retained");
 for(const img of clubImages){
   assert.ok(img.includes('loading="lazy"') && img.includes('decoding="async"'),"Offscreen case study image is lazy and async");
