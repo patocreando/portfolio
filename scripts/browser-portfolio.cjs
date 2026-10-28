@@ -338,6 +338,32 @@ async function test() {
       await context.close();
     }
 
+    // Real network behavior: featured media stays deferred above the fold,
+    // then is requested when its own card becomes visible (normal motion).
+    const mediaContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:1,reducedMotion:"no-preference"});
+    const mediaRequests=[];
+    await mediaContext.route("**/*.mp4",route=>{
+      const target=new URL(route.request().url()).pathname;
+      if(target.includes("silo-campana-producto-recortado.mp4")||target.includes("mariana-omelette-ugc.mp4"))mediaRequests.push(target);
+      return route.abort();
+    });
+    await mediaContext.route("**/tracker.metricool.com/**",route=>route.abort());
+    try {
+      const mediaPage=await mediaContext.newPage();
+      await mediaPage.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
+      await mediaPage.waitForTimeout(600);
+      assert.equal(mediaRequests.length,0,"Below-fold SILO and Mariana video bytes not requested on initial mobile load");
+      await mediaPage.locator(".editorial-case--silo video").scrollIntoViewIfNeeded();
+      await mediaPage.waitForTimeout(650);
+      assert.ok(mediaRequests.some(p=>p.includes("silo-campana-producto-recortado.mp4")),"SILO requests media when visible");
+      await mediaPage.locator(".editorial-case--mariana video").scrollIntoViewIfNeeded();
+      await mediaPage.waitForTimeout(650);
+      assert.ok(mediaRequests.some(p=>p.includes("mariana-omelette-ugc.mp4")),"Mariana requests media when visible");
+      console.log(JSON.stringify({lazyFeaturedMedia:true,requestedOnVisibility:[...new Set(mediaRequests)]}));
+    } finally {
+      await mediaContext.close();
+    }
+
     // Regression: emulate a browser holding the older premium stylesheet.
     // The navbar must still be correctly laid out from critical styles in HTML.
     const cachedPremiumCss=(await fs.readFile("assets/premium-lab.css","utf8")).split("/* Unified navigation / 2026-10-09")[0];
