@@ -1420,7 +1420,12 @@
             if (!response.ok) throw new Error("submit_failed");
             return response.json();
           })
-          .then(function () {
+          .then(function (data) {
+            // FormSubmit can return HTTP 200 with success: "false".
+            // Never tell a potential client their enquiry arrived unless accepted.
+            if (!data || (data.success !== true && data.success !== "true")) {
+              throw new Error("submit_not_accepted");
+            }
             showFormStatus(
               "success",
               "Consulta enviada",
