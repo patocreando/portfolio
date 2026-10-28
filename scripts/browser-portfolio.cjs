@@ -353,10 +353,11 @@ async function test() {
       await mediaPage.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
       await mediaPage.waitForTimeout(600);
       assert.equal(mediaRequests.length,0,"Below-fold SILO and Mariana video bytes not requested on initial mobile load");
+      const initialPauseState=await mediaPage.locator(".editorial-case video[data-editorial-reel]").evaluateAll(nodes=>nodes.map(el=>el.dataset.userPaused));
+      assert.ok(initialPauseState.every(value=>value!=="true"),"Club initial render must not mark featured videos manually paused");
+
       await mediaPage.locator(".editorial-case--silo video").scrollIntoViewIfNeeded();
       await mediaPage.waitForTimeout(900);
-      const siloState=await mediaPage.locator(".editorial-case--silo video").evaluate(el=>({preload:el.preload,paused:el.paused,readyState:el.readyState,userPaused:el.dataset.userPaused,aria:el.getAttribute("aria-label"),premiumHandler:typeof window.__PATO_ACTIVATE_VIDEO_AUDIO__,rect:{top:el.getBoundingClientRect().top,bottom:el.getBoundingClientRect().bottom},reduced:matchMedia("(prefers-reduced-motion: reduce)").matches,autoplay:el.autoplay}));
-      console.log(JSON.stringify({siloState,mediaRequests,jsResources:await mediaPage.evaluate(()=>[...document.scripts].map(s=>({src:s.src})).filter(x=>x.src.includes("premium-lab")))}));
       assert.ok(mediaRequests.some(p=>p.includes("silo-campana-producto-recortado.mp4")),"SILO requests media when visible");
       await mediaPage.locator(".editorial-case--mariana video").scrollIntoViewIfNeeded();
       await mediaPage.waitForTimeout(650);
