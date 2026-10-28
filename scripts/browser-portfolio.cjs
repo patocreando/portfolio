@@ -435,6 +435,14 @@ async function test() {
         "Form content is preserved when provider rejects the submission");
       assert.ok(await leadPage.locator("#mailProviderPicker").isVisible(),
         "Email fallback becomes available after provider rejection");
+      assert.equal(await leadPage.locator("#mailProviderPicker [data-mail-provider]").count(),4,
+        "Fallback offers default mail, Gmail, Outlook and Yahoo");
+      assert.ok(await leadPage.locator('[data-mail-provider="default"]').isVisible(),
+        "Visitors can open their device mail app without using FormSubmit");
+      const mailGrid=await leadPage.locator("#mailProviderPicker .mail-provider-grid").evaluate(el=>({scrollWidth:el.scrollWidth,clientWidth:el.clientWidth}));
+      assert.ok(mailGrid.scrollWidth<=mailGrid.clientWidth+2,
+        "Mail provider grid fits mobile width without clipping");
+
 
       await leadPage.locator('#contactForm button[type="submit"]').click();
       await leadPage.locator("#formStatus:not(.is-error)").waitFor({state:"visible",timeout:10000});
