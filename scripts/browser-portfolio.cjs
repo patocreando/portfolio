@@ -152,6 +152,9 @@ async function test() {
       assert.ok(await skip.evaluate(el=>el.getBoundingClientRect().top>=0),
         "Skip link appears when keyboard focused");
       await skip.evaluate(el=>el.blur());
+      await page.waitForTimeout(250);
+      const skipAfter=await skip.evaluate(el=>({bottom:el.getBoundingClientRect().bottom,focused:document.activeElement===el}));
+      assert.ok(!skipAfter.focused && skipAfter.bottom<=2,"Skip link returns outside viewport after focus leaves");
 
 
       assert.equal(await page.locator(".editorial-play-control, .content-audio-toggle").count(),0,"Video controls stay off-screen");
