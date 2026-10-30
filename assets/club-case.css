@@ -341,3 +341,11 @@
 @supports not (overflow: clip) {
   #caseMyWay .club-workflow-stage { position: relative; top: auto; }
 }
+
+/* Keep mobile source imagery above the visual QA minimum. */
+@media (max-width: 680px) {
+  #caseMyWay .club-workflow-screen { height: clamp(300px, 82vw, 390px); }
+}
+@media (max-width: 390px) {
+  #caseMyWay .club-workflow-screen { height: 300px; }
+}
