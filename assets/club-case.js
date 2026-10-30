@@ -124,8 +124,13 @@
       video.setAttribute("aria-label", stageName + ". Presiona para escuchar el audio original; vuelve a presionar para pausar.");
       var nextSrc = tab.dataset.src || "";
       if (video.getAttribute("src") !== nextSrc) {
-        video.setAttribute("src", nextSrc);
-        video.load();
+        if (fromScroll) {
+          video.removeAttribute("src");
+          video.load();
+        } else {
+          video.setAttribute("src", nextSrc);
+          video.load();
+        }
       }
       try { video.currentTime = 0; } catch (error) {}
       video.dataset.userPaused = "false";
