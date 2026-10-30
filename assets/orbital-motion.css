@@ -1,0 +1,108 @@
+/* Scroll-led orbital details for the compact creative flow. */
+#system .pc-flow-shell,
+#system .pc-flow-display,
+#system .pc-flow-panel,
+#system .pc-avatar-brief,
+#system .pc-avatar-copy {
+  min-width: 0;
+}
+#system .pc-flow-display {
+  grid-template-columns: minmax(150px, .72fr) minmax(0, 1.5fr);
+  gap: clamp(22px, 3.3vw, 46px);
+}
+#system .pc-flow-visual-orbit,
+#system .pc-avatar-symbol {
+  --pc-orbit-progress: 0;
+  isolation: isolate;
+  transition: filter .35s ease, transform .35s ease;
+}
+#system .pc-flow-visual-orbit::after,
+#system .pc-avatar-symbol::after {
+  content: "";
+  position: absolute;
+  inset: -7%;
+  z-index: -1;
+  border-radius: 50%;
+  background: conic-gradient(from -90deg, rgba(207,230,90,.92) calc(var(--pc-orbit-progress, 0) * 1turn), transparent 0turn);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  filter: drop-shadow(0 0 5px rgba(207,230,90,.5));
+  opacity: .86;
+  pointer-events: none;
+}
+#system .pc-flow-visual-orbit span,
+#system .pc-flow-visual-orbit i,
+#system .pc-flow-visual-orbit b,
+#system .pc-avatar-symbol span {
+  offset-path: circle(39% at 50% 50%);
+  offset-anchor: center;
+  offset-distance: calc(var(--pc-orbit-progress, 0) * 100%);
+  offset-rotate: 0deg;
+}
+#system .pc-flow-visual-orbit span { offset-distance: calc(var(--pc-orbit-progress, 0) * 100%); }
+#system .pc-flow-visual-orbit i { offset-distance: calc((var(--pc-orbit-progress, 0) + .34) * 100%); }
+#system .pc-flow-visual-orbit b { offset-distance: calc((var(--pc-orbit-progress, 0) + .68) * 100%); }
+#system .pc-avatar-symbol span { offset-distance: calc((var(--pc-orbit-progress, 0) + .18) * 100%); }
+#system .pc-flow-visual-orbit.is-inview,
+#system .pc-avatar-symbol.is-inview {
+  filter: drop-shadow(0 0 16px rgba(207,230,90,.12));
+}
+#system .pc-flow-visual-orbit.is-inview { animation: pc-orbit-arrive .9s cubic-bezier(.2,.8,.2,1) both; }
+#system .pc-avatar-symbol.is-inview { animation: pc-avatar-arrive .8s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes pc-orbit-arrive {
+  0% { transform: scale(.92); }
+  65% { transform: scale(1.045); }
+  100% { transform: scale(1); }
+}
+@keyframes pc-avatar-arrive {
+  0% { transform: scale(.88); box-shadow: 0 0 0 rgba(207,230,90,0); }
+  100% { transform: scale(1); box-shadow: 0 0 28px rgba(207,230,90,.11); }
+}
+#system .pc-avatar-brief .pc-avatar-copy { flex: 1 1 auto; }
+#system .pc-avatar-brief .avatar-brand-kicker {
+  display: block;
+  max-width: 100%;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+#system .pc-avatar-brief h3 { max-width: 100%; }
+@media (hover:hover) and (pointer:fine) {
+  #system .pc-flow-visual-orbit:hover,
+  #system .pc-avatar-symbol:hover { filter: drop-shadow(0 0 19px rgba(207,230,90,.25)); }
+  #system .pc-avatar-brief:hover .pc-avatar-symbol { transform: scale(1.05); }
+}
+@media (max-width: 950px) {
+  #system .pc-flow-display { grid-template-columns: minmax(130px, .65fr) minmax(0, 1.35fr); }
+  #system .pc-avatar-brief { grid-template-columns: 55px minmax(0, 1fr); }
+  #system .pc-avatar-brief .studio-system-cta { grid-column: 2; justify-self: start; }
+  #system .pc-avatar-brief .pc-avatar-copy { min-width: 0; }
+}
+@media (max-width: 680px) {
+  #system .pc-flow-display {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    padding: 18px 15px 20px;
+  }
+  #system .pc-flow-visual {
+    display: flex;
+    min-height: 86px;
+    border-right: 0;
+  }
+  #system .pc-flow-visual-index,
+  #system .pc-flow-visual-meter { display: none; }
+  #system .pc-flow-visual-orbit { width: min(68px, 19vw); }
+  #system .pc-flow-panel h4 { font-size: clamp(1.2rem, 5.1vw, 1.55rem); line-height: 1.12; }
+  #system .pc-flow-panel p { font-size: 12px; line-height: 1.55; }
+  #system .pc-flow-tags { gap: 6px; }
+  #system .pc-avatar-brief { grid-template-columns: 1fr; gap: 13px; padding: 22px 18px; }
+  #system .pc-avatar-symbol { width: 46px; height: 46px; }
+  #system .pc-avatar-brief .studio-system-cta { grid-column: auto; justify-self: stretch; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #system .pc-flow-visual-orbit,
+  #system .pc-avatar-symbol,
+  #system .pc-flow-visual-orbit.is-inview,
+  #system .pc-avatar-symbol.is-inview { animation: none !important; transition: none !important; }
+}
