@@ -335,3 +335,9 @@
   #caseMyWay .club-workflow-step::before,
   #caseMyWay .club-workflow-screen.is-entering { transition: none; animation: none; }
 }
+
+/* Preserve position: sticky without creating a clipping scroll container. */
+#caseMyWay.club-case { overflow: clip; }
+@supports not (overflow: clip) {
+  #caseMyWay .club-workflow-stage { position: relative; top: auto; }
+}
