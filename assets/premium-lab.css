@@ -693,3 +693,99 @@ main > section:nth-of-type(even) > .landing-atmosphere::after{right:auto;left:-2
 @keyframes landing-orb-drift{from{transform:translate3d(0,-14px,0) scale(.95)}to{transform:translate3d(32px,30px,0) scale(1.08)}}
 @media(max-width:749px){.landing-atmosphere::before,.landing-atmosphere::after{width:390px;opacity:.7;animation:none}.landing-atmosphere::before{left:-260px}.landing-atmosphere::after{right:-260px}main > section:nth-of-type(even) > .landing-atmosphere::before{right:-250px}main > section:nth-of-type(even) > .landing-atmosphere::after{left:-260px}}
 @media(prefers-reduced-motion:reduce){.landing-atmosphere::before,.landing-atmosphere::after{animation:none}}
+
+/* CONTINUUM 01 — One visual atmosphere from hero to contact (29/10/2026).
+   Shared, seam-free canvas replaces per-section opaque banners and local orbs.
+   Only two small transform-animated radial fields on desktop; no filter blur or JS. */
+main#main-content {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse 41vw 470px at 2% 15%, rgba(207,230,90,.042), transparent 76%),
+    radial-gradient(ellipse 34vw 570px at 98% 48%, rgba(120,160,135,.037), transparent 77%),
+    radial-gradient(ellipse 45vw 510px at 8% 83%, rgba(207,230,90,.028), transparent 78%),
+    linear-gradient(180deg, #101316 0%, #0e1214 49%, #101316 100%) !important;
+}
+
+/* The background is continuous; cards, editorial media and internal panels keep
+   their own surfaces, depth, borders and existing interactive behavior. */
+main#main-content > section,
+main#main-content #launchOffer.pricing-packs {
+  position: relative;
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+main#main-content > section { z-index: 1; }
+
+/* Old glows were restarted and clipped independently at every chapter boundary.
+   Keep the signature hero oval (#top::after), remove only redundant chapter art. */
+main#main-content > section > .landing-atmosphere,
+main#main-content #launchOffer > .landing-atmosphere,
+main#main-content > #services > .services-orb,
+main#main-content > #caseMyWay.club-case::before,
+main#main-content > #caseMyWay.club-case::after,
+main#main-content > #system.studio-system::before,
+main#main-content > #method.method-brief::before {
+  display: none !important;
+}
+
+/* Soft echoes of the hero ellipse: no separate banner backgrounds or costly blur.
+   Transforms are compositor-friendly; no scroll handlers or new assets. */
+main#main-content::before,
+main#main-content::after {
+  content: "";
+  position: fixed;
+  z-index: 0;
+  width: clamp(310px, 41vw, 570px);
+  height: clamp(230px, 30vw, 420px);
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 48% 50%,
+    rgba(207,230,90,.105) 0%,
+    rgba(175,198,63,.048) 38%,
+    rgba(117,130,55,.016) 57%,
+    transparent 74%);
+  opacity: .8;
+  will-change: transform;
+  animation: continuum-ellipse-drift 32s ease-in-out infinite alternate;
+}
+main#main-content::before {
+  top: 14vh;
+  left: max(-260px, -15vw);
+}
+main#main-content::after {
+  right: max(-270px, -16vw);
+  bottom: 12vh;
+  opacity: .52;
+  animation-delay: -17s;
+  animation-direction: alternate-reverse;
+}
+@keyframes continuum-ellipse-drift {
+  from { transform: translate3d(-10px, -8px, 0) rotate(-4deg); }
+  to   { transform: translate3d(18px, 15px, 0) rotate(4deg); }
+}
+
+/* Phones and reduced-motion visitors get the same identity without continuous
+   compositor work. No mobile layout or video interaction is affected. */
+@media (max-width: 749px) {
+  main#main-content::before {
+    width: 335px;
+    height: 285px;
+    left: -226px;
+    top: 12vh;
+    opacity: .52;
+  }
+  main#main-content::after { display: none; }
+  main#main-content::before { animation: none; transform: none; will-change: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  main#main-content::before,
+  main#main-content::after {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
+}
