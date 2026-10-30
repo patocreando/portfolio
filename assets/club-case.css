@@ -130,3 +130,222 @@
 @media(max-width:900px){#caseMyWay .club-workflow{grid-template-columns:minmax(0,1fr);padding:18px}#caseMyWay .club-workflow-steps{grid-template-columns:repeat(2,minmax(0,1fr))}#caseMyWay .club-stage-insight{min-height:0}#caseMyWay .club-workflow-screen{height:540px}}
 @media(max-width:480px){#caseMyWay .club-workflow{padding:12px;gap:14px}#caseMyWay .club-workflow-topbar{align-items:flex-start;gap:20px;flex-direction:column}#caseMyWay .club-project-specs{width:100%;justify-content:space-between}#caseMyWay .club-workflow-stage{padding:10px}#caseMyWay .club-workflow-screen{height:430px}#caseMyWay .club-workflow-side{padding:12px}#caseMyWay .club-workflow-step{grid-template-columns:25px minmax(0,1fr);gap:8px;padding:10px 6px}#caseMyWay .club-workflow-number{width:24px;height:25px}#caseMyWay .club-workflow-arrow{display:none}#caseMyWay .club-workflow-step-copy strong{font-size:12px}#caseMyWay .club-workflow-step-copy small{font-size:9px}#caseMyWay .club-preview-toolbar{font-size:9px;gap:6px}.club-reference-dialog img{height:65dvh}}
 @media(prefers-reduced-motion:reduce){#caseMyWay .club-reference-open img{transition:none}}
+
+
+/* Scroll-led case study: let the section atmosphere show through. */
+#caseMyWay.club-case {
+  padding-block: clamp(54px, 7vw, 92px);
+  background:
+    radial-gradient(ellipse at 18% 46%, rgba(207,230,90,.075), transparent 36%),
+    radial-gradient(ellipse at 82% 62%, rgba(74,128,122,.11), transparent 38%),
+    linear-gradient(180deg, rgba(10,14,15,.78), rgba(10,14,15,.48) 50%, rgba(10,14,15,.76));
+}
+#caseMyWay .club-case-shell { max-width: 1280px; }
+#caseMyWay .club-case-head { margin-bottom: clamp(28px, 4vw, 44px); }
+#caseMyWay .club-workflow {
+  grid-template-columns: minmax(0, 1.12fr) minmax(290px, .88fr);
+  align-items: start;
+  gap: clamp(28px, 5vw, 76px);
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+#caseMyWay .club-workflow-topbar {
+  min-height: 56px;
+  padding: 0 0 14px;
+  border-bottom-color: rgba(255,255,255,.16);
+}
+#caseMyWay .club-workflow-stage {
+  position: sticky;
+  top: clamp(88px, 11vh, 116px);
+  align-self: start;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+#caseMyWay .club-preview-toolbar {
+  margin-bottom: 12px;
+  padding-inline: 1px;
+}
+#caseMyWay .club-preview-toolbar button {
+  min-height: 32px;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+#caseMyWay .club-preview-toolbar button:hover { transform: translateY(-1px); border-color: rgba(207,230,90,.58); }
+#caseMyWay .club-workflow-screen {
+  height: clamp(330px, 40vw, 500px);
+  aspect-ratio: auto;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(20,28,27,.56), rgba(7,12,13,.34));
+  box-shadow: 0 24px 54px rgba(0,0,0,.16);
+}
+#caseMyWay .club-workflow-screen::after {
+  position: absolute;
+  z-index: 3;
+  inset: 0 0 auto;
+  height: 2px;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(90deg, #cfe65a, rgba(207,230,90,.25));
+  transform: scaleX(var(--club-scroll-progress, 0));
+  transform-origin: left center;
+  box-shadow: 0 0 12px rgba(207,230,90,.55);
+}
+#caseMyWay .club-workflow-screen.is-entering { animation: none; }
+#caseMyWay .club-proposal-images {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr);
+  gap: clamp(8px, 1.2vw, 14px);
+  height: 100%;
+  padding: clamp(8px, 1.4vw, 16px);
+}
+#caseMyWay .club-proposal-images figure {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: 10px;
+  background: linear-gradient(155deg, rgba(33,42,39,.52), rgba(7,12,13,.30));
+  box-shadow: 0 14px 32px rgba(0,0,0,.12);
+}
+#caseMyWay .club-reference-open { flex: 1 1 auto; min-height: 0; }
+#caseMyWay .club-reference-open img {
+  object-fit: contain !important;
+  transition: transform .45s cubic-bezier(.2,.7,.2,1), filter .3s ease;
+}
+#caseMyWay .club-reference-open:hover img,
+#caseMyWay .club-reference-open:focus-visible img { transform: scale(1.035); filter: brightness(1.08); }
+#caseMyWay .club-reference-open > span { opacity: .78; transition: opacity .2s ease, transform .2s ease; }
+#caseMyWay .club-reference-open:hover > span,
+#caseMyWay .club-reference-open:focus-visible > span { opacity: 1; transform: translateY(-2px); }
+#caseMyWay figcaption {
+  min-height: 36px;
+  padding: 9px 10px;
+  border-top-color: rgba(255,255,255,.09);
+  background: rgba(7,12,13,.36);
+  line-height: 1.35;
+}
+#caseMyWay .club-edit-board { padding: 12px; }
+#caseMyWay .club-edit-monitor,
+#caseMyWay .club-edit-filmstrip,
+#caseMyWay .club-edit-audio { background-color: rgba(255,255,255,.035); }
+#caseMyWay .club-workflow-detail {
+  margin-top: 11px;
+  padding: 8px 2px;
+  border: 0;
+  background: transparent;
+}
+#caseMyWay .club-workflow-detail-dot { margin-top: 6px; }
+#caseMyWay .club-workflow-side {
+  min-height: 100%;
+  padding: 3px 0 0 clamp(4px, 1.3vw, 18px);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+#caseMyWay .club-panel-label { margin-bottom: 11px; }
+#caseMyWay .club-workflow-steps { gap: 0; }
+#caseMyWay .club-workflow-step {
+  min-height: clamp(82px, 9vw, 108px);
+  grid-template-columns: 38px minmax(0,1fr) 18px;
+  padding: 12px 11px;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  border-radius: 0;
+  background: transparent;
+  transform: none;
+}
+#caseMyWay .club-workflow-step::before {
+  position: absolute;
+  inset: 12px auto 12px 0;
+  width: 2px;
+  content: "";
+  background: #cfe65a;
+  box-shadow: 0 0 12px rgba(207,230,90,.55);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform .3s ease;
+}
+#caseMyWay .club-workflow-step::after { inset: auto 0 -1px; height: 1px; }
+#caseMyWay .club-workflow-step:hover,
+#caseMyWay .club-workflow-step.is-active {
+  transform: none;
+  border-color: rgba(255,255,255,.12);
+  background: linear-gradient(90deg, rgba(207,230,90,.10), transparent 78%);
+}
+#caseMyWay .club-workflow-step.is-active::before { transform: scaleY(1); }
+#caseMyWay .club-workflow-step.is-counting::after { height: 2px; }
+#caseMyWay .club-workflow-step-copy small { margin-top: 5px; }
+#caseMyWay .club-stage-insight {
+  min-height: 0;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top-color: rgba(255,255,255,.16);
+}
+#caseMyWay .club-stage-insight h3 { font-size: clamp(20px, 2.3vw, 25px); }
+#caseMyWay .club-continuity-tags { margin-top: 13px; }
+#caseMyWay .club-case-cta { max-width: 390px; margin-top: 17px; }
+@media (max-width: 900px) {
+  #caseMyWay .club-workflow { grid-template-columns: minmax(0,1fr); gap: 30px; }
+  #caseMyWay .club-workflow-stage { position: relative; top: auto; }
+  #caseMyWay .club-workflow-screen { height: clamp(340px, 68vw, 500px); }
+  #caseMyWay .club-workflow-side { padding: 0; }
+  #caseMyWay .club-workflow-steps { grid-template-columns: minmax(0,1fr); }
+  #caseMyWay .club-workflow-step { min-height: 78px; }
+  #caseMyWay .club-case-cta { max-width: none; }
+}
+@media (max-width: 680px) {
+  #caseMyWay.club-case { padding-block: 52px 62px; }
+  #caseMyWay .club-case-head { margin-bottom: 24px; }
+  #caseMyWay .club-workflow { gap: 24px; }
+  #caseMyWay .club-workflow-topbar { min-height: 0; flex-direction: row; align-items: center; }
+  #caseMyWay .club-workflow-topbar > strong { font-size: 14px; }
+  #caseMyWay .club-project-specs { width: auto; gap: clamp(10px, 3.6vw, 20px); }
+  #caseMyWay .club-project-specs > span { gap: 5px; font-size: 7px; }
+  #caseMyWay .club-project-specs b { font-size: 11px; }
+  #caseMyWay .club-workflow-screen { height: clamp(252px, 72vw, 390px); border-radius: 11px; }
+  #caseMyWay .club-proposal-images { gap: 7px; padding: 7px; }
+  #caseMyWay .club-proposal-images figure { border-radius: 7px; }
+  #caseMyWay figcaption { min-height: 32px; padding: 7px 6px; font-size: 9px; }
+  #caseMyWay .club-reference-open > span { right: 6px; bottom: 6px; padding: 5px 7px; font-size: 8px; }
+  #caseMyWay .club-preview-toolbar { margin-bottom: 8px; }
+  #caseMyWay .club-workflow-step { min-height: 72px; grid-template-columns: 31px minmax(0,1fr) 15px; padding: 10px 9px; }
+  #caseMyWay .club-workflow-number { width: 27px; height: 27px; }
+  #caseMyWay .club-workflow-step-copy strong { font-size: 13px; }
+  #caseMyWay .club-workflow-step-copy small { font-size: 9px; }
+  #caseMyWay .club-stage-insight { margin-top: 20px; padding-top: 17px; }
+}
+@media (max-width: 390px) {
+  #caseMyWay .club-workflow-topbar { align-items: flex-start; flex-direction: column; gap: 10px; }
+  #caseMyWay .club-project-specs { width: 100%; }
+  #caseMyWay .club-workflow-screen { height: 248px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #caseMyWay .club-reference-open img,
+  #caseMyWay .club-reference-open > span,
+  #caseMyWay .club-workflow-step::before,
+  #caseMyWay .club-workflow-screen.is-entering { transition: none; animation: none; }
+}
+
+/* Preserve position: sticky without creating a clipping scroll container. */
+#caseMyWay.club-case { overflow: clip; }
+@supports not (overflow: clip) {
+  #caseMyWay .club-workflow-stage { position: relative; top: auto; }
+}
+
+/* Keep mobile source imagery above the visual QA minimum. */
+@media (max-width: 680px) {
+  #caseMyWay .club-workflow-screen { height: clamp(300px, 82vw, 390px); }
+}
+@media (max-width: 390px) {
+  #caseMyWay .club-workflow-screen { height: 300px; }
+}

@@ -87,7 +87,7 @@
     });
   }
 
-  function selectStage(tab, focus, isInitialRender) {
+  function selectStage(tab, focus, isInitialRender, fromScroll) {
     clearTimer();
     // Initial render must not mark SILO and Mariana as manually paused.
     if (!isInitialRender && window.__PATO_STOP_ACTIVE_VIDEO__) window.__PATO_STOP_ACTIVE_VIDEO__(video);
@@ -124,8 +124,13 @@
       video.setAttribute("aria-label", stageName + ". Presiona para escuchar el audio original; vuelve a presionar para pausar.");
       var nextSrc = tab.dataset.src || "";
       if (video.getAttribute("src") !== nextSrc) {
-        video.setAttribute("src", nextSrc);
-        video.load();
+        if (fromScroll) {
+          video.removeAttribute("src");
+          video.load();
+        } else {
+          video.setAttribute("src", nextSrc);
+          video.load();
+        }
       }
       try { video.currentTime = 0; } catch (error) {}
       video.dataset.userPaused = "false";
@@ -185,6 +190,7 @@
       if (event.key === "End") next = tabs.length - 1;
       if (next === null) return;
       event.preventDefault();
+      manualChangeUntil = Date.now() + 1200;
       selectStage(tabs[next], true);
     });
   });
