@@ -185,6 +185,7 @@
       if (event.key === "End") next = tabs.length - 1;
       if (next === null) return;
       event.preventDefault();
+      manualChangeUntil = Date.now() + 1200;
       selectStage(tabs[next], true);
     });
   });
