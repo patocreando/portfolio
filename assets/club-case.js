@@ -87,7 +87,7 @@
     });
   }
 
-  function selectStage(tab, focus, isInitialRender) {
+  function selectStage(tab, focus, isInitialRender, fromScroll) {
     clearTimer();
     // Initial render must not mark SILO and Mariana as manually paused.
     if (!isInitialRender && window.__PATO_STOP_ACTIVE_VIDEO__) window.__PATO_STOP_ACTIVE_VIDEO__(video);
