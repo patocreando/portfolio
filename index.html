@@ -220,6 +220,7 @@
 
   </style>
   <link rel="stylesheet" href="./assets/silo-update.css?v=20261023-2" />
+  <link rel="stylesheet" href="./assets/compact-flow.css?v=20261029-1" />
 </head>
 
 <body>
@@ -848,91 +849,97 @@
           </div>
           <p class="studio-system-boardnote">No se trata de sumar modelos: se trata de tomar mejores decisiones en cada etapa.</p>
         </div>
-        <div class="studio-system-tools section-reveal" aria-labelledby="systemToolsTitle">
-          <div class="studio-system-tools-head">
+
+        <!-- Compact, progressive disclosure: details appear only when requested. -->
+        <div class="studio-system-tools section-reveal pc-flow" aria-labelledby="systemToolsTitle">
+          <div class="pc-flow-heading">
             <div>
-              <span class="tool-pipeline-overline">FLUJO PROPIO / 01—03</span>
-              <h3 id="systemToolsTitle">De la idea a la pieza final.</h3>
+              <p class="pc-flow-eyebrow">FLUJO PROPIO <span aria-hidden="true">/</span> 01—03</p>
+              <h3 id="systemToolsTitle">De la idea <span>a la pieza final.</span></h3>
             </div>
-            <p>Mi flujo de trabajo conecta dirección visual, generación en Google Labs y un pipeline propio en Python. Cada etapa tiene un propósito: cuidar la identidad, dar continuidad a las tomas y llegar a una entrega lista para publicar.</p>
+            <p>Una dirección. Tres etapas.</p>
           </div>
-          <div class="studio-system-toolgrid" role="list" aria-label="Etapas de mi flujo de trabajo">
-            <div class="tool-pipeline-card tool-pipeline-direction" role="listitem" style="--wave-stagger:0s">
-              <div class="tool-pipeline-card-heading">
-                <span class="tool-pipeline-number">01 / Dirección</span>
-                <span class="tool-pipeline-corner" aria-hidden="true">↗</span>
-              </div>
-              <h4>Una base para cada toma</h4>
-              <p class="tool-pipeline-description">Defino el concepto, el guion y las referencias. Planifico las tomas y las imágenes ancla para sostener personajes, producto y estética durante toda la pieza.</p>
-              <div class="studio-system-tags" aria-label="Bases de la dirección visual"><span>Guion</span><span>Referencias</span><span>Imágenes ancla</span></div>
+
+          <div class="pc-flow-shell">
+            <div class="pc-flow-tabs" role="tablist" aria-label="Explorar el flujo creativo" aria-orientation="horizontal">
+              <button type="button" class="pc-flow-tab is-active" role="tab" id="pcFlowTab1" aria-selected="true" aria-controls="pcFlowPanel1" tabindex="0" data-pc-flow-tab="1">
+                <span class="pc-flow-tab-number">01</span><span>Dirección</span><span class="pc-flow-tab-arrow" aria-hidden="true">↗</span>
+              </button>
+              <button type="button" class="pc-flow-tab" role="tab" id="pcFlowTab2" aria-selected="false" aria-controls="pcFlowPanel2" tabindex="-1" data-pc-flow-tab="2">
+                <span class="pc-flow-tab-number">02</span><span>Generación</span><span class="pc-flow-tab-arrow" aria-hidden="true">↗</span>
+              </button>
+              <button type="button" class="pc-flow-tab" role="tab" id="pcFlowTab3" aria-selected="false" aria-controls="pcFlowPanel3" tabindex="-1" data-pc-flow-tab="3">
+                <span class="pc-flow-tab-number">03</span><span>Acabado</span><span class="pc-flow-tab-arrow" aria-hidden="true">↗</span>
+              </button>
             </div>
-            <div class="tool-pipeline-card tool-pipeline-generation" role="listitem" style="--wave-stagger:-3.2s">
-              <div class="tool-pipeline-card-heading">
-                <span class="tool-pipeline-number">02 / Generación</span>
-                <span class="tool-pipeline-corner" aria-hidden="true">↗</span>
+
+            <div class="pc-flow-display">
+              <div class="pc-flow-visual" aria-hidden="true">
+                <span class="pc-flow-visual-index" data-pc-flow-visual-index>01 / 03</span>
+                <div class="pc-flow-visual-orbit"><span></span><i></i><b></b></div>
+                <div class="pc-flow-visual-meter"><span class="is-current"></span><span></span><span></span></div>
               </div>
-              <h4>Google Labs como centro</h4>
-              <p class="tool-pipeline-description">Concentro la mayor parte de la generación en Flow, dentro de Google Labs. Trabajo imagen, movimiento y continuidad, y complemento con Higgsfield según lo que necesita cada escena.</p>
-              <div class="tool-apps tool-apps--two" aria-label="Herramientas de generación">
-                <div class="tool-app" title="Google Labs · Flow">
-                  <span class="tool-app-logo tool-app-logo--color" aria-hidden="true"><img src="./assets/tool-icons/veo.svg" alt="" loading="lazy" decoding="async" width="36" height="36"></span>
-                  <span class="tool-app-name">Google Labs · Flow</span>
-                </div>
-                <div class="tool-app" title="Higgsfield">
-                  <span class="tool-app-logo tool-app-logo--color" aria-hidden="true"><img src="./assets/tool-icons/higgsfield.svg" alt="" loading="lazy" decoding="async" width="36" height="36"></span>
-                  <span class="tool-app-name">Higgsfield</span>
-                </div>
-              </div>
-            </div>
-            <div class="tool-pipeline-card tool-pipeline-finishing" role="listitem" style="--wave-stagger:-6.4s">
-              <div class="tool-pipeline-card-heading">
-                <span class="tool-pipeline-number">03 / Pipeline y acabado</span>
-                <span class="tool-pipeline-corner" aria-hidden="true">↗</span>
-              </div>
-              <h4>Montaje con un sistema propio</h4>
-              <p class="tool-pipeline-description">Mi pipeline en Python + FFmpeg conecta montaje, audio, subtítulos y exportación. Uso Canva para piezas gráficas y reviso ritmo, sincronía y calidad antes de entregar.</p>
-              <div class="tool-apps tool-apps--two" style="grid-template-columns:repeat(2,minmax(0,1fr))" aria-label="Herramientas de montaje y acabado">
-                <div class="tool-app" title="Python">
-                  <span class="tool-app-logo tool-app-logo--color" aria-hidden="true"><img src="./assets/tool-icons/python.svg" alt="" loading="lazy" decoding="async" width="36" height="36"></span>
-                  <span class="tool-app-name">Python</span>
-                </div>
-                <div class="tool-app" title="Canva">
-                  <span class="tool-app-logo tool-app-logo--color" aria-hidden="true"><img src="./assets/tool-icons/canva-initial.svg" alt="" loading="lazy" decoding="async" width="36" height="36"></span>
-                  <span class="tool-app-name">Canva</span>
-                </div>
+              <div class="pc-flow-panels">
+                <section class="pc-flow-panel" id="pcFlowPanel1" role="tabpanel" aria-labelledby="pcFlowTab1" tabindex="0" data-pc-flow-panel="1">
+                  <span class="pc-flow-panel-label">CONCEPTO / CONTINUIDAD</span>
+                  <h4>Una base para cada toma.</h4>
+                  <p>Guion, referencias e imágenes ancla para mantener la identidad del producto.</p>
+                  <div class="pc-flow-tags"><span>Guion</span><span>Referencias</span><span>Anclas</span></div>
+                </section>
+                <section class="pc-flow-panel" id="pcFlowPanel2" role="tabpanel" aria-labelledby="pcFlowTab2" tabindex="0" data-pc-flow-panel="2" hidden>
+                  <span class="pc-flow-panel-label">IMAGEN / MOVIMIENTO</span>
+                  <h4>Crear sin perder coherencia.</h4>
+                  <p>Generación en Flow y Higgsfield, manteniendo personajes, escenas y producto.</p>
+                  <div class="pc-flow-tags pc-flow-tags--tools">
+                    <span><img src="./assets/tool-icons/veo.svg" alt="" loading="lazy" width="18" height="18"> Flow</span>
+                    <span><img src="./assets/tool-icons/higgsfield.svg" alt="" loading="lazy" width="18" height="18"> Higgsfield</span>
+                  </div>
+                </section>
+                <section class="pc-flow-panel" id="pcFlowPanel3" role="tabpanel" aria-labelledby="pcFlowTab3" tabindex="0" data-pc-flow-panel="3" hidden>
+                  <span class="pc-flow-panel-label">RITMO / CONTROL DE CALIDAD</span>
+                  <h4>Todo listo para publicar.</h4>
+                  <p>Montaje y audio con Python + FFmpeg; acabado gráfico y revisión final.</p>
+                  <div class="pc-flow-tags pc-flow-tags--tools">
+                    <span><img src="./assets/tool-icons/python.svg" alt="" loading="lazy" width="18" height="18"> Python + FFmpeg</span>
+                    <span><img src="./assets/tool-icons/canva-initial.svg" alt="" loading="lazy" width="18" height="18"> Canva</span>
+                  </div>
+                </section>
               </div>
             </div>
           </div>
-          <p class="tool-pipeline-caption">Automatización en el montaje. Criterio visual en cada decisión.</p>
         </div>
-        <div class="studio-system-conversion avatar-brand-banner section-reveal">
-          <div>
-            <span class="avatar-brand-kicker">Avatares / Identidad de marca</span>
-            <h3>Un personaje propio.<em>La cara de tu marca.</em></h3>
-            <p>Los avatares que creo para tu proyecto quedan disponibles para uso libre de tu marca en contenido, redes y campañas de ads. Si querés, desarrollamos un personaje recurrente que sea su cara visible, con una identidad reconocible en cada pieza.</p>
-            <div class="avatar-brand-badges" aria-label="Usos del avatar"><span>Uso libre para tu marca</span><span>Contenido + Ads</span><span>Identidad recurrente</span></div>
+
+        <aside class="studio-system-conversion avatar-brand-banner section-reveal pc-avatar-brief" aria-label="Avatares de marca">
+          <span class="pc-avatar-symbol" aria-hidden="true"><span></span></span>
+          <div class="pc-avatar-copy">
+            <span class="avatar-brand-kicker">AVATARES / IDENTIDAD DE MARCA</span>
+            <h3>Tu marca tiene una cara. <em>Que sea reconocible.</em></h3>
+            <p>Personajes consistentes para contenido y Ads, con uso libre para tu marca.</p>
           </div>
           <a class="studio-system-cta" href="#contact">Contame el proyecto <span aria-hidden="true">↗</span></a>
-        </div>
+        </aside>
       </div>
     </section>
 
-<section id="method" class="method-brief" aria-labelledby="methodBriefTitle">
-      <div class="landing-atmosphere" aria-hidden="true"></div>
+
+    <section id="method" class="method-brief pc-method-compact" aria-labelledby="methodBriefTitle">
       <div class="site-shell">
-        <div class="method-brief-head section-reveal">
-          <div><p class="method-brief-kicker">Colaboración</p><h2 class="display" id="methodBriefTitle">Del resumen del proyecto <span>a los archivos finales.</span></h2></div>
-          <p>Un recorrido claro para trabajar juntos, ya seas una marca o parte de un equipo creativo.</p>
+        <div class="pc-method-heading section-reveal">
+          <p class="method-brief-kicker">COLABORACIÓN / 01—03</p>
+          <h2 class="display" id="methodBriefTitle">Trabajar juntos. <span>Sin vueltas.</span></h2>
         </div>
-        <div class="method-brief-stage section-reveal">
-          <video class="method-brief-ambient" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true"><source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/8ece9361-a363-477c-8a2e-e6d221cdc562.mp4" type="video/mp4" /></video>
-          <div class="method-brief-grid">
-            <article><span>01 / Diagnóstico</span><h3>Evaluamos el resumen del proyecto.</h3><p>Objetivo, producto, duración, complejidad, referencias, alcance y presupuesto antes de producir.</p></article>
-            <article><span>02 / Propuesta y producción</span><h3>Primero visualizamos la idea.</h3><p>Presento un panel personalizado con enfoque y tomas. Una vez acordado, avanzamos con generación, edición y revisión.</p></article>
-            <article><span>03 / Entrega</span><h3>Cerramos con criterio.</h3><p>Control de identidad, edición y exportación en el formato solicitado.</p></article>
-          </div>
+        <div class="pc-method-track section-reveal" role="list" aria-label="Etapas de trabajo">
+          <article role="listitem"><span>01</span><div><h3>Brief</h3><p>Objetivo, producto y alcance.</p></div></article>
+          <article role="listitem"><span>02</span><div><h3>Propuesta</h3><p>Panel visual y validación previa.</p></div></article>
+          <article role="listitem"><span>03</span><div><h3>Entrega</h3><p>Edición, revisión y archivos finales.</p></div></article>
         </div>
-        <p class="method-brief-scope section-reveal"><strong>Alcance, revisiones y plazos de entrega:</strong> se definen por escrito luego de evaluar la complejidad del resumen del proyecto, la fidelidad de producto, las escenas y las piezas solicitadas. No se inicia la generación final hasta validar la propuesta visual y el presupuesto. <strong>Pago:</strong> se realiza al momento de la entrega final.</p>
+        <div class="pc-method-bottom section-reveal">
+          <p>Alcance por escrito <span aria-hidden="true">·</span> Aprobación antes de generar <span aria-hidden="true">·</span> Pago a la entrega</p>
+          <details class="pc-method-details">
+            <summary>Condiciones de trabajo <span aria-hidden="true">+</span></summary>
+            <div><strong>Alcance, revisiones y plazos</strong> se acuerdan por escrito según producto, complejidad, escenas y piezas solicitadas. No se inicia la generación final hasta validar la propuesta visual y el presupuesto. <strong>Pago:</strong> al momento de la entrega final.</div>
+          </details>
+        </div>
       </div>
     </section>
 
@@ -1111,6 +1118,7 @@
   <script src="./assets/site.js?v=20261027-club-case-3"></script>
   <script defer src="./assets/premium-lab.js?v=20261027-club-dashboard-1"></script>
   <script defer src="./assets/club-case.js?v=20261028-dashboard-2"></script>
+  <script defer src="./assets/compact-flow.js?v=20261029-1"></script>
 
   
 
