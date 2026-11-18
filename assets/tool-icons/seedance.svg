@@ -1,7 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <title>Seedance</title>
-  <g fill="none" stroke="#2196E8" stroke-width="39" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M58 164h396c23 0 39 16 39 39v106c0 23-16 39-39 39H58c-23 0-39-16-39-39V203c0-23 16-39 39-39Z"/>
-  </g>
-  <path fill="#2196E8" d="M205 215c-11-7-25 1-25 14v104c0 13 14 21 25 14l80-52c10-7 10-21 0-28l-80-52Z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#F3F4EF">
+  <title>ByteDance</title>
+  <path d="M19.8772 1.4685L24 2.5326v18.9426l-4.1228 1.0563V1.4685zm-13.3481 9.428l4.115 1.0641v8.9786l-4.115 1.0642v-11.107zM0 2.572l4.115 1.0642v16.7354L0 21.428V2.572zm17.4553 5.6205v11.107l-4.1228-1.0642V9.2568l4.1228-1.0642z"/>
 </svg>
