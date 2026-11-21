@@ -7,7 +7,7 @@
   var visible=new WeakMap();
   function pause(video) { try {video.pause();} catch(error) {} }
   function promptFor(video) {
-    var host=video.closest(".editorial-media-stack")||video.closest(".project-item");
+    var host=video.closest(".hero-audio-stack")||video.closest(".editorial-media-stack")||video.closest(".project-item");
     return host?host.querySelector("[data-video-audio-prompt]"):null;
   }
   function syncAudioPrompt(video) {
