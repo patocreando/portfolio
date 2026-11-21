@@ -183,6 +183,10 @@
           event.preventDefault();
           event.stopPropagation();
 
+          // On normal mobile browsers, mobileHeroTakeover owns this control.
+          // Keep this fallback for in-app browsers where that controller exits early.
+          if (window.matchMedia("(max-width: 639px)").matches && !window.__PATO_INAPP_BROWSER__) return;
+
           var audible =
             !heroVideo.muted &&
             heroVideo.volume > 0;
@@ -1780,7 +1784,15 @@
           "aria-label",
           active ? "Silenciar video" : "Activar audio del video"
         );
+        button.setAttribute("aria-pressed", active ? "true" : "false");
         if (label) label.textContent = stateText || (active ? "Silenciar" : "Escuchar");
+        var icon = button.querySelector("[data-lucide]");
+        if (icon) {
+          icon.setAttribute("data-lucide", active ? "volume-2" : "volume-x");
+          if (window.lucide && typeof window.lucide.createIcons === "function") {
+            window.lucide.createIcons();
+          }
+        }
       }
 
       function applyState(next) {
