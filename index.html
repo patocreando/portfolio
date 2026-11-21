@@ -64,7 +64,7 @@
   <script src="./assets/vendor/gsap-3.12.5.min.js"></script>
   <script src="./assets/vendor/ScrollTrigger-3.12.5.min.js"></script>
 
-  <link rel="stylesheet" href="./assets/site.css?v=20261121-hero-audio-1" />
+  <link rel="stylesheet" href="./assets/site.css?v=20261121-hero-audio-2" />
   <link rel="stylesheet" href="./assets/premium-lab.css?v=20261029-continuum-1" />
   <link rel="stylesheet" href="./assets/lote-02.css?v=20261027-club-case-3" />
   <link rel="stylesheet" href="./assets/club-case.css?v=20261030-scroll-story-1" />
@@ -222,13 +222,18 @@
   <link rel="stylesheet" href="./assets/silo-update.css?v=20261023-2" />
   <link rel="stylesheet" href="./assets/compact-flow.css?v=20261029-1" />
   <link rel="stylesheet" href="./assets/orbital-motion.css?v=20261030-1" />
-  <style id="hero-audio-control-visibility">
-    .hero-sound-toggle--mobile { display: none !important; }
-    .hero-sound-toggle--desktop { display: inline-flex !important; }
-    @media (max-width: 639px) {
-      .hero-sound-toggle--mobile { display: inline-flex !important; }
-      .hero-sound-toggle--desktop { display: none !important; }
+  <style id="hero-audio-prompt-layout">
+    .hero-audio-stack {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-width: 0;
     }
+    .hero-audio-prompt { margin: 10px auto 0; }
   </style>
 </head>
 
@@ -326,6 +331,7 @@
             <div class="hero-device-glow" aria-hidden="true"></div>
 
 
+            <div class="hero-audio-stack">
             <div id="heroPhone" class="hero-phone-shell" aria-label="Pieza vertical en una maqueta de teléfono">
               <div class="hero-phone-buttons" aria-hidden="true">
                 <span class="hero-phone-button hero-phone-button-a"></span>
@@ -338,22 +344,19 @@
               </div>
 
               <div class="hero-phone-screen">
-                <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="hero-video" aria-label="Showreel de Pato Creando: anuncios y contenido audiovisual con inteligencia artificial">
+                <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="hero-video" data-audio-available="true" aria-label="Showreel de Pato Creando: anuncios y contenido audiovisual con inteligencia artificial">
                   <source src="./assets/videos/hero-showreel-hd-1080p.mp4?v=20261121-hd-1" type="video/mp4" />
                 </video>
-                <button id="heroSoundToggle" class="hero-sound-toggle hero-sound-toggle--mobile" type="button" aria-label="Activar audio del video" aria-pressed="false">
-                  <span class="hero-sound-icon"><i data-lucide="volume-x" aria-hidden="true"></i></span>
-                  <span class="hero-sound-label">Escuchar</span>
-                </button>
-                <button id="heroSoundToggleDesktop" class="hero-sound-toggle hero-sound-toggle--desktop" type="button" aria-label="Activar audio del video" aria-pressed="false">
-                  <span class="hero-sound-icon"><i data-lucide="volume-x" aria-hidden="true"></i></span>
-                  <span class="hero-sound-label">Escuchar</span>
-                </button>
 
                 <div class="hero-phone-vignette" aria-hidden="true"></div>
 
               </div>
 
+            </div>
+              <button class="portfolio-audio-prompt project-audio-prompt hero-audio-prompt" type="button" data-video-audio-prompt aria-pressed="false">
+                <svg class="audio-prompt-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+                <span data-audio-prompt-label>Escuchar audio</span>
+              </button>
             </div>
 
             <div class="hero-stage-caption">
@@ -1134,8 +1137,8 @@
   </main>
 
 
-  <script src="./assets/site.js?v=20261121-hero-audio-2"></script>
-  <script defer src="./assets/premium-lab.js?v=20261027-club-dashboard-1"></script>
+  <script src="./assets/site.js?v=20261121-hero-audio-3"></script>
+  <script defer src="./assets/premium-lab.js?v=20261121-hero-audio-1"></script>
   <script defer src="./assets/club-case.js?v=20261030-scroll-story-1"></script>
   <script defer src="./assets/compact-flow.js?v=20261029-1"></script>
   <script defer src="./assets/orbital-motion.js?v=20261030-1"></script>
