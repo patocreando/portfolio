@@ -120,82 +120,6 @@
         document.querySelectorAll(".hero-video, .project-video")
       );
 
-      var heroVideo = document.querySelector(".hero-video");
-      var heroSoundToggle = document.getElementById("heroSoundToggle");
-
-      function updateHeroSoundUi(audible) {
-        if (!heroSoundToggle) return;
-
-        var label = heroSoundToggle.querySelector(".hero-sound-label");
-        var icon = heroSoundToggle.querySelector("[data-lucide]");
-
-        heroSoundToggle.classList.toggle("is-audible", audible);
-        heroSoundToggle.setAttribute(
-          "aria-label",
-          audible ? "Silenciar video" : "Activar audio del video"
-        );
-
-        if (label) label.textContent = audible ? "Silenciar" : "Escuchar";
-
-        if (icon) {
-          icon.setAttribute("data-lucide", audible ? "volume-2" : "volume-x");
-          if (window.lucide && typeof window.lucide.createIcons === "function") {
-            window.lucide.createIcons();
-          }
-        }
-      }
-
-      function setHeroAudio(audible) {
-        if (!heroVideo) return;
-
-        prepare(heroVideo);
-
-        heroVideo.dataset.userUnmuted = audible ? "true" : "false";
-        heroVideo.muted = !audible;
-        heroVideo.defaultMuted = !audible;
-        heroVideo.volume = audible ? 1 : 0;
-
-        if (audible) {
-          heroVideo.removeAttribute("muted");
-        } else {
-          heroVideo.setAttribute("muted", "");
-        }
-
-        var promise;
-        try { promise = heroVideo.play(); } catch (e) {}
-
-        if (promise && typeof promise.catch === "function") {
-          promise.catch(function () {
-            heroVideo.muted = true;
-            heroVideo.defaultMuted = true;
-            heroVideo.volume = 0;
-            heroVideo.setAttribute("muted", "");
-            updateHeroSoundUi(false);
-          });
-        }
-
-        updateHeroSoundUi(audible);
-      }
-
-      if (heroSoundToggle && heroVideo) {
-        updateHeroSoundUi(false);
-
-        heroSoundToggle.addEventListener("click", function (event) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          // On normal mobile browsers, mobileHeroTakeover owns this control.
-          // Keep this fallback for in-app browsers where that controller exits early.
-          if (window.matchMedia("(max-width: 639px)").matches && !window.__PATO_INAPP_BROWSER__) return;
-
-          var audible =
-            !heroVideo.muted &&
-            heroVideo.volume > 0;
-
-          setHeroAudio(!audible);
-        });
-      }
-
       videos.forEach(function (video) {
         prepare(video);
 
@@ -579,6 +503,8 @@
       }
 
       function ensureMutedPlayback() {
+        // Respect a manual pause from the shared portfolio audio control.
+        if (video.dataset.userPaused === "true") return null;
         if (audioUnlocked && !userSilenced) return playVideo();
 
         setAudio(false);
@@ -766,10 +692,6 @@
         }
       }
 
-      if (soundToggle) {
-        soundToggle.addEventListener("click", toggleAudio);
-      }
-
       video.addEventListener("loadeddata", markFrameReady);
       video.addEventListener("canplay", markFrameReady);
       video.addEventListener("playing", function () {
@@ -778,6 +700,12 @@
       });
 
       video.addEventListener("volumechange", function () {
+        var audioIsActive =
+          video.dataset.userUnmuted === "true" &&
+          !video.muted &&
+          video.volume > 0;
+        audioUnlocked = audioIsActive;
+        userSilenced = !audioIsActive;
         if (mobileQuery.matches) updateSoundUi();
       });
 
@@ -1765,117 +1693,6 @@
           if (rect.bottom > 0 && rect.top < window.innerHeight) play();
         }
       });
-    })();
-;
-
-/* Original inline block 15 */
-(function desktopHeroSoundCapture() {
-      "use strict";
-
-      var desktopQuery = window.matchMedia("(min-width: 640px)");
-      var button = document.getElementById("heroSoundToggleDesktop");
-      var video = document.querySelector("#heroPhone .hero-video");
-
-      if (!button || !video) return;
-
-      var label = button.querySelector(".hero-sound-label");
-      var active = false;
-      var handling = false;
-
-      function updateUi(stateText) {
-        button.classList.toggle("is-audible", active);
-        button.setAttribute(
-          "aria-label",
-          active ? "Silenciar video" : "Activar audio del video"
-        );
-        button.setAttribute("aria-pressed", active ? "true" : "false");
-        if (label) label.textContent = stateText || (active ? "Silenciar" : "Escuchar");
-
-        var icon = button.querySelector("[data-lucide]");
-        if (icon) {
-          icon.setAttribute("data-lucide", active ? "volume-2" : "volume-x");
-          if (window.lucide && typeof window.lucide.createIcons === "function") {
-            window.lucide.createIcons();
-          }
-        }
-      }
-
-      function applyState(next) {
-        active = next;
-        video.dataset.userUnmuted = active ? "true" : "false";
-        video.volume = 1;
-        video.muted = !active;
-        video.defaultMuted = !active;
-
-        if (active) {
-          video.removeAttribute("muted");
-        } else {
-          video.setAttribute("muted", "");
-        }
-      }
-
-      function toggleFromClick(event) {
-        if (!desktopQuery.matches || handling) return;
-
-        handling = true;
-        event.preventDefault();
-        event.stopPropagation();
-        if (typeof event.stopImmediatePropagation === "function") {
-          event.stopImmediatePropagation();
-        }
-
-        var next = !(
-          video.dataset.userUnmuted === "true" &&
-          !video.muted &&
-          video.volume > 0
-        );
-        applyState(next);
-        updateUi(next ? "Activando..." : "Escuchar");
-
-        var playPromise;
-        try {
-          // Toggling sound must never pause the hero reel.
-          playPromise = video.play();
-        } catch (e) {
-          applyState(false);
-          updateUi("No disponible");
-          handling = false;
-          window.setTimeout(function () { updateUi("Escuchar"); }, 1200);
-          return;
-        }
-
-        if (playPromise && typeof playPromise.then === "function") {
-          playPromise.then(function () {
-            applyState(next);
-            updateUi(next ? "Silenciar" : "Escuchar");
-            handling = false;
-          }).catch(function () {
-            applyState(false);
-            updateUi("No disponible");
-            handling = false;
-            window.setTimeout(function () { updateUi("Escuchar"); }, 1200);
-          });
-        } else {
-          applyState(next);
-          updateUi(next ? "Silenciar" : "Escuchar");
-          handling = false;
-        }
-      }
-
-      // Use the button's click event and stop it here so the phone shell
-      // cannot interpret it as a video tap and restart/mute the reel.
-      button.addEventListener("click", toggleFromClick);
-
-      video.addEventListener("volumechange", function () {
-        if (!desktopQuery.matches || handling) return;
-        active =
-          video.dataset.userUnmuted === "true" &&
-          !video.muted &&
-          video.volume > 0;
-        updateUi();
-      });
-
-      updateUi("Escuchar");
     })();
 ;
 
