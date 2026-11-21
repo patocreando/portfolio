@@ -150,6 +150,7 @@
 
         prepare(heroVideo);
 
+        heroVideo.dataset.userUnmuted = audible ? "true" : "false";
         heroVideo.muted = !audible;
         heroVideo.defaultMuted = !audible;
         heroVideo.volume = audible ? 1 : 0;
@@ -616,6 +617,9 @@
 
         event.preventDefault();
         event.stopPropagation();
+        if (typeof event.stopImmediatePropagation === "function") {
+          event.stopImmediatePropagation();
+        }
 
         var audible =
           video.dataset.userUnmuted === "true" &&
@@ -1786,6 +1790,7 @@
         );
         button.setAttribute("aria-pressed", active ? "true" : "false");
         if (label) label.textContent = stateText || (active ? "Silenciar" : "Escuchar");
+
         var icon = button.querySelector("[data-lucide]");
         if (icon) {
           icon.setAttribute("data-lucide", active ? "volume-2" : "volume-x");
@@ -1809,7 +1814,7 @@
         }
       }
 
-      function toggleFromGesture(event) {
+      function toggleFromClick(event) {
         if (!desktopQuery.matches || handling) return;
 
         handling = true;
@@ -1819,21 +1824,21 @@
           event.stopImmediatePropagation();
         }
 
-        var next = !active;
+        var next = !(
+          video.dataset.userUnmuted === "true" &&
+          !video.muted &&
+          video.volume > 0
+        );
         applyState(next);
-
-        if (!next) {
-          updateUi("Escuchar");
-          handling = false;
-          return;
-        }
-
-        updateUi("Activando...");
+        updateUi(next ? "Activando..." : "Escuchar");
 
         var playPromise;
-        try { playPromise = video.play(); } catch (e) {
+        try {
+          // Toggling sound must never pause the hero reel.
+          playPromise = video.play();
+        } catch (e) {
           applyState(false);
-          updateUi("Bloqueado");
+          updateUi("No disponible");
           handling = false;
           window.setTimeout(function () { updateUi("Escuchar"); }, 1200);
           return;
@@ -1841,46 +1846,32 @@
 
         if (playPromise && typeof playPromise.then === "function") {
           playPromise.then(function () {
-            applyState(true);
-            updateUi("Silenciar");
+            applyState(next);
+            updateUi(next ? "Silenciar" : "Escuchar");
             handling = false;
           }).catch(function () {
             applyState(false);
-            updateUi("Bloqueado");
+            updateUi("No disponible");
             handling = false;
             window.setTimeout(function () { updateUi("Escuchar"); }, 1200);
           });
         } else {
-          applyState(true);
-          updateUi("Silenciar");
+          applyState(next);
+          updateUi(next ? "Silenciar" : "Escuchar");
           handling = false;
         }
       }
 
-      // Capture phase + coordinate hit test: works even if another layer is above the button.
-      document.addEventListener("pointerdown", function (event) {
-        if (!desktopQuery.matches) return;
-
-        var rect = button.getBoundingClientRect();
-        var inside =
-          event.clientX >= rect.left &&
-          event.clientX <= rect.right &&
-          event.clientY >= rect.top &&
-          event.clientY <= rect.bottom;
-
-        if (inside) toggleFromGesture(event);
-      }, true);
-
-      // Keyboard accessibility.
-      button.addEventListener("keydown", function (event) {
-        if (event.key === "Enter" || event.key === " ") {
-          toggleFromGesture(event);
-        }
-      });
+      // Use the button's click event and stop it here so the phone shell
+      // cannot interpret it as a video tap and restart/mute the reel.
+      button.addEventListener("click", toggleFromClick);
 
       video.addEventListener("volumechange", function () {
         if (!desktopQuery.matches || handling) return;
-        active = video.dataset.userUnmuted === "true" && !video.muted && video.volume > 0;
+        active =
+          video.dataset.userUnmuted === "true" &&
+          !video.muted &&
+          video.volume > 0;
         updateUi();
       });
 
