@@ -194,6 +194,104 @@
     transform: none !important;
   }
 
+  /* Mobile gallery: one stable vertical media frame per project. */
+  #projects #projectViewport {
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  #projects #projectGrid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 32px !important;
+    width: 100% !important;
+    margin-top: 26px !important;
+    transform: none !important;
+  }
+
+  #projects .project-item,
+  #projects .project-item:not(.is-hidden) {
+    display: block !important;
+    width: min(100%, 420px) !important;
+    max-width: 420px !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin-inline: auto !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  #projects .mockup-stage,
+  #projects .project-item.project-clean-media .mockup-stage {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  #projects .mockup-stage::before,
+  #projects .mockup-stage::after {
+    display: none !important;
+  }
+
+  #projects .phone-shell,
+  #projects .clean-media-frame,
+  #projects .desktop-frame {
+    position: relative !important;
+    display: block !important;
+    width: min(100%, 340px) !important;
+    max-width: 340px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 9 / 16 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background: #0b0e11 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  #projects .phone-screen {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    border-radius: inherit !important;
+    background: #0b0e11 !important;
+  }
+
+  #projects .phone-screen video,
+  #projects .clean-media-frame video,
+  #projects .desktop-frame video,
+  #projects .project-video {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    background: #0b0e11 !important;
+  }
+
   #projects .project-item.is-hidden {
     display: none !important;
   }
