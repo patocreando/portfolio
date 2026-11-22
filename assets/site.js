@@ -67,11 +67,13 @@
         var existing = shell.querySelector(".video-tap-fallback");
         if (existing) return existing;
 
-        var button = document.createElement("button");
-        button.type = "button";
+        var button = document.createElement("a");
         button.className = "video-tap-fallback is-visible";
-        button.setAttribute("aria-label", "Reproducir video");
-        button.innerHTML = "<span>Reproducir video</span>";
+        button.setAttribute("aria-label", "Abrir video");
+        button.setAttribute("href", originalSource(video));
+        button.setAttribute("target", "_self");
+        button.setAttribute("rel", "noopener");
+        button.innerHTML = "<span>Abrir video</span>";
         shell.appendChild(button);
         return button;
       }
@@ -146,14 +148,6 @@
 
         var button = ensurePlayButton(video);
         var shell = shellFor(video);
-
-        if (button) {
-          button.addEventListener("click", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            start(video, button);
-          });
-        }
 
         if (shell) {
           shell.addEventListener("click", function (event) {
