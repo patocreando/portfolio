@@ -1,4 +1,5 @@
 /* Mobile browser layout — full-size showreel and complete default project gallery. */
+#top .hero-mobile-poster { display: none; }
 @media (max-width: 719px) {
   #top {
     display: block !important;
@@ -84,17 +85,44 @@
 
   #top .hero-phone-screen {
     overflow: hidden !important;
-    background: #0b0e11 url("./images/mariana-omelette-ugc.webp") center / cover no-repeat !important;
+    background: #0b0e11 !important;
   }
 
-  #top .hero-video {
+  #top .hero-mobile-poster {
+    position: absolute !important;
+    z-index: 1 !important;
+    inset: 0 !important;
     display: block !important;
+    width: 100% !important;
+    height: 100% !important;
     object-fit: cover !important;
     object-position: center center !important;
     opacity: 1 !important;
     visibility: visible !important;
+    transition: opacity .22s ease !important;
+    pointer-events: none !important;
+  }
+
+  #top .hero-phone-screen.is-video-ready .hero-mobile-poster {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  #top .hero-video {
+    position: absolute !important;
+    z-index: 2 !important;
+    display: block !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    opacity: 0 !important;
+    visibility: visible !important;
     transform: none !important;
     background: transparent !important;
+    transition: opacity .22s ease !important;
+  }
+
+  #top .hero-phone-screen.is-video-ready .hero-video {
+    opacity: 1 !important;
   }
 
   #top .hero-device-glow,
