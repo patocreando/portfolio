@@ -836,6 +836,7 @@
       var projectCarouselIndex = 0;
       var activeProjectCategory = "ugc";
       var categoryCopy = {
+        all: "Todos los proyectos: UGC y campañas de producto.",
         ugc: "Avatares y producto en verticales con estética nativa.",
         product: "Campañas de producto con control de forma, escala y materiales."
       };
@@ -886,7 +887,7 @@
         projectCarouselIndex = 0;
 
         projectItems.forEach(function (item) {
-          var show = item.getAttribute("data-category") === selected;
+          var show = selected === "all" || item.getAttribute("data-category") === selected;
 
           if (show) {
             item.classList.remove("is-hidden");
@@ -970,7 +971,7 @@
         });
       });
 
-      showCategory("ugc");
+      showCategory("all");
 
       // Magnetic pointer effect
       if (finePointer && !reduceMotion) {
