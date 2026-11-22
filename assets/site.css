@@ -5572,6 +5572,8 @@
 
     /* Mobile video compatibility / low-memory Android */
     .video-tap-fallback {
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
       position: absolute;
       z-index: 8;
       left: 50%;
