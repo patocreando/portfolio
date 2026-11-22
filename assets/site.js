@@ -287,8 +287,10 @@
         // Keep the resource warm after its first activation. Resetting preload to
         // "none" on every scroll can make mobile browsers discard the decoded frame.
         if (video.dataset.patoProjectPrepared !== "true") {
-          video.preload = "none";
-          video.setAttribute("preload", "none");
+          // Metadata-first gives mobile browsers a chance to prepare the
+          // first frame without eagerly downloading every full project video.
+          video.preload = "metadata";
+          video.setAttribute("preload", "metadata");
           video.dataset.patoProjectPrepared = "true";
         }
 
@@ -723,9 +725,8 @@
             setAudio(true);
           }
 
-          if (video.paused) {
-            ensureMutedPlayback();
-          }
+          // Playback is owned by mobile-hero-fallback.js. This controller
+          // only manages the hero layout and the explicit audio toggle.
         } else if (!video.paused) {
           try { video.pause(); } catch (e) {}
         }
@@ -744,7 +745,7 @@
         var preloadMode = inAppBrowser ? "metadata" : "auto";
         video.preload = preloadMode;
         video.setAttribute("preload", preloadMode);
-        video.setAttribute("autoplay", "");
+        video.removeAttribute("autoplay");
 
         if (inAppBrowser && !video.getAttribute("src")) {
           var directSource = video.querySelector("source[src]");
@@ -763,7 +764,7 @@
           markFrameReady();
         }
 
-        ensureMutedPlayback();
+        // The mobile fallback controller owns the initial muted play request.
       }
 
       function refresh() {
@@ -772,7 +773,9 @@
           rafId = null;
         }
 
-        var shouldEnable = mobileQuery.matches && !reduceMotionQuery.matches;
+        // Keep the mobile layout active even with reduced motion enabled;
+        // reduced motion controls autoplay, not whether the hero is rendered.
+        var shouldEnable = mobileQuery.matches;
         setEnabled(shouldEnable);
 
         if (shouldEnable) {
