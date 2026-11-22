@@ -16,8 +16,7 @@
     row-gap: 24px !important;
   }
 
-  .hero-device-wrap,
-  .hero-device-wrap.mobile-takeover-enabled {
+  .hero-device-wrap {
     width: 100vw !important;
     max-width: none !important;
     height: auto !important;
@@ -27,7 +26,7 @@
     overflow: visible !important;
   }
 
-  .hero-device-wrap.mobile-takeover-enabled .hero-device-stage {
+  #top .hero-device-stage {
     position: relative !important;
     top: auto !important;
     display: block !important;
@@ -45,7 +44,7 @@
     box-shadow: none !important;
   }
 
-  .hero-device-wrap.mobile-takeover-enabled .hero-audio-stack {
+  #top .hero-audio-stack {
     position: absolute !important;
     inset: 0 !important;
     display: block !important;
@@ -54,8 +53,8 @@
     min-height: 0 !important;
   }
 
-  .hero-device-wrap.mobile-takeover-enabled .hero-phone-shell,
-  .hero-device-wrap.mobile-takeover-enabled.is-revealed .hero-phone-shell {
+  #top .hero-phone-shell,
+  #top .hero-device-wrap.is-revealed .hero-phone-shell {
     position: absolute !important;
     inset: 0 !important;
     width: 100% !important;
@@ -74,8 +73,8 @@
     overflow: hidden !important;
   }
 
-  .hero-device-wrap.mobile-takeover-enabled .hero-phone-screen,
-  .hero-device-wrap.mobile-takeover-enabled .hero-video {
+  #top .hero-phone-screen,
+  #top .hero-video {
     position: absolute !important;
     inset: 0 !important;
     width: 100% !important;
@@ -83,31 +82,73 @@
     border-radius: 0 !important;
   }
 
-  .hero-device-wrap.mobile-takeover-enabled .hero-video {
+  #top .hero-phone-screen {
+    overflow: hidden !important;
+    background: #0b0e11 url("./images/silo-campana-producto-recortado.jpg") center / cover no-repeat !important;
+  }
+
+  #top .hero-video {
     display: block !important;
     object-fit: cover !important;
     object-position: center center !important;
     opacity: 1 !important;
     visibility: visible !important;
     transform: none !important;
-    background: #0b0e11 !important;
+    background: transparent !important;
   }
 
-  .hero-device-wrap.mobile-takeover-enabled .hero-device-glow,
-  .hero-device-wrap.mobile-takeover-enabled .hero-stage-caption,
-  .hero-device-wrap.mobile-takeover-enabled .hero-phone-island,
-  .hero-device-wrap.mobile-takeover-enabled .hero-phone-buttons,
-  .hero-device-wrap.mobile-takeover-enabled .hero-phone-vignette {
+  #top .hero-device-glow,
+  #top .hero-stage-caption,
+  #top .hero-phone-island,
+  #top .hero-phone-buttons,
+  #top .hero-phone-vignette {
     display: none !important;
   }
 
-  .hero-device-wrap.mobile-takeover-enabled .hero-audio-prompt {
+  #top .hero-audio-prompt {
     position: absolute !important;
     z-index: 30 !important;
     left: 50% !important;
     bottom: max(18px, env(safe-area-inset-bottom)) !important;
     margin: 0 !important;
     transform: translateX(-50%) !important;
+  }
+
+  #top .hero-mobile-play {
+    position: absolute !important;
+    z-index: 20 !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    min-height: 48px !important;
+    padding: 0 20px !important;
+    border: 1px solid rgba(255,255,255,.28) !important;
+    border-radius: 999px !important;
+    background: rgba(8,12,14,.84) !important;
+    color: #f5f6f2 !important;
+    font: 700 12px/1 system-ui, sans-serif !important;
+    letter-spacing: .02em !important;
+    box-shadow: 0 12px 34px rgba(0,0,0,.35) !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  #top .hero-mobile-play[hidden] {
+    display: none !important;
+  }
+
+  #top .hero-mobile-play svg {
+    width: 16px !important;
+    height: 16px !important;
+    flex: none !important;
+    fill: currentColor !important;
+  }
+
+  #top .hero-video:not([data-playback-failed="true"]) {
+    background: transparent !important;
   }
 
   #projects {
