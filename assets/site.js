@@ -299,7 +299,32 @@
       }
 
       function ensureButton(video) {
-        return null;
+        if (!mobileQuery.matches) return null;
+
+        var host = video.closest(".phone-screen, .clean-media-frame");
+        if (!host) return null;
+
+        var existing = host.querySelector(".project-video-play");
+        if (existing) return existing;
+
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "project-video-play";
+        button.hidden = true;
+        button.setAttribute("aria-label", "Reproducir video");
+        button.textContent = "Reproducir video";
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          video.dataset.userPaused = "false";
+          video.muted = true;
+          video.defaultMuted = true;
+          video.volume = 0;
+          video.setAttribute("muted", "");
+          play(video, true);
+        });
+        host.appendChild(button);
+        return button;
       }
 
       function pause(video) {
@@ -324,7 +349,10 @@
         try {
           promise = video.play();
         } catch (e) {
-          if (button) button.classList.add("is-visible");
+          if (button) {
+            button.hidden = false;
+            button.classList.add("is-visible");
+          }
           return;
         }
 
@@ -344,10 +372,14 @@
               try { mutedRetry = video.play(); } catch (e) {}
               if (mutedRetry && typeof mutedRetry.catch === "function") {
                 mutedRetry.catch(function () {
-                  if (button) button.classList.add("is-visible");
+                  if (button) {
+                    button.hidden = false;
+                    button.classList.add("is-visible");
+                  }
                 });
               }
             } else if (button) {
+              button.hidden = false;
               button.classList.add("is-visible");
             }
           });
@@ -413,7 +445,14 @@
         var button = ensureButton(video);
 
         video.addEventListener("playing", function () {
-          if (button) button.classList.remove("is-visible");
+          if (button) {
+            button.hidden = true;
+            button.classList.remove("is-visible");
+          }
+        });
+
+        video.addEventListener("loadeddata", function () {
+          if (button) button.hidden = true;
         });
 
         video.addEventListener("pause", function () {
@@ -424,9 +463,10 @@
 
         video.addEventListener("error", function () {
           if (button) {
+            button.hidden = false;
             button.classList.add("is-visible");
-            var label = button.querySelector("span");
-            if (label) label.textContent = "Tocar para abrir";
+            button.textContent = "Video no disponible";
+            button.disabled = true;
           }
         });
       });
