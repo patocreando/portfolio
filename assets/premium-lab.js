@@ -30,7 +30,6 @@
   function stopOthers(active) {
     videos.forEach(function(video){
       if(video===active)return;
-      video.dataset.userPaused="true";
       setMuted(video,true);
       pause(video);
       syncAudioPrompt(video);
@@ -84,7 +83,6 @@
     var rect=active.getBoundingClientRect();
     var visibleHeight=Math.max(0,Math.min(rect.bottom,window.innerHeight)-Math.max(rect.top,0));
     if(visibleHeight/Math.max(rect.height,1)<.18){
-      active.dataset.userPaused="true";
       setMuted(active,true);
       pause(active);
       window.__PATO_SOUND_ACTIVE_VIDEO__=null;
@@ -110,7 +108,7 @@
     });
     video.addEventListener("pointerenter",function(){
       var active=window.__PATO_SOUND_ACTIVE_VIDEO__;
-      if(active&&active!==video){active.dataset.userPaused="true";setMuted(active,true);pause(active);window.__PATO_SOUND_ACTIVE_VIDEO__=null;syncAudioPrompt(active);}
+      if(active&&active!==video){setMuted(active,true);pause(active);window.__PATO_SOUND_ACTIVE_VIDEO__=null;syncAudioPrompt(active);}
     });
     video.addEventListener("play",function(){syncAudioPrompt(video);});
     video.addEventListener("pause",function(){syncAudioPrompt(video);});
