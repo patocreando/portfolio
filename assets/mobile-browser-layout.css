@@ -1,46 +1,60 @@
-/* Mobile browser layout recovery — keeps the hero in normal document flow
-   and guarantees the featured work + gallery remain visible on small screens. */
+/* Mobile browser layout — full-size showreel and complete default project gallery. */
 @media (max-width: 719px) {
   #top {
+    display: block !important;
     height: auto !important;
     min-height: 0 !important;
+    padding-top: 102px !important;
+    padding-bottom: 30px !important;
     overflow: visible !important;
   }
 
   #top > .site-shell {
+    display: grid !important;
     grid-template-columns: minmax(0, 1fr) !important;
     align-items: start !important;
+    row-gap: 24px !important;
   }
 
   .hero-device-wrap,
   .hero-device-wrap.mobile-takeover-enabled {
-    width: min(100%, 360px) !important;
-    max-width: 360px !important;
+    width: 100vw !important;
+    max-width: none !important;
     height: auto !important;
     min-height: 0 !important;
-    margin: 26px auto 0 !important;
+    margin: 0 0 0 calc(50% - 50vw) !important;
     position: relative !important;
     overflow: visible !important;
-  }
-
-  #top .hero-device-stage {
-    min-height: 0 !important;
   }
 
   .hero-device-wrap.mobile-takeover-enabled .hero-device-stage {
     position: relative !important;
     top: auto !important;
-    width: 100% !important;
-    height: auto !important;
+    display: block !important;
+    width: 100vw !important;
+    height: clamp(580px, 86svh, 820px) !important;
     min-height: 0 !important;
-    aspect-ratio: 9 / 16 !important;
+    aspect-ratio: auto !important;
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
-    border-radius: 22px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #0b0e11 !important;
+    box-shadow: none !important;
   }
 
-  .hero-device-wrap.mobile-takeover-enabled .hero-phone-shell {
+  .hero-device-wrap.mobile-takeover-enabled .hero-audio-stack {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
+  .hero-device-wrap.mobile-takeover-enabled .hero-phone-shell,
+  .hero-device-wrap.mobile-takeover-enabled.is-revealed .hero-phone-shell {
     position: absolute !important;
     inset: 0 !important;
     width: 100% !important;
@@ -51,10 +65,12 @@
     opacity: 1 !important;
     transform: none !important;
     border: 0 !important;
-    border-radius: inherit !important;
+    border-radius: 0 !important;
+    background: #0b0e11 !important;
     box-shadow: none !important;
     clip-path: none !important;
     -webkit-clip-path: none !important;
+    overflow: hidden !important;
   }
 
   .hero-device-wrap.mobile-takeover-enabled .hero-phone-screen,
@@ -63,19 +79,34 @@
     inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    border-radius: inherit !important;
+    border-radius: 0 !important;
   }
 
   .hero-device-wrap.mobile-takeover-enabled .hero-video {
+    display: block !important;
     object-fit: contain !important;
     object-position: center center !important;
     opacity: 1 !important;
     visibility: visible !important;
     transform: none !important;
+    background: #0b0e11 !important;
   }
 
-  .hero-audio-prompt {
-    margin: 10px auto 0 !important;
+  .hero-device-wrap.mobile-takeover-enabled .hero-device-glow,
+  .hero-device-wrap.mobile-takeover-enabled .hero-stage-caption,
+  .hero-device-wrap.mobile-takeover-enabled .hero-phone-island,
+  .hero-device-wrap.mobile-takeover-enabled .hero-phone-buttons,
+  .hero-device-wrap.mobile-takeover-enabled .hero-phone-vignette {
+    display: none !important;
+  }
+
+  .hero-device-wrap.mobile-takeover-enabled .hero-audio-prompt {
+    position: absolute !important;
+    z-index: 30 !important;
+    left: 50% !important;
+    bottom: max(18px, env(safe-area-inset-bottom)) !important;
+    margin: 0 !important;
+    transform: translateX(-50%) !important;
   }
 
   #projects {
