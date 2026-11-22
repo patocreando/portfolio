@@ -99,7 +99,12 @@
 
   video.addEventListener("loadeddata", confirmDecodedFrame);
   video.addEventListener("canplay", confirmDecodedFrame);
-  video.addEventListener("playing", confirmDecodedFrame);
+  video.addEventListener("playing", function () {
+    // Once playback has succeeded, allow automatic resume after the hero
+    // leaves and later re-enters the viewport.
+    manualAttempt = false;
+    confirmDecodedFrame();
+  });
   video.addEventListener("timeupdate", confirmDecodedFrame);
 
   video.addEventListener("pause", function () {
