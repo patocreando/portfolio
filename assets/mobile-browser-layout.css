@@ -23,6 +23,10 @@
     overflow: visible !important;
   }
 
+  #top .hero-device-stage {
+    min-height: 0 !important;
+  }
+
   .hero-device-wrap.mobile-takeover-enabled .hero-device-stage {
     position: relative !important;
     top: auto !important;
