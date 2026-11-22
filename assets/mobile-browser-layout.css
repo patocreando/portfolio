@@ -32,9 +32,10 @@
     top: auto !important;
     display: block !important;
     width: 100vw !important;
-    height: clamp(580px, 86svh, 820px) !important;
+    height: auto !important;
     min-height: 0 !important;
-    aspect-ratio: auto !important;
+    max-height: none !important;
+    aspect-ratio: 9 / 16 !important;
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
@@ -84,7 +85,7 @@
 
   .hero-device-wrap.mobile-takeover-enabled .hero-video {
     display: block !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
     object-position: center center !important;
     opacity: 1 !important;
     visibility: visible !important;
