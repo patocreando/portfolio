@@ -1,0 +1,164 @@
+/* Mobile browser layout recovery — keeps the hero in normal document flow
+   and guarantees the featured work + gallery remain visible on small screens. */
+@media (max-width: 719px) {
+  #top {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  #top > .site-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: start !important;
+  }
+
+  .hero-device-wrap,
+  .hero-device-wrap.mobile-takeover-enabled {
+    width: min(100%, 360px) !important;
+    max-width: 360px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 26px auto 0 !important;
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  .hero-device-wrap.mobile-takeover-enabled .hero-device-stage {
+    position: relative !important;
+    top: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 9 / 16 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 22px !important;
+  }
+
+  .hero-device-wrap.mobile-takeover-enabled .hero-phone-shell {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    aspect-ratio: auto !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    border: 0 !important;
+    border-radius: inherit !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+    -webkit-clip-path: none !important;
+  }
+
+  .hero-device-wrap.mobile-takeover-enabled .hero-phone-screen,
+  .hero-device-wrap.mobile-takeover-enabled .hero-video {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: inherit !important;
+  }
+
+  .hero-device-wrap.mobile-takeover-enabled .hero-video {
+    object-fit: contain !important;
+    object-position: center center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .hero-audio-prompt {
+    margin: 10px auto 0 !important;
+  }
+
+  #projects {
+    position: relative !important;
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  #projects > .site-shell {
+    overflow: visible !important;
+  }
+
+  #projects .editorial-intro,
+  #projects .editorial-showcase,
+  #projects .editorial-case,
+  #projects .editorial-media-stack,
+  #projects .editorial-content,
+  #projects .editorial-gallery-divider,
+  #projects #projectFilters,
+  #projects [role="tablist"],
+  #projects .project-category-row,
+  #projects #projectViewport,
+  #projects #projectGrid {
+    opacity: 1 !important;
+    visibility: visible !important;
+    clip-path: none !important;
+  }
+
+  #projects .editorial-showcase {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #projects .editorial-case,
+  #projects .editorial-case:nth-child(even) {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  #projects .editorial-media-stack {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 0 !important;
+  }
+
+  #projects .editorial-media {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 9 / 16 !important;
+    overflow: hidden !important;
+  }
+
+  #projects .editorial-media video {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    object-fit: contain !important;
+  }
+
+  #projects .editorial-content {
+    transform: none !important;
+  }
+
+  #projects .editorial-gallery-divider {
+    display: flex !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  #projects .project-item:not(.is-hidden) {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  #projects .project-item.is-hidden {
+    display: none !important;
+  }
+}
