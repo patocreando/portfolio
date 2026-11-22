@@ -123,8 +123,21 @@
     showButton("Reproducir showreel");
   } else {
     showButton("Cargando video…");
+    // This file is the single owner of the initial muted play request.
     attemptMutedPlay(false);
   }
+
+  function resumeWhenVisible() {
+    if (document.hidden || reducedMotion.matches || manualAttempt ||
+        video.dataset.userPaused === "true" || !video.paused) return;
+    var rect = screen.getBoundingClientRect();
+    if (rect.bottom > 0 && rect.top < window.innerHeight) {
+      attemptMutedPlay(false);
+    }
+  }
+
+  window.addEventListener("scroll", resumeWhenVisible, { passive: true });
+  window.addEventListener("resize", resumeWhenVisible, { passive: true });
 
   window.addEventListener("pageshow", function () {
     if (!document.hidden && !reducedMotion.matches && !manualAttempt &&
