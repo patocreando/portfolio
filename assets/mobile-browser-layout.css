@@ -365,3 +365,40 @@
     display: none !important;
   }
 }
+
+
+/* Mobile typography alignment: keep section and card headings centered
+   across the same 719px breakpoint used by the mobile media layout. */
+@media (max-width: 719px) {
+  main :is(h1, h2, h3, h4) {
+    text-align: center !important;
+    text-wrap: balance;
+    margin-inline: auto;
+  }
+
+  #top .hero-lockup-pro,
+  #top .hero-summary-minimal,
+  #top .hero-summary-minimal-copy {
+    text-align: center !important;
+  }
+
+  #top .hero-meta-row {
+    justify-content: center !important;
+  }
+
+  #projects .editorial-intro,
+  #projects .editorial-content,
+  #projects .editorial-gallery-divider {
+    text-align: center !important;
+  }
+
+  #projects .editorial-content h4,
+  #projects .project-info-card h3 {
+    margin-inline: auto;
+    text-align: center !important;
+  }
+
+  #projects .editorial-decisions {
+    text-align: left !important;
+  }
+}

@@ -216,7 +216,7 @@
 
       var activeVideo = null;
       var rafId = null;
-      var mobileQuery = window.matchMedia("(max-width: 639px)");
+      var mobileQuery = window.matchMedia("(max-width: 719px)");
       var inAppBrowser = window.__PATO_INAPP_BROWSER__ === true;
 
       if (inAppBrowser) return;
@@ -229,7 +229,7 @@
 
         var rect = video.getBoundingClientRect();
         var style = window.getComputedStyle(video);
-        var margin = mobileQuery.matches ? 260 : 80;
+        var margin = mobileQuery.matches ? 360 : 80;
 
         if (
           style.display === "none" ||
@@ -258,7 +258,7 @@
 
         // Do not switch to a video that is only inside the preload margin
         // but is not actually visible in the viewport.
-        if (visibleRatio < (mobileQuery.matches ? .10 : .07)) return -1;
+        if (visibleRatio < (mobileQuery.matches ? .05 : .07)) return -1;
 
         var viewportCenter = vh / 2;
         var videoCenter = rect.top + rect.height / 2;
@@ -287,8 +287,8 @@
         // Keep the resource warm after its first activation. Resetting preload to
         // "none" on every scroll can make mobile browsers discard the decoded frame.
         if (video.dataset.patoProjectPrepared !== "true") {
-          video.preload = "metadata";
-          video.setAttribute("preload", "metadata");
+          video.preload = "none";
+          video.setAttribute("preload", "none");
           video.dataset.patoProjectPrepared = "true";
         }
 
@@ -433,7 +433,7 @@
 
       if ("IntersectionObserver" in window) {
         var observer = new IntersectionObserver(schedule, {
-          rootMargin: mobileQuery.matches ? "260px 0px 260px 0px" : "80px 0px 80px 0px",
+          rootMargin: mobileQuery.matches ? "360px 0px 360px 0px" : "80px 0px 80px 0px",
           threshold: [0, .1, .25, .5, .75, 1]
         });
         videos.forEach(function (video) { observer.observe(video); });
@@ -473,7 +473,7 @@
 
       if (!wrap || !stage || !phone || !video) return;
 
-      var mobileQuery = window.matchMedia("(max-width: 639px)");
+      var mobileQuery = window.matchMedia("(max-width: 719px)");
       var reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
       var inAppBrowser = window.__PATO_INAPP_BROWSER__ === true;
       if (inAppBrowser) return;
