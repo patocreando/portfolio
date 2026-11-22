@@ -124,7 +124,10 @@
       entries.forEach(function(entry) {
         var video=entry.target, isVisible=entry.isIntersecting&&entry.intersectionRatio>=.22;
         visible.set(video,isVisible);
-        if(isVisible) play(video); else pause(video);
+        // Do not pause a reel merely because it left the viewport.
+        // Android may discard its decoded frame on pause, making it appear
+        // to disappear when the visitor scrolls back.
+        if(isVisible) play(video);
       });
     },{rootMargin:"120px 0px 120px 0px",threshold:[0,.22,.5]});
     reels.forEach(function(video){observer.observe(video);});
