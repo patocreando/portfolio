@@ -100,7 +100,11 @@
       ?"Toca o presiona Enter para escuchar el audio original; vuelve a tocar para pausar."
       :"Toca o presiona Enter para reproducir o pausar.";
     video.setAttribute("aria-label",label+". "+instruction);
-    video.addEventListener("click",function(event){activate(video,event);});
+    video.addEventListener("click",function(event){
+      // Let Instagram's native inline controls handle taps in its WebView.
+      if(window.__PATO_INSTAGRAM_BROWSER__===true)return;
+      activate(video,event);
+    });
     video.addEventListener("keydown",function(event){
       if(event.key==="Enter"||event.key===" ")activate(video,event);
     });
