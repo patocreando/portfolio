@@ -79,8 +79,15 @@
         video.preload = "metadata";
         video.disablePictureInPicture = true;
 
-        video.controls = false;
-        video.removeAttribute("controls");
+        // Instagram's in-app WebView may block autoplay. Keep native inline
+        // controls available there so the user can start the video manually.
+        if (instagramInApp) {
+          video.controls = true;
+          video.setAttribute("controls", "");
+        } else {
+          video.controls = false;
+          video.removeAttribute("controls");
+        }
 
         if (src) {
           video.src = src;
