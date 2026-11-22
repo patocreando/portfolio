@@ -1,0 +1,214 @@
+/* Mobile stability layer — essential content never depends on GSAP or video decode.
+   Desktop styles and media assets remain untouched. */
+@media (max-width: 767px) {
+  /* GSAP .from() animations must never leave essential mobile content transparent. */
+  #top .hero-reveal,
+  #top .hero-lockup-pro,
+  #top .hero-lockup-title,
+  #top .hero-device-wrap,
+  #projects .section-reveal,
+  #projects .project-reveal,
+  #projects .project-item:not(.is-hidden),
+  #projects #projectViewport,
+  #projects #projectGrid {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    clip-path: none !important;
+    -webkit-clip-path: none !important;
+    filter: none !important;
+  }
+
+  #top .hero-device-wrap {
+    display: block !important;
+    position: relative !important;
+    width: 100vw !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin-inline: calc(50% - 50vw) !important;
+    overflow: visible !important;
+  }
+
+  #top #heroDeviceStage {
+    display: block !important;
+    position: relative !important;
+    width: 100vw !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 9 / 16 !important;
+    overflow: hidden !important;
+  }
+
+  #top #heroPhone,
+  #top .hero-phone-screen {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    overflow: hidden !important;
+  }
+
+  /* The poster is the guaranteed first paint; video is an optional enhancement. */
+  #top .hero-mobile-poster {
+    display: block !important;
+    position: absolute !important;
+    z-index: 3 !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  #top .hero-video {
+    display: block !important;
+    position: absolute !important;
+    z-index: 2 !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    opacity: 0 !important;
+    visibility: visible !important;
+  }
+
+  #top .hero-device-wrap.is-video-ready .hero-mobile-poster,
+  #top .hero-phone-screen.is-video-ready .hero-mobile-poster {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  #top .hero-device-wrap.is-video-ready .hero-video,
+  #top .hero-phone-screen.is-video-ready .hero-video {
+    opacity: 1 !important;
+  }
+
+  #projects {
+    display: block !important;
+    position: relative !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    content-visibility: visible !important;
+  }
+
+  #projects > .site-shell {
+    display: block !important;
+    position: relative !important;
+    width: min(100% - 32px, 1180px) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  #projects .editorial-intro,
+  #projects .editorial-showcase,
+  #projects .editorial-case,
+  #projects .editorial-media-stack,
+  #projects .editorial-content,
+  #projects #projectFilters,
+  #projects [role="tablist"],
+  #projects .project-category-row,
+  #projects #projectViewport,
+  #projects #projectGrid {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    content-visibility: visible !important;
+  }
+
+  #projects .editorial-showcase {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 28px !important;
+  }
+
+  #projects .editorial-case {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    margin-block: 0 28px !important;
+  }
+
+  #projects #projectGrid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-auto-flow: row !important;
+    gap: 32px !important;
+    width: 100% !important;
+    margin: 26px 0 0 !important;
+    padding: 0 !important;
+  }
+
+  #projects #projectGrid > .project-item:not(.is-hidden) {
+    display: block !important;
+    position: relative !important;
+    width: min(100%, 420px) !important;
+    max-width: 420px !important;
+    min-width: 0 !important;
+    min-height: 1px !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    animation: none !important;
+    overflow: visible !important;
+  }
+
+  #projects #projectGrid > .project-item.is-hidden {
+    display: none !important;
+  }
+
+  #projects .mockup-stage {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  #projects :is(.phone-shell, .clean-media-frame, .desktop-frame) {
+    display: block !important;
+    position: relative !important;
+    width: min(100%, 340px) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 9 / 16 !important;
+    margin-inline: auto !important;
+    overflow: hidden !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  #projects .project-video {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+
+@media (min-width: 768px) {
+  /* No changes to the existing desktop composition. */
+}
