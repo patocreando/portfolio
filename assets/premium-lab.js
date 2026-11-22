@@ -38,7 +38,6 @@
   window.__PATO_STOP_ACTIVE_VIDEO__=function(except){
     videos.forEach(function(video){
       if(video===except)return;
-      video.dataset.userPaused="true";
       setMuted(video,true);
       pause(video);
       syncAudioPrompt(video);
