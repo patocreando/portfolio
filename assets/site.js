@@ -256,6 +256,10 @@
         var visibleHeight = Math.max(0, bottom - top);
         var visibleRatio = visibleHeight / Math.max(rect.height, 1);
 
+        // Do not switch to a video that is only inside the preload margin
+        // but is not actually visible in the viewport.
+        if (visibleRatio < (mobileQuery.matches ? .10 : .07)) return -1;
+
         var viewportCenter = vh / 2;
         var videoCenter = rect.top + rect.height / 2;
         var centerDistance = Math.abs(videoCenter - viewportCenter);
@@ -280,9 +284,13 @@
         video.setAttribute("webkit-playsinline", "");
         video.disablePictureInPicture = true;
 
-        var preloadMode = inAppBrowser ? "metadata" : (mobileQuery.matches ? "none" : "metadata");
-        video.preload = preloadMode;
-        video.setAttribute("preload", preloadMode);
+        // Keep the resource warm after its first activation. Resetting preload to
+        // "none" on every scroll can make mobile browsers discard the decoded frame.
+        if (video.dataset.patoProjectPrepared !== "true") {
+          video.preload = "metadata";
+          video.setAttribute("preload", "metadata");
+          video.dataset.patoProjectPrepared = "true";
+        }
 
         if (inAppBrowser && !video.getAttribute("src")) {
           var directSource = video.querySelector("source[src]");
@@ -310,10 +318,8 @@
         video.setAttribute("autoplay", "");
         var button = ensureButton(video);
 
-        if (video.readyState < (inAppBrowser ? 2 : 1)) {
-          try { video.load(); } catch (e) {}
-        }
-
+        // play() requests the source itself. Avoid load() on every scroll resume:
+        // load() resets the current frame and can flash black on iOS/Android.
         var promise;
         try {
           promise = video.play();
@@ -326,7 +332,24 @@
           promise.then(function () {
             if (button) button.classList.remove("is-visible");
           }).catch(function () {
-            if (button) button.classList.add("is-visible");
+            // Some mobile browsers reject a resumed unmuted stream after scrolling.
+            // Fall back to muted playback so the visual does not disappear.
+            if (!video.muted) {
+              video.dataset.userUnmuted = "false";
+              video.muted = true;
+              video.defaultMuted = true;
+              video.volume = 0;
+              video.setAttribute("muted", "");
+              var mutedRetry;
+              try { mutedRetry = video.play(); } catch (e) {}
+              if (mutedRetry && typeof mutedRetry.catch === "function") {
+                mutedRetry.catch(function () {
+                  if (button) button.classList.add("is-visible");
+                });
+              }
+            } else if (button) {
+              button.classList.add("is-visible");
+            }
           });
         } else if (userGesture && button) {
           button.classList.remove("is-visible");
@@ -352,7 +375,7 @@
         }
 
         var best = null;
-        var bestScore = mobileQuery.matches ? .01 : .08;
+        var bestScore = mobileQuery.matches ? .10 : .07;
 
         videos.forEach(function (video) {
           var current = score(video);
@@ -361,6 +384,17 @@
             best = video;
           }
         });
+
+        // Hysteresis avoids swapping/pausing videos repeatedly while the user
+        // slowly scrolls across the edge of two cards.
+        if (activeVideo && activeVideo !== best) {
+          var activeScore = score(activeVideo);
+          var switchMargin = mobileQuery.matches ? .12 : .08;
+          if (activeScore >= (mobileQuery.matches ? .16 : .12) &&
+              bestScore < activeScore + switchMargin) {
+            best = activeVideo;
+          }
+        }
 
         if (best !== activeVideo) {
           activate(best);
