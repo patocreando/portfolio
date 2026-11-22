@@ -723,9 +723,8 @@
             setAudio(true);
           }
 
-          if (video.paused) {
-            ensureMutedPlayback();
-          }
+          // Playback is owned by mobile-hero-fallback.js. This controller
+          // only manages the hero layout and the explicit audio toggle.
         } else if (!video.paused) {
           try { video.pause(); } catch (e) {}
         }
@@ -744,7 +743,7 @@
         var preloadMode = inAppBrowser ? "metadata" : "auto";
         video.preload = preloadMode;
         video.setAttribute("preload", preloadMode);
-        video.setAttribute("autoplay", "");
+        video.removeAttribute("autoplay");
 
         if (inAppBrowser && !video.getAttribute("src")) {
           var directSource = video.querySelector("source[src]");
@@ -763,7 +762,7 @@
           markFrameReady();
         }
 
-        ensureMutedPlayback();
+        // The mobile fallback controller owns the initial muted play request.
       }
 
       function refresh() {
@@ -772,7 +771,9 @@
           rafId = null;
         }
 
-        var shouldEnable = mobileQuery.matches && !reduceMotionQuery.matches;
+        // Keep the mobile layout active even with reduced motion enabled;
+        // reduced motion controls autoplay, not whether the hero is rendered.
+        var shouldEnable = mobileQuery.matches;
         setEnabled(shouldEnable);
 
         if (shouldEnable) {
