@@ -59,7 +59,21 @@
       }
 
       function ensurePlayButton(video) {
-        return null;
+        if (!instagramInApp) return null;
+
+        var shell = shellFor(video);
+        if (!shell) return null;
+
+        var existing = shell.querySelector(".video-tap-fallback");
+        if (existing) return existing;
+
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "video-tap-fallback is-visible";
+        button.setAttribute("aria-label", "Reproducir video");
+        button.innerHTML = "<span>Reproducir video</span>";
+        shell.appendChild(button);
+        return button;
       }
 
       function prepare(video) {
