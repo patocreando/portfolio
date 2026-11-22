@@ -287,8 +287,10 @@
         // Keep the resource warm after its first activation. Resetting preload to
         // "none" on every scroll can make mobile browsers discard the decoded frame.
         if (video.dataset.patoProjectPrepared !== "true") {
-          video.preload = "none";
-          video.setAttribute("preload", "none");
+          // Metadata-first gives mobile browsers a chance to prepare the
+          // first frame without eagerly downloading every full project video.
+          video.preload = "metadata";
+          video.setAttribute("preload", "metadata");
           video.dataset.patoProjectPrepared = "true";
         }
 
