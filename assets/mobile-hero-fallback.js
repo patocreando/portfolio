@@ -274,7 +274,11 @@
   video.setAttribute("webkit-playsinline", "");
   setMutedForAutoplay();
 
-  if (reducedMotion.matches || saveData) {
+  if (!sourceSupported) {
+    video.preload = "none";
+    keepPosterVisible();
+    hideButton();
+  } else if (reducedMotion.matches || saveData) {
     video.preload = "none";
     showButton("Reproducir showreel");
   } else if (isVisible()) {
