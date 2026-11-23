@@ -28,10 +28,47 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     const body = await fs.readFile(file);
-    res.writeHead(200, {
-      "content-type": mime[path.extname(file).toLowerCase()] || "application/octet-stream",
-      "cache-control": "no-store"
-    });
+    const type = mime[path.extname(file).toLowerCase()] || "application/octet-stream";
+    if (path.extname(file).toLowerCase() === ".mp4") {
+      res.setHeader("accept-ranges","bytes");
+      const range = req.headers.range;
+      if (range) {
+        const match = /^bytes=(\\d*)-(\\d*)$/.exec(range);
+        if (!match) { res.writeHead(416,{"content-range":"bytes */"+body.length}).end(); return; }
+        let start, end;
+        if (!match[1]) {
+          const suffix = Number(match[2]);
+          start = Math.max(0,body.length-suffix);
+          end = body.length-1;
+        } else {
+          start = Number(match[1]);
+          end = match[2] ? Math.min(Number(match[2]),body.length-1) : body.length-1;
+        }
+        if (start >= body.length || end < start) {
+          res.writeHead(416,{"content-range":"bytes */"+body.length}).end();
+          return;
+        }
+        const chunk = body.subarray(start,end+1);
+        res.writeHead(206,{
+          "content-type":type,
+          "content-length":chunk.length,
+          "content-range":"bytes "+start+"-"+end+"/"+body.length,
+          "accept-ranges":"bytes",
+          "cache-control":"no-store"
+        });
+        res.end(chunk);
+        return;
+      }
+      res.writeHead(200,{
+        "content-type":type,
+        "content-length":body.length,
+        "accept-ranges":"bytes",
+        "cache-control":"no-store"
+      });
+      res.end(body);
+      return;
+    }
+    res.writeHead(200,{"content-type":type,"cache-control":"no-store"});
     res.end(body);
   } catch {
     res.writeHead(404).end();
