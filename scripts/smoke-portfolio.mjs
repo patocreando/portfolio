@@ -263,7 +263,7 @@ assert.equal(occurrences(html,"Lenguaje de campaña en clave UGC."),0,"remove du
 assert.equal((html.match(/class="editorial-case(?: editorial-case--silo| editorial-case--mariana)?"/g)||[]).length,2,"two curated client campaigns");
 has(html,'Fragancia, detalle y cierre de marca.');
 // Curated cases: concrete client and production context without visual overlays.
-has(html,'SELECCIÓN / TRABAJOS Y PRODUCCIONES PROPIAS');
+has(html,'Un portfolio.');
 has(html,'Casos de cliente y piezas de exploración, con su enfoque y capacidad principal identificados.');
 has(html,'Una pieza para SILO que conduce la mirada desde el frasco hasta la identidad de la perfumería.');
 has(html,'id="marianaCaseTitle"');
@@ -275,7 +275,7 @@ assert.ok(fs.statSync('assets/images/mariana-omelette-ugc.webp').size > 10_000,"
 assert.equal(occurrences(html,'id="marianaCaseTitle"'),1,"single Mariana case heading");
 
 has(html,'El desafío fue sostener al mismo bartender, su vestuario y la cocina a lo largo de un reel de 33,8 segundos');
-assert.equal(occurrences(html,'class="editorial-overline"'),1,"one shared editorial overline");
+assert.equal(occurrences(html,'class="editorial-overline"'),0,"No repeated portfolio sub-introduction");
 
 has(html,'>Club del Cóctel</strong>', 'Club case identifies its real project');
 assert.equal(occurrences(html,'03 / PRODUCTO IA · DIRECCIÓN CREATIVA'),0,'old UMBRAL project heading removed');
