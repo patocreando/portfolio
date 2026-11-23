@@ -194,6 +194,13 @@ assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
 // Compare against main as ground truth for preservation.
 try {
   const baseline = execFileSync("git", ["show", "origin/main:index.html"], {encoding:"utf8"});
+  const extractBlock = (source,start,end) => source.slice(source.indexOf(start),source.indexOf(end,source.indexOf(start)));
+  const packCards = source => [...extractBlock(source,'<section class="section-reveal pricing-packs"','<!-- Methodology').matchAll(/<article class="pricing-pack[\\s\\S]*?<\\/article>/g)].map(match=>match[0]);
+  assert.deepEqual(packCards(html),packCards(baseline),"Plan cards, prices, inclusions, notes and conditions stay byte-for-byte unchanged");
+  const serviceVideoSources = source => [...extractBlock(source,'<section id="services"','<!-- Paquetes de producción').matchAll(/<source[^>]+src="([^"]+)"/g)].map(match=>match[1]);
+  assert.deepEqual(serviceVideoSources(html),serviceVideoSources(baseline),"All three ambient Service video URLs remain unchanged");
+  const clubSources = source => [...extractBlock(source,'<section id="caseMyWay"','<section id="services"').matchAll(/(?:src|data-src)="([^"]+)"/g)].map(match=>match[1]);
+  assert.deepEqual(clubSources(html),clubSources(baseline),"Club del Cóctel media references remain unchanged");
   const intentionallyRemovedUrls = new Set(["https://www.instagram.com/p/Dd24xgrOr5e/?hl=en","https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/cc882a72-3df6-41a3-8398-619e1e7ba9a9.mp4"]);
   const missing = [...links(baseline)].filter(url => !intentionallyRemovedUrls.has(url) && !links(html).has(url));
   assert.deepEqual(missing, [], "Original external media/link URLs were dropped");
