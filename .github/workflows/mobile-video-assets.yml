@@ -24,10 +24,15 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install FFmpeg
+      - name: Install portable FFmpeg
+        shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          set -euo pipefail
+          python3 -m pip install --quiet --disable-pip-version-check --break-system-packages imageio-ffmpeg
+          python3 - <<'PY' >> "$GITHUB_ENV"
+          import imageio_ffmpeg
+          print("FFMPEG_BIN=" + imageio_ffmpeg.get_ffmpeg_exe())
+          PY
 
       - name: Encode and verify mobile videos
         run: python3 scripts/optimize_public_mobile_videos.py
