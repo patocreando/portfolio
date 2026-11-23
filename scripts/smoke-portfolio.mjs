@@ -46,18 +46,21 @@ has(premiumCss,"#portfolioHeader .portfolio-mobile-menu.is-open");
 assert.equal(occurrences(html,'class="hero-reveal hero-actions"'),0,"remove duplicated hero CTAs only");
 assert.equal(occurrences(html,'href="#projects"'),2,"main navigation to projects remains in desktop and mobile");
 assert.equal(occurrences(headerMarkup,'href="#launchOffer"'),2,"desktop and mobile packs link in header");
-assert.equal(occurrences(html,'href="#launchOffer"'),3,"header navigation (desktop + mobile) plus hero discrete CTA to packs");
-has(html,'class="hero-cta-packs inline-flex items-center gap-2 text-[13px] font-semibold text-zinc-300 hover:text-butter transition-colors"',"hero discrete CTA element is present with exact styling classes");
-has(html,'<span>Ver planes de trabajo</span>',"hero discrete CTA label is present");
-const methodScopeMatch=html.match(/<p class="method-brief-scope section-reveal">([\s\S]*?)<\/p>/);
-assert.ok(methodScopeMatch,"method terms remain in a single disclosure");
-assert.ok(methodScopeMatch[1].includes("<strong>Alcance, revisiones y plazos de entrega:</strong>"),"scope, review and timelines explicitly disclosed");
-assert.ok(methodScopeMatch[1].includes("<strong>Pago:</strong> se realiza al momento de la entrega final."),"payment is due with final delivery");
-assert.equal(occurrences(html,"Los alcances y las revisiones se definen por proyecto o por pack."),0,"previous ambiguous copy replaced");
-assert.equal(occurrences(html,'class="studio-system-ambient"'),1,"one decorative production background");
-assert.equal(occurrences(html,'class="studio-system-board section-reveal"'),1,"production card remains unique");
-assert.equal(occurrences(html,'class="studio-system-sequence"'),1,"retain four system steps");
-assert.equal(occurrences(html,"https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/8ece9361-a363-477c-8a2e-e6d221cdc562.mp4"),2,"reuse method background video in production card");
+assert.equal(occurrences(html,'href="#launchOffer"'),2,"only desktop and mobile navigation links point to plans");
+has(html,'class="pc-hero-cta pc-hero-cta--primary"',"primary portfolio CTA exists");
+has(html,'href="#projects" class="pc-hero-cta pc-hero-cta--primary"',"primary CTA leads to selected work");
+has(html,'href="#contact" class="pc-hero-cta pc-hero-cta--secondary"',"secondary CTA leads to contact");
+has(html,'Propuesta visual aprobada antes de generar',"hero microcopy states the preproduction checkpoint");
+assert.equal(occurrences(html,'class="studio-system-ambient"'),1,"one methodology ambient video remains");
+assert.equal(occurrences(html,'class="pc-method-six-number"'),6,"six visible methodology stages");
+for(const step of ["Brief y análisis","Dirección visual","Anclas y continuidad","Generación controlada","Selección y edición","Control y entrega"])has(html,step);
+has(html,"Las etapas se adaptan al alcance de cada proyecto.");
+assert.equal(occurrences(html,"https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/8ece9361-a363-477c-8a2e-e6d221cdc562.mp4"),1,"original methodology ambient video retained");
+has(html,'aria-label="Responsabilidades de la colaboración"');
+assert.equal(occurrences(html,'class="pc-collab-column"'),3,"three collaboration responsibility columns");
+has(html,'Para marcas que necesitan mostrar mejor sus productos.');
+has(html,'Un apoyo de producción para briefs creativos.');
+has(html,'No incluye gestión de Meta Ads ni media buying.');
 has(premiumCss,'.studio-system-board::before');
 has(premiumJs,'systemBackgroundPlayback');
 has(premiumJs,'prefers-reduced-motion: reduce');
@@ -86,24 +89,18 @@ for(const label of ["Propuesta visual","Producción","Edición","Archivo final"]
 for(const kind of ['data-kind="proposal"','data-kind="edit"'])has(html,kind,"Club stage kind: "+kind);
 has(fs.readFileSync("assets/club-case.css","utf8"),"@media(prefers-reduced-motion:reduce)","reduced-motion interactive case");
 
-for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 200.000",1]]) {
+for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 175.000",1]]) {
   assert.equal(occurrences(html, ref), 1, "Manychat ref: "+ref);
   assert.equal(occurrences(html, price), count, "pack price and base disclosures: "+price);
 }
 assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed");
-// Commercial copy: preserve base scope and the three fixed plan amounts.
-has(html,'<strong>Anuncios de producto, UGC y campañas visuales con IA.</strong>');
-has(html,'De la idea al video final: dirección creativa, generación realista y postproducción');
-has(html,'<strong>De una pieza a una campaña visual.</strong>');
-assert.equal(occurrences(html,'<span><i data-lucide="check"></i>Propuesta visual previa</span>'),3,"Preproduction included in three plans");
-has(html,'Los planes base no incluyen copy ni subtítulos; pueden cotizarse por separado, al igual que imágenes, carruseles o variantes adicionales.');
-assert.ok(!html.includes('Pagás por el clip terminado, sin copy ni subtítulos añadidos.'),"Retired limitation is no longer a headline");
-
-for(const phrase of ['1 reel vertical 9:16','2 reels verticales 9:16','4 reels verticales 9:16','panel visual personalizado','Antes de generar','Digitalización y cierre en campaña'])has(html,phrase);
+// Commercial content: fixed plans and existing commercial conditions.
+has(html,'<strong>Tres alcances según la cantidad de piezas.</strong>');
+for(const phrase of ['ARS 50.000','ARS 100.000','ARS 175.000','1 reel vertical 9:16','2 reels verticales 9:16','4 reels verticales 9:16','Digitalización o generación con IA','Dirección visual y edición','Subtítulos dinámicos de alta retención incluidos','Imágenes, carruseles o variantes adicionales pueden cotizarse por separado.'])has(html,phrase);
 assert.equal(occurrences(html,'data-sample-video'),0,"no duplicated samples");
-has(html,'<title>Pato Creando | Reels UGC y anuncios de producto con IA</title>');
-has(html,'<meta property="og:title" content="Pato Creando | Reels UGC y anuncios de producto con IA" />');
-has(html,'<meta name="twitter:title" content="Pato Creando | Reels UGC y anuncios de producto con IA" />');
+has(html,'<title>Pato Creando | Dirección creativa y producción audiovisual con IA</title>');
+has(html,'<meta property="og:title" content="Pato Creando | Dirección creativa y producción audiovisual con IA" />');
+has(html,'<meta name="twitter:title" content="Pato Creando | Dirección creativa y producción audiovisual con IA" />');
 
 // Block 1: sharing preview must use an existing lightweight, branded asset.
 const shareImage = "assets/images/pato-creando-ia-content-v4.png";
@@ -132,7 +129,11 @@ assert.ok(/<video[^>]*class="hero-video" aria-label="[^"]+"[^>]*>/.test(html),"H
 has(html,'class="pricing-secondary-contact section-reveal"');
 has(html,'href="#contact" aria-label="Ir al formulario de contacto para enviar tu consulta"');
 has(html,'class="contact-brief-hint"');
-has(html,'<label for="projectType">Tipo y cantidad de piezas</label>');
+has(html,'<label for="profileType">Perfil</label>');
+has(html,'id="profileType" name="profileType"');
+has(html,'<label for="projectType">Tipo de pieza</label>');
+has(js,'var profileType = document.getElementById("profileType").value.trim();');
+has(js,'profile: pendingMail.profileType');
 has(html,'<span id="submitLabel">Enviar consulta</span>');
 has(html,'<strong id="formStatusTitle">Consulta enviada</strong>');
 has(js,'submitLabel.textContent = "Enviar consulta"');
@@ -160,7 +161,7 @@ assert.equal(occurrences(html,'class="editorial-index"'),0,'remove category tags
 assert.equal(occurrences(html,'class="editorial-footnote"'),0,'remove video footnote tags');
 assert.equal(occurrences(html,'class="service-chips"'),0,'remove service badges layered with video cards');
 assert.equal(occurrences(html,'class="pricing-pack-badge"'),0,'remove floating tag above the plan video');
-assert.equal(occurrences(html,'class="service-kicker"'),0,'remove category labels from service video cards');
+assert.equal(occurrences(html,'class="service-kicker"'),3,'three service labels remain distinct');
 assert.equal(occurrences(html,'data-umbral-reel'),0,'legacy UMBRAL showcase removed');
 assert.equal(occurrences(html,'class="club-workflow-video"'),1,'one video player is reused across the interactive stages');
 assert.equal(occurrences(html,'data-club-step'),4,'four interactive Club stages');
@@ -186,7 +187,9 @@ assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should no
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
 has(js, 'soundToggle.addEventListener("click", toggleAudio)');
 has(js, 'button.addEventListener("keydown"');
-assert.equal(occurrences(html, 'src="./assets/site.js?v=20261027-club-case-3"'),1);
+assert.equal(occurrences(html, 'src="./assets/site.js?v=20261123-editorial-cro-2"'),1);
+has(html,'href="./assets/portfolio-refresh.css?v=20261123-editorial-cro-1"');
+assert.ok(fs.existsSync("assets/portfolio-refresh.css"),"Portfolio refresh styles exist");
 assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
 // Compare against main as ground truth for preservation.
 try {
@@ -231,8 +234,8 @@ has(premiumJs,'IntersectionObserver');
 
 const archivedProjects = [...html.matchAll(/<article\b[^>]*class="[^"]*\bproject-item\b[^"]*"[^>]*>[\s\S]*?<\/article>/g)].map(match => match[0]);
 assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
-assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
-assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,2,"two unique campaign cards");
+assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,3,"three UGC cards, including the SILO client UGC");
+assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,1,"one product concept in the current gallery");
 assert.equal(occurrences(html,"silo-campana-producto-recortado.mp4"),1,"SILO reel appears once");
 assert.equal(occurrences(html,"club-del-coctel.mp4"),1,"Club reel appears once in its interactive walkthrough");
 for (const name of ["silo-campana-producto-recortado.mp4","club-del-coctel.mp4"])
@@ -313,11 +316,9 @@ assert.ok(html.indexOf('id="portfolio-nav-critical"') < html.indexOf('</head>'),
 assert.ok(criticalNavStyle.includes('position:fixed;inset:0 0 auto;z-index:1000;'),"navbar position does not depend on Tailwind runtime");
 
 assert.equal(occurrences(html,'src="./assets/premium-lab.js?v=20261027-club-dashboard-1"'),1,'versioned premium runtime is loaded exactly once');
-has(html,'class="method-brief-grid"');
-assert.equal(occurrences(html,'class="method-brief-grid"'),1,"single short collaboration timeline");
-assert.equal(occurrences(html,'class="method-brief-grid"'),1,"three-step timeline component");
-assert.equal(occurrences(html,'method-brief-grid'),1,"only one method component");
-assert.equal(occurrences(html,'<article><span>0'),3,"exactly three collaboration steps");
+assert.equal(occurrences(html,'class="pc-method-six-number"'),6,"six-stage methodology remains visible");
+assert.equal(occurrences(html,'class="pc-collab-column"'),3,"three collaboration responsibility columns");
+assert.equal(occurrences(html,'class="pc-audience-grid"'),1,"brand and agency comparison is unique");
 assert.equal(occurrences(html,'id="bottleneck"'),0,"remove duplicate bottleneck");
 assert.equal(occurrences(html,'id="fit"'),0,"remove duplicate fit");
 assert.equal(occurrences(html,'id="creativePaths"'),0,"remove duplicate creative paths");
@@ -331,44 +332,7 @@ has(premiumCss,'@keyframes studio-system-atmosphere');
 has(premiumCss,'opacity:.78');
 
 
-const toolCards=[...html.matchAll(/class="tool-pipeline-card tool-pipeline-[^"]+"/g)];
-assert.equal(toolCards.length,3,"one card for each stage of production");
-assert.equal(occurrences(html,'class="tool-app"'),8,"eight visible tool icon tiles");
-assert.equal(occurrences(html,'class="studio-system-toolgrid"'),1,"tool stack remains unique");
-assert.equal(occurrences(html,'role="listitem"'),3,"three accessible tool cards");
-for(const name of ["ChatGPT","Nano Banana Pro","Higgsfield Soul","Omni 1.1 Flash","Google Flow Labs","Python","CapCut","Canva"])has(html,'>'+name+'</span>');
-const toolBlock=html.slice(html.indexOf('class="studio-system-tools section-reveal"'),html.indexOf('class="studio-system-conversion section-reveal"'));
-for(const removed of ["Seedance","FFmpeg"])assert.ok(!toolBlock.includes(removed),"removed tool is absent from stack: "+removed);
-assert.ok(!toolBlock.includes('title="Higgsfield"'),"generic Higgsfield tile moved to Soul in Direction");
-assert.equal(occurrences(toolBlock,'>Higgsfield Soul</span>'),1,"Soul belongs in Direction only");
-assert.equal(occurrences(toolBlock,'class="tool-apps tool-apps--two"'),1,"generation has two centered tool slots");
-assert.ok(toolBlock.indexOf('title="Higgsfield Soul"')<toolBlock.indexOf('02 / Generación'),"Soul is placed in Direction");
-assert.ok(toolBlock.indexOf('title="Google Flow Labs"')>toolBlock.indexOf('02 / Generación'),"Google Flow Labs stays in Generation");
-assert.equal(occurrences(toolBlock,'class="tool-apps--four"'),0,"finishing no longer uses four columns");
-const toolsBase="assets/tool-icons/";
-const toolFiles=[...html.matchAll(/src="\.\/assets\/tool-icons\/([a-z-]+\.svg)"/g)].map(x=>x[1]);
-assert.equal(toolFiles.length,8,"eight icon placements with local assets");
-assert.equal(new Set(toolFiles).size,8,"eight bundled icons, including Veo");
-for(const icon of new Set(toolFiles)){
-  assert.ok(fs.existsSync(toolsBase+icon),"tool icon exists: "+icon);
-  const source=fs.readFileSync(toolsBase+icon,"utf8");
-  assert.ok(source.startsWith("<svg")&&source.includes("</svg>"),"valid SVG: "+icon);
-  assert.ok(!/<script|<foreignObject|onload\s*=|javascript:/i.test(source),"no active SVG content: "+icon);
-}
-has(premiumCss,'@keyframes tool-pipeline-border-wave');
-has(premiumCss,'#system .tool-pipeline-generation .tool-apps--two');
-for(const icon of ['gemini.svg','veo.svg','python.svg','canva-initial.svg']){
- const src=fs.readFileSync(toolsBase+icon,'utf8');
- assert.ok(src.includes('<path'), 'source-accurate vector exists for '+icon);
-}
-assert.ok(fs.readFileSync(toolsBase+"veo.svg","utf8").includes("Google"), "Flow uses Google-brand geometry, not a made-up identifier");
-has(html,'./assets/tool-icons/veo.svg');
-assert.ok(!toolBlock.includes('title="Veo"'),"Old Veo label removed from the tile");
-assert.equal(occurrences(toolBlock,'>Google Flow Labs</span>'),1,"New label visible exactly once");
-has(premiumCss,'@keyframes tool-pipeline-sweep');
-has(premiumCss,'@media(prefers-reduced-motion:reduce)');
-
-
+assert.equal(occurrences(html,'class="tool-pipeline-card tool-pipeline-direction"'),0,"obsolete tool stack cards are not shown as a second method");
 assert.equal(occurrences(html,'WORKFLOW'),0,"no WORKFLOW badges remain on any video");
 assert.equal(occurrences(html,'./assets/videos/silo-campana-producto-recortado.mp4'),1,"first SILO ad appears in featured case");
 assert.equal(occurrences(html,'./assets/videos/silo-ugc-sin-subtitulos.mp4'),1,"second SILO ad appears in campaign gallery");
