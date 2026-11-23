@@ -305,24 +305,26 @@ async function run() {
             reducedMotion:"no-preference"
           });
           const page = await context.newPage();
-          await page.route("**/hero-showreel-mobile-compatible.mp4*", route => route.abort("failed"));
           await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
           await waitForPoster(page);
           await page.locator("#heroDeviceWrap").scrollIntoViewIfNeeded();
-          await page.waitForTimeout(1000);
+          await page.waitForTimeout(500);
           const initialState = await heroState(page);
           if (!initialState.sourceSupported) {
             assert.ok(initialState.posterVisible,engineName + ": unsupported codec keeps poster visible under media failure");
             summaries.push({engine:engineName,scenario:"media-error-not-applicable-unsupported-codec",posterVisible:initialState.posterVisible});
           } else {
-            await page.locator(".hero-video").evaluate(video => {
+            await page.locator(".hero-video").evaluate((video, missingUrl) => {
+              video.pause();
               video.preload = "auto";
+              video.src = missingUrl;
               video.load();
-            });
+            }, baseUrl + "__missing_hero_media__.mp4");
             await page.waitForFunction(() => {
               const video = document.querySelector(".hero-video");
-              return Boolean(video && video.error);
-            }, null, {timeout:20000});
+              const screen = document.querySelector("#heroDeviceWrap .hero-phone-screen");
+              return Boolean(video && video.error && screen && !screen.classList.contains("is-video-ready"));
+            }, null, {timeout:12000});
             const state = await assertNoBlankHero(page,engineName + "/media-error");
             assert.ok(state.mediaError,engineName + ": media error is detected");
             assert.ok(state.posterVisible,engineName + ": poster survives fatal media error");
