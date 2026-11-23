@@ -7,7 +7,7 @@ const mobileCss = fs.readFileSync("assets/mobile-stability.css","utf8");
 const fallback = fs.readFileSync("assets/mobile-hero-fallback.js","utf8");
 const siteJs = fs.readFileSync("assets/site.js","utf8");
 const videoPath = "assets/videos/hero-showreel-mobile-compatible.mp4";
-const posterPath = "assets/images/hero-showreel-poster.jpg";
+const posterPath = "assets/images/hero-showreel-poster.png";
 const heroTag = html.match(/<video\b(?=[^>]*\bclass="hero-video")[^>]*>/s)?.[0];
 const posterTag = html.match(/<img\b(?=[^>]*\bdata-hero-mobile-poster)[^>]*>/s)?.[0];
 
@@ -18,7 +18,7 @@ for (const attr of ["muted","playsinline","webkit-playsinline",'preload="none"']
 }
 assert.ok(!/\scontrols(?:\s|>)/.test(heroTag),"Hero never displays native browser controls");
 assert.ok(!/\sautoplay(?:\s|>)/.test(heroTag),"Autoplay is policy-aware and controlled by JavaScript");
-assert.ok(heroTag.includes('poster="./assets/images/hero-showreel-poster.jpg?v=20261123-hero-cross-browser-1"'),
+assert.ok(heroTag.includes('poster="./assets/images/hero-showreel-poster.png?v=20261123-hero-cross-browser-1"'),
   "Video poster URL points to the extracted showreel frame");
 assert.ok(html.includes('type=\'video/mp4; codecs="avc1.42401f, mp4a.40.2"\''),
   "Video source declares the exact H264 Constrained Baseline and AAC-LC codecs");
@@ -26,9 +26,9 @@ assert.ok(fallback.includes('video.canPlayType(sourceType) !== ""'),
   "Playback controller detects unsupported codecs before attempting playback");
 assert.ok(fallback.includes('heroSourceUnsupported'),
   "Unsupported codec path falls back to the real poster without a dead play button");
-assert.ok(posterTag.includes('src="./assets/images/hero-showreel-poster.jpg?v=20261123-hero-cross-browser-1"'),
+assert.ok(posterTag.includes('src="./assets/images/hero-showreel-poster.png?v=20261123-hero-cross-browser-1"'),
   "Visible fallback and native video poster share the same local asset");
-assert.ok(html.includes('href="./assets/images/hero-showreel-poster.jpg?v=20261123-hero-cross-browser-1"'),
+assert.ok(html.includes('href="./assets/images/hero-showreel-poster.png?v=20261123-hero-cross-browser-1"'),
   "Hero still is preloaded with high priority");
 assert.equal((html.match(/mobile-hero-fallback\.js/g)||[]).length,1,"One hero playback controller is loaded");
 
@@ -69,7 +69,7 @@ assert.ok(fs.existsSync(posterPath),"Generated hero poster exists");
 const videoBytes = fs.statSync(videoPath).size;
 const posterBytes = fs.statSync(posterPath).size;
 assert.ok(videoBytes > 100_000 && videoBytes < 6_000_000,"Hero MP4 is a compact web asset: "+videoBytes);
-assert.ok(posterBytes > 10_000 && posterBytes < 250_000,"Hero poster is optimized: "+posterBytes);
+assert.ok(posterBytes > 10_000 && posterBytes < 1_800_000,"Hero PNG poster remains an optimized web asset: "+posterBytes);
 
 console.log(JSON.stringify({
   status:"passed",
