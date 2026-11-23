@@ -58,46 +58,47 @@
   function sourceUrl(video) {
     if (video.getAttribute("data-src")) return video.getAttribute("data-src");
     if (video.dataset.videoSrc) return video.dataset.videoSrc;
+    if (video.getAttribute("src")) return video.getAttribute("src");
     var sources = originalSources(video);
     for (var i = 0; i < sources.length; i += 1) {
-      var url = sources[i].getAttribute("src") || sources[i].getAttribute("data-src");
+      var url = sources[i].getAttribute("data-src") || sources[i].getAttribute("src");
       if (url) return url;
     }
-    return video.getAttribute("src") || "";
+    return "";
   }
 
+  /*
+   * Use video.src as the single active source instead of relying on dynamically
+   * populated <source> children. This is more predictable in Android Chrome
+   * and lets releaseSource reliably drop the active resource.
+   */
   function loadSource(video) {
     var state = stateFor(video);
-    if (state.loaded) {
+    if (state.loaded && video.getAttribute("src")) {
       state.lastUsed = ++sequence;
       return true;
     }
 
-    var direct = video.getAttribute("data-src") || video.dataset.videoSrc;
     var sourceElements = originalSources(video);
-    var changed = false;
-
-    if (direct) {
-      if (video.getAttribute("src") !== direct) {
-        video.setAttribute("src", direct);
-        changed = true;
+    var direct = video.getAttribute("data-src") || video.dataset.videoSrc || video.getAttribute("src");
+    if (!direct) {
+      for (var i = 0; i < sourceElements.length; i += 1) {
+        direct = sourceElements[i].getAttribute("data-src") || sourceElements[i].getAttribute("src");
+        if (direct) break;
       }
-    } else {
-      sourceElements.forEach(function (source) {
-        var lazy = source.getAttribute("data-src");
-        if (lazy && source.getAttribute("src") !== lazy) {
-          source.setAttribute("src", lazy);
-          changed = true;
-        }
-      });
     }
+    if (!direct) return false;
 
-    var hasSource = Boolean(video.getAttribute("src")) || sourceElements.some(function (source) {
-      return Boolean(source.getAttribute("src"));
+    var changed = video.getAttribute("src") !== direct;
+    sourceElements.forEach(function (source) {
+      var childSrc = source.getAttribute("src");
+      if (childSrc) {
+        if (!source.getAttribute("data-src")) source.setAttribute("data-src", childSrc);
+        source.removeAttribute("src");
+      }
     });
 
-    if (!hasSource) return false;
-
+    if (changed) video.setAttribute("src", direct);
     if (changed || video.readyState === 0) {
       try { video.load(); } catch (error) {}
     }
@@ -584,9 +585,7 @@
       });
     });
 
-    state.loaded = Boolean(video.getAttribute("src") || originalSources(video).some(function (source) {
-      return Boolean(source.getAttribute("src"));
-    }));
+    state.loaded = Boolean(video.getAttribute("src"));
     if (state.loaded) state.lastUsed = ++sequence;
   }
 
