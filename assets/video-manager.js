@@ -271,6 +271,7 @@
     try {
       result = video.play();
     } catch (error) {
+      state.blocked = true;
       showFallback(video, "Reintentar reproducción");
       return null;
     }
@@ -336,6 +337,7 @@
     try {
       result = video.play();
     } catch (error) {
+      stateFor(video).blocked = true;
       setMuted(video, true);
       audioVideo = null;
       window.__PATO_SOUND_ACTIVE_VIDEO__ = null;
