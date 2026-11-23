@@ -28,8 +28,10 @@ const server = http.createServer(async (req,res) => {
 });
 
 (async function main() {
-  await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));
-  const url = "http://127.0.0.1:"+server.address().port+"/";
+  // localhost is treated as a trustworthy local origin by WebKit; 127.0.0.1
+  // was upgraded to HTTPS in its Linux runner, although the fixture server is HTTP.
+  await new Promise(resolve=>server.listen(0,resolve));
+  const url = "http://localhost:"+server.address().port+"/";
   try {
     for (const engine of [{name:"Firefox",type:firefox},{name:"WebKit",type:webkit}]) {
       const browser = await engine.type.launch({headless:true});
