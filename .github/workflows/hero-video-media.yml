@@ -86,7 +86,7 @@ jobs:
           node --check assets/site.js
           node --check assets/mobile-hero-fallback.js
           node --check scripts/hero-video-compatibility.mjs
-          node scripts/smoke-portfolio.mjs
+          node scripts/hero-video-static.mjs
 
       - name: Install Playwright and browser engines
         run: |
