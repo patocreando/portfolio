@@ -266,6 +266,9 @@
     video.setAttribute("webkit-playsinline", "");
     activeVideo = video;
 
+    /* Keep a real tap target visible until the browser decodes its first frame. */
+    showFallback(video, "Reproducir video");
+
     var result;
     try {
       result = video.play();
@@ -278,7 +281,6 @@
     if (result && typeof result.catch === "function") {
       result.then(function () {
         state.blocked = false;
-        hideFallback(video);
       }).catch(function (error) {
         if (error && error.name === "AbortError") return;
         state.blocked = true;
@@ -532,7 +534,8 @@
     video.disablePictureInPicture = true;
     if (!video.getAttribute("poster")) video.setAttribute("poster", "./assets/images/hero-showreel-poster.svg");
 
-    state.heroButton = video.querySelector("[data-hero-mobile-play]");
+    var heroScreen = video.closest(".hero-phone-screen");
+    state.heroButton = heroScreen ? heroScreen.querySelector("[data-hero-mobile-play]") : null;
     state.prompt = promptFor(video);
     /* Club's stage controller already owns its audio button click. */
     if (state.prompt && !video.closest("[data-club-viewer]")) {
@@ -569,7 +572,6 @@
       activeVideo = video;
       if (!video.muted) audioVideo = video;
       window.__PATO_SOUND_ACTIVE_VIDEO__ = audioVideo;
-      hideFallback(video);
       syncPrompt(video);
     });
     video.addEventListener("pause", function () { syncPrompt(video); });
