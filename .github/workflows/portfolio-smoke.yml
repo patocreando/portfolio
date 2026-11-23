@@ -2,6 +2,7 @@ name: Portfolio smoke QA
 on:
   push:
     branches:
+      - main
       - improve/portfolio-cold-traffic
   pull_request:
     branches:
@@ -18,6 +19,8 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Verify JavaScript syntax
-        run: node --check assets/site.js
+        run: |
+          node --check assets/site.js
+          node --check assets/mobile-hero-fallback.js
       - name: Verify portfolio invariants
         run: node scripts/smoke-portfolio.mjs
