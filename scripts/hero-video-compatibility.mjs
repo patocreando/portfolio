@@ -223,6 +223,19 @@ async function run() {
               "; pageErrors=" + pageErrors.join(" | "));
           }
 
+          // CSS fades the decoded frame in over 180ms. Wait for the visual
+          // transition, not just the media-frame callback, before asserting it.
+          await page.waitForFunction(() => {
+            const screen = document.querySelector("#heroDeviceWrap .hero-phone-screen");
+            const video = screen?.querySelector(".hero-video");
+            return Boolean(screen?.classList.contains("is-video-ready") &&
+              video && Number.parseFloat(getComputedStyle(video).opacity) > 0.9);
+          }, null, {timeout:3000}).catch(async () => {
+            const diagnostic = await heroState(page);
+            if (!diagnostic?.frameReady) return;
+            throw new Error(engineName + "/" + spec.name + " decoded frame did not become visually opaque: " +
+              JSON.stringify(diagnostic));
+          });
           const state = await assertNoBlankHero(page, engineName + "/" + spec.name);
           if (pageErrors.length) {
             throw new Error(engineName + "/" + spec.name + ": page errors: " + pageErrors.join(" | "));
