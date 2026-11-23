@@ -537,8 +537,14 @@
     video.setAttribute("playsinline", "");
     video.setAttribute("webkit-playsinline", "");
     video.removeAttribute("autoplay");
-    video.preload = isHero(video) ? "metadata" : "none";
-    video.setAttribute("preload", isHero(video) ? "metadata" : "none");
+    var mobileContent = mobileViewport.matches && video.dataset.videoRole === "content";
+    var mobilePlayback = mobileViewport.matches && (isHero(video) || video.dataset.videoRole === "content");
+    video.controls = mobilePlayback;
+    if (mobilePlayback) video.setAttribute("controls", "");
+    else video.removeAttribute("controls");
+    var preloadMode = (isHero(video) || mobileContent) ? "metadata" : "none";
+    video.preload = preloadMode;
+    video.setAttribute("preload", preloadMode);
     video.disablePictureInPicture = true;
     if (!video.getAttribute("poster")) video.setAttribute("poster", "./assets/images/hero-showreel-poster.svg");
 
@@ -559,12 +565,17 @@
         video.dataset.userPaused = "false";
         playMuted(video, true);
       });
+      if (mobileViewport.matches && video.paused) showFallback(video, "Reproducir showreel");
     } else {
       fallbackButton(video);
+      if (mobileViewport.matches && video.dataset.videoRole === "content") {
+        showFallback(video, "Reproducir video");
+      }
     }
 
     video.addEventListener("click", function (event) {
       if (event.target && event.target.closest && event.target.closest("button")) return;
+      if (mobileViewport.matches && video.controls) return;
       if (window.__PATO_INSTAGRAM_BROWSER__ === true) return;
       activateAudio(video, event);
     });
@@ -631,7 +642,22 @@
       else refresh();
     });
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule, { passive: true });
+    window.addEventListener("resize", function () {
+      allVideos.forEach(function (video) {
+        if (isHero(video) || video.dataset.videoRole === "content") {
+          var mobilePlayback = mobileViewport.matches;
+          video.controls = mobilePlayback;
+          if (mobilePlayback) video.setAttribute("controls", "");
+          else video.removeAttribute("controls");
+          if (mobileViewport.matches && video.paused) {
+            showFallback(video, isHero(video) ? "Reproducir showreel" : "Reproducir video");
+          } else if (!mobileViewport.matches) {
+            hideFallback(video);
+          }
+        }
+      });
+      schedule();
+    }, { passive: true });
     window.addEventListener("orientationchange", schedule, { passive: true });
     window.addEventListener("pageshow", refresh);
 
