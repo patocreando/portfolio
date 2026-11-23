@@ -127,7 +127,7 @@ for (const video of ["ugc-beauty.mp4","producto_WEB.mp4","silo-ugc-sin-subtitulo
   assert.ok(videoOpen >= 0 && videoOpen > html.lastIndexOf("</video>",sourceIndex),"Video tag opens before its source: "+video);
   assert.ok(html.slice(videoOpen,sourceIndex).includes('aria-label="'),"Gallery video has accessible descriptive name: "+video);
 }
-const heroVideoTag=html.match(/<video\\b[^>]*class="hero-video"[^>]*>/);
+const heroVideoTag=html.match(/<video\b[^>]*class="hero-video"[^>]*>/);
 assert.ok(heroVideoTag && heroVideoTag[0].includes('aria-label="'),"Hero showreel has descriptive name");
 
 has(html,'class="pricing-secondary-contact section-reveal"');
