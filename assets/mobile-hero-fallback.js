@@ -170,16 +170,18 @@
   video.addEventListener("pause", function () {
     if (video.dataset.userPaused === "true" && !document.hidden) {
       showButton("Reproducir showreel");
+    } else if (!isVisible() && hasFrame) {
+      hasFrame = false;
+      keepPosterVisible();
     } else if (!hasFrame && !document.hidden && isVisible() && !reducedMotion.matches) {
       showButton("Tocar para reproducir");
     }
   });
 
   video.addEventListener("stalled", function () {
-    if (!hasFrame) {
-      keepPosterVisible();
-      if (!document.hidden && isVisible()) showButton("Reintentar showreel");
-    }
+    hasFrame = false;
+    keepPosterVisible();
+    if (!document.hidden && isVisible()) showButton("Reintentar showreel");
   });
 
   video.addEventListener("error", function () {
@@ -211,6 +213,10 @@
   }
 
   window.addEventListener("pageshow", function () {
+    if (video.paused && !video.error) {
+      hasFrame = false;
+      keepPosterVisible();
+    }
     if (!document.hidden && isVisible() && video.dataset.userPaused !== "true") {
       attemptPlay(false);
     }
@@ -223,10 +229,9 @@
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) {
       if (!video.paused) video.pause();
-      if (!hasFrame) {
-        keepPosterVisible();
-        showButton("Reproducir showreel");
-      }
+      hasFrame = false;
+      keepPosterVisible();
+      showButton("Reproducir showreel");
     } else if (!reducedMotion.matches && !saveData && isVisible() &&
                video.dataset.userPaused !== "true") {
       attemptPlay(false);
