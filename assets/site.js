@@ -898,8 +898,9 @@
       var projectCarouselIndex = 0;
       var activeProjectCategory = "ugc";
       var categoryCopy = {
-        ugc: "Avatares y producto en verticales con estética nativa.",
-        product: "Productos IA con control de forma, escala y materiales."
+        all: "Seis piezas publicadas: dos trabajos destacados y cuatro producciones en galería.",
+        ugc: "Tres piezas: campañas para clientes y una demo de personaje.",
+        product: "Una producción propia de producto con dirección creativa."
       };
 
       function getVisibleProjectItems() {
@@ -1032,7 +1033,7 @@
         });
       });
 
-      showCategory("product");
+      showCategory("all");
 
       // Magnetic pointer effect
       if (finePointer && !reduceMotion) {
@@ -1320,6 +1321,7 @@
       function buildMailPayload() {
         var name = document.getElementById("name").value.trim();
         var email = document.getElementById("email").value.trim();
+        var profileType = document.getElementById("profileType").value.trim();
         var projectType = document.getElementById("projectType").value.trim();
         var message = document.getElementById("message").value.trim();
 
@@ -1329,7 +1331,8 @@
           "Hola Ulises,\n\n" +
           "Soy " + name + ".\n" +
           "Mi email: " + email + "\n" +
-          "Proyecto: " + (projectType || "A definir") + "\n\n" +
+          "Perfil: " + (profileType || "A definir") + "\n" +
+          "Tipo de pieza: " + (projectType || "A definir") + "\n\n" +
           message;
 
         return {
@@ -1338,6 +1341,7 @@
           body: body,
           name: name,
           email: email,
+          profileType: profileType || "A definir",
           projectType: projectType || "A definir",
           message: message
         };
@@ -1429,6 +1433,7 @@
             body: JSON.stringify({
               name: pendingMail.name,
               email: pendingMail.email,
+              profile: pendingMail.profileType,
               project: pendingMail.projectType,
               message: pendingMail.message,
               _subject: pendingMail.subject,
