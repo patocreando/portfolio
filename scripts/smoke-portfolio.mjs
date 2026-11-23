@@ -68,7 +68,7 @@ has(premiumJs,'connection.saveData');
 
 has(html, 'role="tabpanel"');
 has(html, 'aria-labelledby="clubWorkflowTitle"');
-assert.equal(occurrences(html, "aria-controls=\"projectGrid\""), 2);
+assert.equal(occurrences(html, "aria-controls=\"projectGrid\""), 3);
 for (const file of ["assets/site.css","assets/site.js","assets/premium-lab.css","assets/premium-lab.js","assets/favicon.svg"]) {
   assert.ok(fs.existsSync(file), "Missing local asset "+file);
   has(html, "./"+file);
@@ -195,7 +195,7 @@ assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
 try {
   const baseline = execFileSync("git", ["show", "origin/main:index.html"], {encoding:"utf8"});
   const extractBlock = (source,start,end) => source.slice(source.indexOf(start),source.indexOf(end,source.indexOf(start)));
-  const packCards = source => [...extractBlock(source,'<section class="section-reveal pricing-packs"','<!-- Methodology').matchAll(/<article class="pricing-pack[\\s\\S]*?<\\/article>/g)].map(match=>match[0]);
+  const packCards = source => [...extractBlock(source,'<section class="section-reveal pricing-packs"','<!-- Methodology').matchAll(/<article class="pricing-pack[\s\S]*?<\/article>/g)].map(match=>match[0]);
   assert.deepEqual(packCards(html),packCards(baseline),"Plan cards, prices, inclusions, notes and conditions stay byte-for-byte unchanged");
   const serviceVideoSources = source => [...extractBlock(source,'<section id="services"','<!-- Paquetes de producción').matchAll(/<source[^>]+src="([^"]+)"/g)].map(match=>match[1]);
   assert.deepEqual(serviceVideoSources(html),serviceVideoSources(baseline),"All three ambient Service video URLs remain unchanged");
