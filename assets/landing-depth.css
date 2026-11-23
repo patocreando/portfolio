@@ -387,3 +387,31 @@
   background: #cfe65a !important;
   color: #11150a !important;
 }
+
+
+/* Service cards: restore the ambient footage without sacrificing text contrast. */
+#services .service-card {
+  background: #171e1d !important;
+}
+#services .service-card .service-card-media {
+  display: block !important;
+  opacity: .12 !important;
+  filter: blur(2.5px) saturate(.72) contrast(1.02) brightness(.62) !important;
+  transform: scale(1.055);
+}
+#services .service-card::after {
+  display: block !important;
+  background:
+    linear-gradient(180deg,rgba(14,19,20,.70) 0%,rgba(14,19,20,.82) 56%,rgba(14,19,20,.93) 100%),
+    radial-gradient(circle at 78% 18%,rgba(207,230,90,.045),transparent 34%) !important;
+}
+#services .service-card:hover .service-card-media {
+  opacity: .17 !important;
+  filter: blur(2px) saturate(.8) contrast(1.04) brightness(.68) !important;
+}
+@media(max-width:639px) {
+  #services .service-card .service-card-media { display:block !important; opacity:.095 !important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  #services .service-card .service-card-media { display:none !important; }
+}
