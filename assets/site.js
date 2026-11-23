@@ -632,6 +632,11 @@
       function toggleAudio(event) {
         if (!mobileQuery.matches) return;
 
+        if (window.VideoManager) {
+          window.VideoManager.activateAudio(video, event);
+          return;
+        }
+
         event.preventDefault();
         event.stopPropagation();
         if (typeof event.stopImmediatePropagation === "function") {
@@ -721,13 +726,12 @@
         document.body.classList.remove("hero-takeover-active");
 
         if (nearViewport) {
-          if (audioUnlocked && !userSilenced) {
+          if (!window.VideoManager && audioUnlocked && !userSilenced) {
             setAudio(true);
           }
 
-          // Playback is owned by mobile-hero-fallback.js. This controller
-          // only manages the hero layout and the explicit audio toggle.
-        } else if (!video.paused) {
+          // VideoManager owns playback, pausing and audio whenever it is present.
+        } else if (!window.VideoManager && !video.paused) {
           try { video.pause(); } catch (e) {}
         }
       }
@@ -738,14 +742,13 @@
       }
 
       function primeVideo() {
+        // The central manager owns all media state. This legacy block only
+        // maintains the mobile takeover layout when VideoManager is present.
+        if (window.VideoManager) return;
+
         video.playsInline = true;
         video.setAttribute("playsinline", "");
         video.setAttribute("webkit-playsinline", "");
-
-        if (window.VideoManager) {
-          if (!audioUnlocked || userSilenced) setAudio(false);
-          return;
-        }
 
         var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
         var saveData = Boolean(connection && connection.saveData);
@@ -831,7 +834,7 @@
 
       document.addEventListener("visibilitychange", function () {
         if (document.hidden) {
-          if (!video.paused) {
+          if (!window.VideoManager && !video.paused) {
             try { video.pause(); } catch (e) {}
           }
         } else if (enabled) {
