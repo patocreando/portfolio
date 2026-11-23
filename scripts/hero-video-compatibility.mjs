@@ -1,0 +1,281 @@
+// Real browser-engine checks for the hero media pipeline.
+// Runs locally in GitHub Actions with Chromium, Firefox and WebKit.
+import { chromium, firefox, webkit } from "playwright";
+import http from "node:http";
+import fs from "node:fs/promises";
+import path from "node:path";
+import assert from "node:assert/strict";
+
+const root = process.cwd();
+const mime = {
+  ".html":"text/html; charset=utf-8",
+  ".js":"text/javascript; charset=utf-8",
+  ".css":"text/css; charset=utf-8",
+  ".svg":"image/svg+xml",
+  ".png":"image/png",
+  ".jpg":"image/jpeg",
+  ".jpeg":"image/jpeg",
+  ".webp":"image/webp",
+  ".mp4":"video/mp4"
+};
+const server = http.createServer(async (req, res) => {
+  try {
+    const url = new URL(req.url, "http://127.0.0.1");
+    const pathname = url.pathname === "/" ? "/index.html" : decodeURIComponent(url.pathname);
+    const file = path.resolve(root, "." + pathname);
+    if (!file.startsWith(root + path.sep)) {
+      res.writeHead(403).end();
+      return;
+    }
+    const body = await fs.readFile(file);
+    res.writeHead(200, {
+      "content-type": mime[path.extname(file).toLowerCase()] || "application/octet-stream",
+      "cache-control": "no-store"
+    });
+    res.end(body);
+  } catch {
+    res.writeHead(404).end();
+  }
+});
+
+const viewports = [
+  {name:"iphone-width",width:390,height:844,isMobile:true,hasTouch:true},
+  {name:"ipad-portrait",width:768,height:1024,isMobile:false,hasTouch:true},
+  {name:"ipad-landscape",width:1024,height:768,isMobile:false,hasTouch:true},
+  {name:"desktop",width:1366,height:900,isMobile:false,hasTouch:false}
+];
+
+async function waitForPoster(page) {
+  await page.waitForFunction(() => {
+    const img = document.querySelector("[data-hero-mobile-poster]");
+    return Boolean(img && img.complete && img.naturalWidth > 0);
+  }, null, {timeout:20000});
+}
+
+async function heroState(page) {
+  return page.evaluate(() => {
+    const screen = document.querySelector("#heroDeviceWrap .hero-phone-screen");
+    const video = screen?.querySelector(".hero-video");
+    const poster = screen?.querySelector("[data-hero-mobile-poster]");
+    const button = screen?.querySelector("[data-hero-mobile-play]");
+    if (!screen || !video || !poster || !button) return null;
+
+    const imageStyle = getComputedStyle(poster);
+    const videoStyle = getComputedStyle(video);
+    const buttonStyle = getComputedStyle(button);
+    const screenRect = screen.getBoundingClientRect();
+
+    return {
+      source: video.currentSrc || video.querySelector("source")?.src || "",
+      poster: video.poster,
+      muted: video.muted,
+      playsInline: video.playsInline,
+      controls: video.controls,
+      paused: video.paused,
+      readyState: video.readyState,
+      networkState: video.networkState,
+      videoWidth: video.videoWidth,
+      videoHeight: video.videoHeight,
+      mediaError: video.error ? {code:video.error.code,message:video.error.message} : null,
+      frameReady: screen.classList.contains("is-video-ready"),
+      posterLoaded: poster.complete && poster.naturalWidth > 0,
+      posterVisible: imageStyle.display !== "none" && imageStyle.visibility !== "hidden" && Number(imageStyle.opacity) > 0.05,
+      videoOpacity: Number(videoStyle.opacity),
+      playButtonVisible: !button.hidden && buttonStyle.display !== "none" && buttonStyle.visibility !== "hidden",
+      playButtonLabel: button.querySelector("span")?.textContent || "",
+      screenWidth: screenRect.width,
+      screenHeight: screenRect.height
+    };
+  });
+}
+
+async function assertNoBlankHero(page, label) {
+  const state = await heroState(page);
+  assert.ok(state, label + ": hero elements exist");
+  assert.ok(state.posterLoaded, label + ": real poster image decoded");
+  assert.ok(state.screenWidth > 100 && state.screenHeight > 100, label + ": hero screen retains layout dimensions");
+  assert.equal(state.controls, false, label + ": no unexpected native controls");
+  assert.equal(state.playsInline, true, label + ": inline playback attribute is active");
+
+  if (state.frameReady) {
+    assert.ok(state.videoWidth > 0 && state.videoHeight > 0, label + ": ready state represents a real video frame");
+    assert.ok(state.videoOpacity > 0.9, label + ": decoded video frame is visible");
+  } else {
+    assert.ok(state.posterVisible, label + ": poster remains visible when video is not ready");
+    assert.ok(state.videoOpacity < 0.1, label + ": undecoded video cannot cover the fallback with black");
+    assert.ok(state.playButtonVisible || state.mediaError, label + ": blocked/failed playback has a visible fallback state");
+  }
+  return state;
+}
+
+async function run() {
+  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+  const baseUrl = "http://127.0.0.1:" + server.address().port + "/";
+  const engines = [
+    ["chromium",chromium],
+    ["firefox",firefox],
+    ["webkit",webkit]
+  ];
+  const summaries = [];
+
+  try {
+    for (const [engineName,engine] of engines) {
+      const browser = await engine.launch({headless:true});
+      try {
+        // Real source path, all target layout classes, and autoplay allowed/rejected
+        // by each engine's own media policy. Either a real frame or the poster
+        // plus an actionable play prompt must be visible.
+        for (const spec of viewports) {
+          const context = await browser.newContext({
+            viewport:{width:spec.width,height:spec.height},
+            isMobile:spec.isMobile,
+            hasTouch:spec.hasTouch,
+            deviceScaleFactor:1,
+            reducedMotion:"no-preference"
+          });
+          const page = await context.newPage();
+          const pageErrors = [];
+          page.on("pageerror", error => pageErrors.push(error.message));
+          await page.route("**/tracker.metricool.com/**", route => route.abort());
+          await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
+          await waitForPoster(page);
+          await page.waitForFunction(() => {
+            const screen = document.querySelector("#heroDeviceWrap .hero-phone-screen");
+            const video = screen?.querySelector(".hero-video");
+            const button = screen?.querySelector("[data-hero-mobile-play]");
+            const label = button?.querySelector("span")?.textContent || "";
+            return Boolean(screen?.classList.contains("is-video-ready") ||
+              video?.error || label === "Tocar para reproducir" ||
+              label === "Reintentar showreel");
+          }, null, {timeout:25000});
+
+          const state = await assertNoBlankHero(page, engineName + "/" + spec.name);
+          if (pageErrors.length) {
+            throw new Error(engineName + "/" + spec.name + ": page errors: " + pageErrors.join(" | "));
+          }
+          await fs.mkdir("artifacts/hero-cross-browser", {recursive:true});
+          await page.screenshot({
+            path:"artifacts/hero-cross-browser/" + engineName + "-" + spec.name + ".png",
+            fullPage:false,
+            animations:"disabled"
+          });
+          summaries.push({
+            engine:engineName,
+            viewport:spec.name,
+            frameReady:state.frameReady,
+            mediaError:state.mediaError?.code || null,
+            posterVisible:state.posterVisible,
+            playButtonVisible:state.playButtonVisible
+          });
+          await context.close();
+        }
+
+        // Reduced-motion preference: do not autoplay or download the video;
+        // preserve the hero still and provide the user's explicit play action.
+        {
+          const context = await browser.newContext({
+            viewport:{width:390,height:844},
+            isMobile:true,
+            hasTouch:true,
+            deviceScaleFactor:1,
+            reducedMotion:"reduce"
+          });
+          const page = await context.newPage();
+          let mediaRequests = 0;
+          page.on("request", request => {
+            if (request.url().includes("hero-showreel-mobile-compatible.mp4")) mediaRequests += 1;
+          });
+          await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
+          await waitForPoster(page);
+          await page.waitForFunction(() => {
+            const button = document.querySelector("[data-hero-mobile-play]");
+            return Boolean(button && !button.hidden);
+          }, null, {timeout:10000});
+          const state = await heroState(page);
+          assert.ok(state.posterVisible,engineName + ": reduced motion keeps the actual poster visible");
+          assert.equal(state.frameReady,false,engineName + ": reduced motion does not force playback");
+          assert.equal(state.paused,true,engineName + ": reduced motion leaves the video paused");
+          assert.ok(state.playButtonVisible,engineName + ": reduced motion offers explicit playback");
+          assert.equal(mediaRequests,0,engineName + ": reduced motion does not request the large MP4");
+          summaries.push({engine:engineName,scenario:"reduced-motion",pass:true,mediaRequests});
+          await context.close();
+        }
+
+        // Fatal load failure: the image remains fully rendered and native controls
+        // are never exposed, even when the MP4 request cannot be retrieved.
+        {
+          const context = await browser.newContext({
+            viewport:{width:390,height:844},
+            isMobile:true,
+            hasTouch:true,
+            deviceScaleFactor:1,
+            reducedMotion:"no-preference"
+          });
+          const page = await context.newPage();
+          await page.route("**/hero-showreel-mobile-compatible.mp4*", route => route.abort("failed"));
+          await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
+          await waitForPoster(page);
+          await page.locator(".hero-video").evaluate(video => {
+            video.preload = "auto";
+            video.load();
+          });
+          await page.waitForFunction(() => {
+            const video = document.querySelector(".hero-video");
+            return Boolean(video && video.error);
+          }, null, {timeout:20000});
+          const state = await assertNoBlankHero(page,engineName + "/media-error");
+          assert.ok(state.mediaError,engineName + ": media error is detected");
+          assert.ok(state.posterVisible,engineName + ": poster survives fatal media error");
+          summaries.push({engine:engineName,scenario:"media-error",errorCode:state.mediaError.code,posterVisible:state.posterVisible});
+          await context.close();
+        }
+
+        // Simulated autoplay-policy rejection: only a user gesture can start the
+        // video, so the poster and manual play prompt must remain available.
+        {
+          const context = await browser.newContext({
+            viewport:{width:390,height:844},
+            isMobile:true,
+            hasTouch:true,
+            deviceScaleFactor:1,
+            reducedMotion:"no-preference"
+          });
+          await context.addInitScript(() => {
+            const nativePlay = HTMLMediaElement.prototype.play;
+            HTMLMediaElement.prototype.play = function () {
+              if (this.classList && this.classList.contains("hero-video")) {
+                return Promise.reject(new DOMException("Autoplay blocked for QA","NotAllowedError"));
+              }
+              return nativePlay.apply(this,arguments);
+            };
+          });
+          const page = await context.newPage();
+          await page.goto(baseUrl,{waitUntil:"domcontentloaded",timeout:90000});
+          await waitForPoster(page);
+          await page.waitForFunction(() => {
+            const button = document.querySelector("[data-hero-mobile-play]");
+            const label = button?.querySelector("span")?.textContent || "";
+            const video = document.querySelector(".hero-video");
+            return Boolean(label === "Tocar para reproducir" || video?.error);
+          }, null, {timeout:15000});
+          const state = await assertNoBlankHero(page,engineName + "/autoplay-blocked");
+          assert.ok(state.playButtonVisible || state.mediaError,engineName + ": autoplay rejection exposes a manual recovery action");
+          assert.ok(state.posterVisible || state.frameReady,engineName + ": no black screen after autoplay rejection");
+          summaries.push({engine:engineName,scenario:"autoplay-rejected",playButtonVisible:state.playButtonVisible,posterVisible:state.posterVisible});
+          await context.close();
+        }
+      } finally {
+        await browser.close();
+      }
+    }
+  } finally {
+    await new Promise(resolve => server.close(resolve));
+  }
+
+  console.log(JSON.stringify({status:"passed",checks:summaries.length,results:summaries},null,2));
+}
+
+run().catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});
