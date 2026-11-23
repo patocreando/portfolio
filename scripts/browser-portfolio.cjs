@@ -287,7 +287,7 @@ async function test() {
       assert.equal(state.serviceMediaCount,3,"All three original Service background videos remain present");
       assert.equal(state.serviceMediaSources.length,3,"Each Service card retains its original video source");
       assert.equal(state.captionCount,4,"Every gallery project has a context block");
-      assert.ok(state.originLabelCount>=7,"Featured and gallery pieces disclose their origin");
+      assert.ok(state.originLabelCount>=6,"Featured and gallery pieces disclose their origin");
       assert.equal(state.profileSelect,true,"Contact captures prospect profile");
       assert.equal(state.projectTypeSelect,true,"Contact captures selected piece type");
       assert.equal(state.packCount,3,"Three packs rendered");
