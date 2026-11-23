@@ -896,7 +896,7 @@
       var projectPrev = document.getElementById("projectPrev");
       var projectNext = document.getElementById("projectNext");
       var projectCarouselIndex = 0;
-      var activeProjectCategory = "ugc";
+      var activeProjectCategory = "all";
       var categoryCopy = {
         all: "Seis piezas publicadas: dos trabajos destacados y cuatro producciones en galería.",
         ugc: "Tres piezas: campañas para clientes y una demo de personaje.",
