@@ -86,7 +86,7 @@ for(const label of ["Propuesta visual","Producción","Edición","Archivo final"]
 for(const kind of ['data-kind="proposal"','data-kind="edit"'])has(html,kind,"Club stage kind: "+kind);
 has(fs.readFileSync("assets/club-case.css","utf8"),"@media(prefers-reduced-motion:reduce)","reduced-motion interactive case");
 
-for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 200.000",1]]) {
+for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 175.000",1]]) {
   assert.equal(occurrences(html, ref), 1, "Manychat ref: "+ref);
   assert.equal(occurrences(html, price), count, "pack price and base disclosures: "+price);
 }
