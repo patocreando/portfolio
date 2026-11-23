@@ -326,7 +326,7 @@ has(premiumJs,'video.dataset.userUnmuted');
 has(premiumJs,'window.__PATO_ACTIVATE_VIDEO_AUDIO__=activate');
 assert.equal(occurrences(html,'editorial-campaign-tag'),0,'video copy is not injected as an HTML badge');
 assert.equal(occurrences(html,'editorial-play-control'),0,'video pause/play buttons are removed');
-assert.equal(occurrences(html,'data-audio-available="true"'),4,'four current original-audio videos expose their audio');
+assert.equal(occurrences(html,'data-audio-available="true"'),8,'Hero, featured projects, gallery and Club player expose their audio');
 assert.equal(occurrences(html,'data-umbral-audio'),0,'no obsolete UMBRAL audio UI remains');
 assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261123-header-playback-1"'),1);
 assert.equal(occurrences(html,'href="./assets/lote-02.css?v=20261027-club-case-3"'),1);
