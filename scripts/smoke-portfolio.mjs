@@ -197,7 +197,7 @@ has(js, 'button.addEventListener("keydown"');
 assert.equal(occurrences(html, 'src="./assets/site.js?v=20261123-editorial-cro-2"'),1);
 has(html,'href="./assets/portfolio-refresh.css?v=20261123-editorial-cro-1"');
 assert.ok(fs.existsSync("assets/portfolio-refresh.css"),"Portfolio refresh styles exist");
-assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
+assert.equal(occurrences(html, 'href="./assets/site.css?v=20261122-galaxy-a20-fallback-2"'), 1);
 // Compare against main as ground truth for preservation.
 try {
   const baseline = execFileSync("git", ["show", "origin/main:index.html"], {encoding:"utf8"});
