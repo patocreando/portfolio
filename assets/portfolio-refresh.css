@@ -153,11 +153,8 @@
 .pc-collab-terms summary span { color:#CFE65A; font-size:19px; }
 .pc-collab-terms>div { max-width:850px; padding:13px 0 2px; color:#aebbb4; font-size:11px; line-height:1.7; }
 
-/* Plans: common production value is explained once; fixed commercial content stays in each plan. */
+/* Plans: common production value is introduced once; original plan cards remain untouched. */
 #launchOffer .pricing-packs-head-side>p { max-width:500px; color:#c1cbc4; }
-#launchOffer .pricing-preproduction { margin-top:28px; }
-#launchOffer .pricing-preproduction-detail>p { max-width:660px; }
-#launchOffer .pricing-preproduction-tags { flex-wrap:wrap; }
 
 /* Contact: compact classification fields with native controls for mobile and WebViews. */
 .pc-contact-scope-note {
