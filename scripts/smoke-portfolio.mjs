@@ -181,7 +181,7 @@ has(html,'./assets/club-case.js?v=20261030-scroll-story-1');
 has(html,'data-club-audio');
 has(fs.readFileSync('assets/club-case.js','utf8'),'intervalMs = 6500');
 assert.equal(occurrences(html,'edit-shot-02.webp'),0,'the editing mockup omits the B-roll insert');
-for(const file of ['ugc-beauty.mp4','ugc-fashion.mp4','hyperreal-portrait.mp4'])has(html,'./assets/videos/'+file);
+for(const file of ['ugc-beauty.mp4','producto_WEB.mp4','silo-ugc-sin-subtitulos.mp4','hyperreal-portrait.mp4'])has(html,'./assets/videos/'+file);
 for(const phrase of ['Uso realista, sin perder naturalidad.','Detalle que resiste el primer plano.','Avatar de moda aplicado a una campaña.'])assert.equal(occurrences(html,phrase),0,'gallery video copy removed: '+phrase);
 assert.equal(occurrences(html,'./assets/umbral-compact.css'),0,'obsolete UMBRAL presentation stylesheet is no longer loaded');
 assert.equal(occurrences(js,'function umbralAutoSequence()'),0,'obsolete UMBRAL playback code removed');
