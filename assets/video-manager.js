@@ -520,7 +520,8 @@
 
     state.heroButton = video.querySelector("[data-hero-mobile-play]");
     state.prompt = promptFor(video);
-    if (state.prompt) {
+    /* Club's stage controller already owns its audio button click. */
+    if (state.prompt && !video.closest("[data-club-viewer]")) {
       state.prompt.addEventListener("click", function (event) {
         activateAudio(video, event);
       });
