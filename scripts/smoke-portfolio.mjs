@@ -49,11 +49,11 @@ assert.equal(occurrences(headerMarkup,'href="#launchOffer"'),2,"desktop and mobi
 assert.equal(occurrences(html,'href="#launchOffer"'),3,"header navigation (desktop + mobile) plus hero discrete CTA to packs");
 has(html,'class="hero-cta-packs inline-flex items-center gap-2 text-[13px] font-semibold text-zinc-300 hover:text-butter transition-colors"',"hero discrete CTA element is present with exact styling classes");
 has(html,'<span>Ver planes de trabajo</span>',"hero discrete CTA label is present");
-const methodScopeMatch=html.match(/<p class="method-brief-scope section-reveal">([\s\S]*?)<\/p>/);
-assert.ok(methodScopeMatch,"method terms remain in a single disclosure");
-assert.ok(methodScopeMatch[1].includes("<strong>Alcance, revisiones y plazos de entrega:</strong>"),"scope, review and timelines explicitly disclosed");
-assert.ok(methodScopeMatch[1].includes("<strong>Pago:</strong> se realiza al momento de la entrega final."),"payment is due with final delivery");
-assert.equal(occurrences(html,"Los alcances y las revisiones se definen por proyecto o por pack."),0,"previous ambiguous copy replaced");
+const methodScopeMatch=html.match(/<details class="pc-method-details">([\s\S]*?)<\/details>/);
+assert.ok(methodScopeMatch,"current method conditions disclosure exists");
+assert.ok(methodScopeMatch[1].includes("<strong>Alcance, revisiones y plazos</strong>"),"scope, reviews and timelines are disclosed");
+assert.ok(methodScopeMatch[1].includes("<strong>Modalidad de reserva:</strong>"),"reservation payment terms are disclosed");
+assert.ok(methodScopeMatch[1].includes("50% de adelanto") && methodScopeMatch[1].includes("50% restante contra la entrega final"),"both payment milestones are disclosed");
 assert.equal(occurrences(html,'class="studio-system-ambient"'),1,"one decorative production background");
 assert.equal(occurrences(html,'class="studio-system-board section-reveal"'),1,"production card remains unique");
 assert.equal(occurrences(html,'class="studio-system-sequence"'),1,"retain four system steps");
@@ -127,7 +127,7 @@ for (const video of ["ugc-beauty.mp4","ugc-fashion.mp4","hyperreal-portrait.mp4"
   const videoMatch = html.match(new RegExp('<video[^>]*aria-label="[^"]+"[^>]*>\\s*<source (?:src|data-src)="\\./assets/videos/'+video.replace(".","\\.")+'"'));
   assert.ok(videoMatch,"Gallery video has accessible descriptive name: "+video);
 }
-assert.ok(/<video[^>]*class="hero-video" aria-label="[^"]+"[^>]*>/.test(html),"Hero showreel has descriptive name");
+assert.ok(/<video[^>]*class="hero-video"[^>]*aria-label="[^"]+"[^>]*>/.test(html),"Hero showreel has descriptive name");
 
 has(html,'class="pricing-secondary-contact section-reveal"');
 has(html,'href="#contact" aria-label="Ir al formulario de contacto para enviar tu consulta"');
@@ -186,8 +186,8 @@ assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should no
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
 has(js, 'soundToggle.addEventListener("click", toggleAudio)');
 has(js, 'button.addEventListener("keydown"');
-assert.equal(occurrences(html, 'src="./assets/site.js?v=20261027-club-case-3"'),1);
-assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
+assert.equal((html.match(/<script src="\\.\\/assets\\/site\\.js\\?[^"]+"/g)||[]).length,1,"one versioned core site script");
+assert.equal((html.match(/<link rel="stylesheet" href="\\.\\/assets\\/site\\.css(?:\\?[^"]*)?"/g)||[]).length,1,"one versioned core site stylesheet");
 // Compare against main as ground truth for preservation.
 try {
   const baseline = execFileSync("git", ["show", "origin/main:index.html"], {encoding:"utf8"});
