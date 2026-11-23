@@ -139,8 +139,10 @@
         }
       }
 
+      // The hero has a dedicated cross-browser playback controller. Keep this
+      // in-app source optimizer scoped to archive/project media only.
       var videos = Array.prototype.slice.call(
-        document.querySelectorAll(".hero-video, .project-video")
+        document.querySelectorAll(".project-video")
       );
 
       videos.forEach(function (video) {
