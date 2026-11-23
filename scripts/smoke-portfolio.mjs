@@ -286,7 +286,7 @@ assert.equal(occurrences(html,'class="service-cta service-example-link"'),3,"eac
 has(html,'data-service-filter="ugc" href="#projectFilters"');
 has(html,'data-service-filter="product" href="#projectFilters"');
 has(html,'class="service-cta service-example-link" href="#caseMyWay"');
-has(html,'Versiones de aperturas, planos y relatos');
+has(html,'Distintos comienzos, encuadres y relatos a partir de una misma idea.');
 has(js,'document.querySelectorAll(".service-example-link[data-service-filter]")');
 
 assert.equal(occurrences(html,'final-trim2.web.mp4'),0,'old UMBRAL video master removed');
