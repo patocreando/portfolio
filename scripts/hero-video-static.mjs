@@ -32,7 +32,7 @@ for (const token of [
   'video.addEventListener("loadeddata"',
   'video.addEventListener("stalled"',
   'video.addEventListener("error"',
-  "promise.catch(function ()",
+  ".catch(function ()",
   "prefers-reduced-motion: reduce",
   "saveData"
 ]) {
