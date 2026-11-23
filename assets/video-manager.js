@@ -7,6 +7,13 @@
   var SELECTOR = "video[data-video-managed]";
   var ROOT_MARGIN = "200px 0px";
   var ACTIVE_THRESHOLD = 0.6;
+  var mobileViewport = window.matchMedia ? window.matchMedia("(max-width: 719px)") : { matches: false };
+
+  function activationThreshold(video) {
+    /* Mobile browser chrome reduces the usable viewport; start project clips
+       as soon as a meaningful part of their frame enters the screen. */
+    return mobileViewport.matches && video.dataset.videoRole === "content" ? 0.18 : ACTIVE_THRESHOLD;
+  }
   var MAX_LOADED = 3;
   var allVideos = [];
   var states = new WeakMap();
@@ -154,7 +161,8 @@
       if (wrap) wrap.classList.add("is-video-ready");
       video.dataset.heroFrameReady = "true";
     }
-    hideFallback(video);
+    /* Decoding the first frame is not proof that playback actually started.
+       Keep the manual control available until the browser fires "playing". */
   }
 
   function syncPrompt(video) {
@@ -427,7 +435,7 @@
     var state = stateFor(video);
     var ratio = actualVisibleRatio(video);
     state.ratio = ratio;
-    if (ratio < ACTIVE_THRESHOLD || video.dataset.userPaused === "true") return -1;
+    if (ratio < activationThreshold(video) || video.dataset.userPaused === "true") return -1;
 
     var rect = video.getBoundingClientRect();
     var centerDistance = Math.abs((rect.top + rect.height / 2) - window.innerHeight / 2);
@@ -569,6 +577,7 @@
       video.addEventListener(name, function () { markFrameReady(video); });
     });
     video.addEventListener("playing", function () {
+      hideFallback(video);
       activeVideo = video;
       if (!video.muted) audioVideo = video;
       window.__PATO_SOUND_ACTIVE_VIDEO__ = audioVideo;
