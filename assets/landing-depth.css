@@ -310,3 +310,36 @@
   #services .service-card-more summary span,
   #method .pc-method-stage-details summary span { transition:none; }
 }
+
+
+/* Service cards: solid editorial surfaces, subtle motion kept as background texture. */
+#services .service-card {
+  background: linear-gradient(145deg,#1b2422 0%,#151c1c 52%,#111718 100%) !important;
+  border-color: rgba(221,236,224,.13) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.055),
+    0 22px 60px rgba(0,0,0,.30) !important;
+}
+#services .service-card::after {
+  background:
+    linear-gradient(180deg,rgba(14,19,20,.78) 0%,rgba(14,19,20,.88) 56%,rgba(14,19,20,.96) 100%),
+    radial-gradient(circle at 78% 18%,rgba(207,230,90,.045),transparent 34%) !important;
+}
+#services .service-card-media {
+  opacity: .075 !important;
+  filter: saturate(.7) contrast(1.04) brightness(.72) !important;
+}
+#services .service-card:hover {
+  border-color: rgba(207,230,90,.25) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 28px 76px rgba(0,0,0,.36),
+    0 0 32px rgba(207,230,90,.045) !important;
+}
+#services .service-card:hover .service-card-media {
+  opacity: .11 !important;
+}
+@media(max-width:639px) {
+  #services .service-card-media { opacity: .055 !important; }
+  #services .service-card:hover .service-card-media { opacity: .075 !important; }
+}
