@@ -9,6 +9,7 @@ const js = fs.readFileSync("assets/site.js", "utf8");
 const premiumCss = fs.readFileSync("assets/premium-lab.css", "utf8");
 const premiumJs = fs.readFileSync("assets/premium-lab.js", "utf8");
 const mobileHeroFallback = fs.readFileSync("assets/mobile-hero-fallback.js", "utf8");
+const responsiveVideoCss = fs.readFileSync("assets/responsive-video-fix.css", "utf8");
 const pagesScript = fs.readFileSync("scripts/stage-pages.mjs", "utf8");
 const has = (text, needle, context) => assert.ok(text.includes(needle), context || needle);
 const occurrences = (text, needle) => text.split(needle).length - 1;
@@ -159,7 +160,7 @@ has(html,'./assets/lote-02.css?v=20261027-club-case-3');
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
-has(html, 'media="(max-width: 639px)"');
+has(responsiveVideoCss, "@media (max-width: 719px)");
 has(html, 'id="caseMyWay"');
 assert.equal(occurrences(html,'class="editorial-index"'),0,'remove category tags from featured videos');
 assert.equal(occurrences(html,'class="editorial-footnote"'),0,'remove video footnote tags');
