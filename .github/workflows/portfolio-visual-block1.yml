@@ -38,10 +38,12 @@ jobs:
           const hero = html.match(/<video[^>]*class="hero-video"[^>]*>/);
           assert.ok(hero && hero[0].includes('aria-label="'), 'Hero video accessible name');
           for (const name of ['ugc-beauty.mp4','ugc-fashion.mp4','hyperreal-portrait.mp4']) {
-            const idx = html.indexOf('<source src="./assets/videos/' + name + '"');
-            assert.ok(idx >= 0, 'Video source retained: ' + name);
+            const srcPattern = new RegExp('<source\\s+(?:src|data-src)="\\./assets/videos/' + name.replace('.', '\\\\.') + '"');
+            const match = srcPattern.exec(html);
+            assert.ok(match, 'Video source or lazy source retained: ' + name);
+            const idx = match.index;
             const opening = html.lastIndexOf('<video',idx);
-            assert.ok(opening > html.lastIndexOf('</video>',idx));
+            assert.ok(opening >= 0 && opening > html.lastIndexOf('</video>',idx));
             assert.ok(html.slice(opening,idx).includes('aria-label="'), 'Video accessible name: ' + name);
           }
           console.log('Visual Block 1: preview image, metadata and video labels OK.');
