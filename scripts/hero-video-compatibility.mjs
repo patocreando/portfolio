@@ -323,8 +323,12 @@ async function run() {
             await page.waitForFunction(() => {
               const video = document.querySelector(".hero-video");
               const screen = document.querySelector("#heroDeviceWrap .hero-phone-screen");
-              return Boolean(video && video.error && screen && !screen.classList.contains("is-video-ready"));
-            }, null, {timeout:12000});
+              const poster = screen?.querySelector("[data-hero-mobile-poster]");
+              if (!video?.error || !screen || screen.classList.contains("is-video-ready") || !poster) return false;
+              const posterOpacity = Number.parseFloat(getComputedStyle(poster).opacity);
+              const videoOpacity = Number.parseFloat(getComputedStyle(video).opacity);
+              return posterOpacity > 0.9 && videoOpacity < 0.1;
+            }, null, {timeout:3000});
             const state = await assertNoBlankHero(page,engineName + "/media-error");
             assert.ok(state.mediaError,engineName + ": media error is detected");
             assert.ok(state.posterVisible,engineName + ": poster survives fatal media error");
