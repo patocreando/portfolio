@@ -124,7 +124,12 @@ assert.equal(brandedPng.readUInt32BE(16),1550,"Social image width matches declar
 assert.equal(brandedPng.readUInt32BE(20),600,"Social image height matches declared metadata");
 assert.ok(brandedPng.length < 100_000,"Share image remains under 100 KB");
 for (const video of ["ugc-beauty.mp4","ugc-fashion.mp4","hyperreal-portrait.mp4"]) {
-  const videoMatch = html.match(new RegExp('<video[^>]*aria-label="[^"]+"[^>]*>\\s*<source (?:src|data-src)="\\./assets/videos/'+video.replace(".","\\.")+'"'));
+  const sourceNeedle = ['<source src="./assets/videos/'+video, '<source data-src="./assets/videos/'+video].find(candidate => html.includes(candidate));
+  assert.ok(sourceNeedle,"Gallery video source retained: "+video);
+  const videoMatchIndex = html.indexOf(sourceNeedle);
+  const opening = html.lastIndexOf("<video",videoMatchIndex);
+  assert.ok(opening >= 0 && opening > html.lastIndexOf("</video>",videoMatchIndex));
+  assert.ok(html.slice(opening,videoMatchIndex).includes('aria-label="'),"Gallery video has descriptive accessible name: "+video);
   assert.ok(videoMatch,"Gallery video has accessible descriptive name: "+video);
 }
 assert.ok(/<video[^>]*class="hero-video"[^>]*aria-label="[^"]+"[^>]*>/.test(html),"Hero showreel has descriptive name");
@@ -186,8 +191,8 @@ assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should no
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
 has(js, 'soundToggle.addEventListener("click", toggleAudio)');
 has(js, 'button.addEventListener("keydown"');
-assert.equal((html.match(/<script src="\\.\\/assets\\/site\\.js\\?[^"]+"/g)||[]).length,1,"one versioned core site script");
-assert.equal((html.match(/<link rel="stylesheet" href="\\.\\/assets\\/site\\.css(?:\\?[^"]*)?"/g)||[]).length,1,"one versioned core site stylesheet");
+assert.equal(occurrences(html,'<script src="./assets/site.js?') ,1,"one versioned core site script");
+assert.equal(occurrences(html,'<link rel="stylesheet" href="./assets/site.css?'),1,"one versioned core site stylesheet");
 // Compare against main as ground truth for preservation.
 try {
   const baseline = execFileSync("git", ["show", "origin/main:index.html"], {encoding:"utf8"});
