@@ -283,7 +283,7 @@ async function test() {
       assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),3,"UGC filter exposes three real pieces");
       assert.equal(await siloCard.evaluate(el=>el.classList.contains("is-hidden")),false,"SILO UGC appears under the UGC filter");
       await siloCard.screenshot({path:"artifacts/silo-ugc-gallery-"+spec.name+".png",animations:"disabled"});
-      assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),1,"Plan inclusions are explained once");
+      assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),0,"Pricing does not repeat the inclusions in a second summary block");
       assert.equal(state.serviceMediaCount,3,"All three original Service background videos remain present");
       assert.equal(state.serviceMediaSources.length,3,"Each Service card retains its original video source");
       assert.equal(state.captionCount,4,"Every gallery project has a context block");
