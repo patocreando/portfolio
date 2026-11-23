@@ -175,16 +175,25 @@ async function run() {
           page.on("pageerror", error => pageErrors.push(error.message));
           await page.route("**/tracker.metricool.com/**", route => route.abort());
           await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
+          // Bring the hero into the viewport so the controller's visibility gate
+          // can request playback instead of leaving the video in metadata-only mode.
+          await page.locator("#heroDeviceWrap").scrollIntoViewIfNeeded();
           await waitForPoster(page);
-          await page.waitForFunction(() => {
-            const screen = document.querySelector("#heroDeviceWrap .hero-phone-screen");
-            const video = screen?.querySelector(".hero-video");
-            const button = screen?.querySelector("[data-hero-mobile-play]");
-            const label = button?.querySelector("span")?.textContent || "";
-            return Boolean(screen?.classList.contains("is-video-ready") ||
-              video?.error || label === "Tocar para reproducir" ||
-              label === "Reintentar showreel");
-          }, null, {timeout:25000});
+          try {
+            await page.waitForFunction(() => {
+              const screen = document.querySelector("#heroDeviceWrap .hero-phone-screen");
+              const video = screen?.querySelector(".hero-video");
+              const button = screen?.querySelector("[data-hero-mobile-play]");
+              const label = button?.querySelector("span")?.textContent || "";
+              return Boolean(screen?.classList.contains("is-video-ready") ||
+                video?.error || label === "Tocar para reproducir" ||
+                label === "Reintentar showreel");
+            }, null, {timeout:18000});
+          } catch (error) {
+            const diagnostics = await heroState(page);
+            throw new Error(engineName + "/" + spec.name + " did not produce a frame or autoplay fallback: " +
+              JSON.stringify(diagnostics) + "; pageErrors=" + pageErrors.join(" | "));
+          }
 
           const state = await assertNoBlankHero(page, engineName + "/" + spec.name);
           if (pageErrors.length) {
