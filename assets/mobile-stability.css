@@ -22,18 +22,19 @@
   #top .hero-device-wrap {
     display: block !important;
     position: relative !important;
-    width: 100vw !important;
-    max-width: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
     min-height: 0 !important;
     height: auto !important;
-    margin-inline: calc(50% - 50vw) !important;
+    margin-inline: 0 !important;
     overflow: visible !important;
   }
 
   #top #heroDeviceStage {
     display: block !important;
     position: relative !important;
-    width: 100vw !important;
+    width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
     aspect-ratio: 9 / 16 !important;
@@ -57,7 +58,13 @@
 
   /* Do not cover the showreel with an unrelated product still.
      Reveal the actual video frame as soon as the browser decodes it. */
-  #top .hero-mobile-poster {
+  #top [data-hero-mobile-poster] {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  #top .hero-phone-screen.is-video-ready [data-hero-mobile-poster] {
     display: none !important;
   }
 
@@ -69,8 +76,12 @@
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    opacity: 1 !important;
+    opacity: 0 !important;
     visibility: visible !important;
+  }
+
+  #top .hero-phone-screen.is-video-ready .hero-video {
+    opacity: 1 !important;
   }
 
   #projects {
