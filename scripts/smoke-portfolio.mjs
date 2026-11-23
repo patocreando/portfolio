@@ -57,7 +57,7 @@ assert.ok(methodScopeMatch[1].includes("50% de adelanto") && methodScopeMatch[1]
 assert.equal(occurrences(html,'class="studio-system-ambient"'),1,"one decorative production background");
 assert.equal(occurrences(html,'class="studio-system-board section-reveal"'),1,"production card remains unique");
 assert.equal(occurrences(html,'class="studio-system-sequence"'),1,"retain four system steps");
-assert.equal(occurrences(html,"https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/8ece9361-a363-477c-8a2e-e6d221cdc562.mp4"),2,"reuse method background video in production card");
+assert.equal(occurrences(html,"https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/8ece9361-a363-477c-8a2e-e6d221cdc562.mp4"),1,"one shared method background media source");
 has(premiumCss,'.studio-system-board::before');
 has(premiumJs,'systemBackgroundPlayback');
 has(premiumJs,'prefers-reduced-motion: reduce');
