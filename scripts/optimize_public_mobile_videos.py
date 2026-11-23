@@ -16,13 +16,13 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "optimized_mobile" / "assets" / "videos"
 
 TARGETS = {
-    "hero-showreel-mobile-compatible.mp4": (720, 1280, 3500),
-    "silo-campana-producto-recortado.mp4": (720, 1280, 3500),
-    "mariana-omelette-ugc.mp4": (720, 1280, 3500),
-    "ugc-beauty.mp4": (720, 1280, 3500),
-    "producto_WEB.mp4": (720, 1280, 3500),
-    "silo-ugc-sin-subtitulos.mp4": (720, 1280, 3500),
-    "hyperreal-portrait.mp4": (720, 1280, 3500),
+    "hero-showreel-mobile-compatible.mp4": (720, 1280, 2500),
+    "silo-campana-producto-recortado.mp4": (720, 1280, 2500),
+    "mariana-omelette-ugc.mp4": (720, 1280, 2500),
+    "ugc-beauty.mp4": (720, 1280, 2500),
+    "producto_WEB.mp4": (720, 1280, 2500),
+    "silo-ugc-sin-subtitulos.mp4": (720, 1280, 2500),
+    "hyperreal-portrait.mp4": (720, 1280, 2500),
 }
 
 
@@ -79,15 +79,15 @@ def encode(name: str, dimensions: tuple[int, int, int]) -> None:
     video_filter = (
         f"scale={width}:{height}:force_original_aspect_ratio=decrease:flags=lanczos,"
         f"pad={width}:{height}:(ow-iw)/2:(oh-ih)/2:color=black,"
-        f"setsar=1,fps={fps:.6f},format=yuv420p"
+        f"setsar=1,fps={fps:.6f},format=yuv420p,setrange=limited"
     )
     execute([
         "ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(source),
         "-map", "0:v:0", "-map", "0:a:0?",
         "-vf", video_filter,
         "-c:v", "libx264", "-profile:v", "baseline", "-level:v", "3.1",
-        "-pix_fmt", "yuv420p", "-r", f"{fps:.6f}",
-        "-crf", "23", "-maxrate", f"{maxrate}k", "-bufsize", f"{maxrate * 2}k",
+        "-pix_fmt", "yuv420p", "-color_range", "tv", "-r", f"{fps:.6f}",
+        "-crf", "25", "-maxrate", f"{maxrate}k", "-bufsize", f"{maxrate * 2}k",
         "-preset", "medium", "-g", "60", "-keyint_min", "30", "-sc_threshold", "0",
         "-c:a", "aac", "-b:a", "128k", "-ar", "48000", "-ac", "2",
         "-movflags", "+faststart", "-sn", "-dn", str(output),
@@ -119,7 +119,7 @@ def encode(name: str, dimensions: tuple[int, int, int]) -> None:
 
     encoded = probe(output)
     v = encoded["video"]
-    if v.get("codec_name") != "h264" or v.get("profile") not in {"Baseline", "Constrained Baseline"} or v.get("pix_fmt") != "yuv420p" or v.get("level") != 31:
+    if v.get("codec_name") != "h264" or v.get("profile") not in {"Baseline", "Constrained Baseline"} or v.get("pix_fmt") != "yuv420p" or v.get("level") != 31 or v.get("color_range") == "pc":
         raise RuntimeError(f"Codificación móvil inesperada en {name}: {v.get('codec_name')} / {v.get('pix_fmt')}")
     if encoded["audio"] and encoded["audio"].get("codec_name") != "aac":
         raise RuntimeError(f"Audio no AAC en {name}")
