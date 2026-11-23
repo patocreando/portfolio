@@ -93,11 +93,39 @@ function engineContext(engineName, options) {
   return configured;
 }
 
-async function waitForPoster(page) {
-  await page.waitForFunction(() => {
-    const img = document.querySelector("[data-hero-mobile-poster]");
-    return Boolean(img && img.complete && img.naturalWidth > 0);
-  }, null, {timeout:20000});
+async function waitForPoster(page, label = "unknown browser/viewport") {
+  try {
+    await page.waitForFunction(() => {
+      const img = document.querySelector("[data-hero-mobile-poster]");
+      return Boolean(img && img.complete && img.naturalWidth > 0);
+    }, null, {timeout:12000});
+  } catch (error) {
+    const diagnostics = await page.evaluate(() => {
+      const img = document.querySelector("[data-hero-mobile-poster]");
+      const video = document.querySelector(".hero-video");
+      return {
+        documentReadyState:document.readyState,
+        poster:img ? {
+          src:img.getAttribute("src"),
+          currentSrc:img.currentSrc,
+          complete:img.complete,
+          naturalWidth:img.naturalWidth,
+          naturalHeight:img.naturalHeight,
+          loading:img.loading,
+          decoding:img.decoding,
+          display:getComputedStyle(img).display,
+          visibility:getComputedStyle(img).visibility,
+          opacity:getComputedStyle(img).opacity
+        } : null,
+        videoPoster:video?.poster || null,
+        sourceSupported:video?.dataset.heroSourceSupported || null,
+        imageResources:performance.getEntriesByType("resource")
+          .filter(entry=>/hero-showreel-poster/.test(entry.name))
+          .map(entry=>({name:entry.name,duration:entry.duration,transferSize:entry.transferSize,encodedBodySize:entry.encodedBodySize}))
+      };
+    }).catch(e=>({diagnosticError:String(e)}));
+    throw new Error(label + " poster image did not decode: " + JSON.stringify(diagnostics) + "; " + error.message);
+  }
 }
 
 async function heroState(page) {
@@ -216,7 +244,7 @@ async function run() {
           // Bring the hero into the viewport so the controller's visibility gate
           // can request playback instead of leaving the video in metadata-only mode.
           await page.locator("#heroDeviceWrap").scrollIntoViewIfNeeded();
-          await waitForPoster(page);
+          await waitForPoster(page,engineName + "/" + (spec?.name || "special-scenario"));
           try {
             await page.waitForFunction(() => {
               const screen = document.querySelector("#heroDeviceWrap .hero-phone-screen");
@@ -284,7 +312,7 @@ async function run() {
             if (request.url().includes("hero-showreel-mobile-compatible.mp4")) mediaRequests += 1;
           });
           await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
-          await waitForPoster(page);
+          await waitForPoster(page,engineName + "/" + (spec?.name || "special-scenario"));
           await page.waitForFunction(() => {
             const video = document.querySelector(".hero-video");
             const button = document.querySelector("[data-hero-mobile-play]");
@@ -317,7 +345,7 @@ async function run() {
           }));
           const page = await context.newPage();
           await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
-          await waitForPoster(page);
+          await waitForPoster(page,engineName + "/" + (spec?.name || "special-scenario"));
           await page.locator("#heroDeviceWrap").scrollIntoViewIfNeeded();
           await page.waitForTimeout(500);
           const initialState = await heroState(page);
@@ -369,7 +397,7 @@ async function run() {
           });
           const page = await context.newPage();
           await page.goto(baseUrl,{waitUntil:"domcontentloaded",timeout:90000});
-          await waitForPoster(page);
+          await waitForPoster(page,engineName + "/" + (spec?.name || "special-scenario"));
           await page.locator("#heroDeviceWrap").scrollIntoViewIfNeeded();
           const stateBefore = await heroState(page);
           if (!stateBefore.sourceSupported) {
