@@ -49,7 +49,7 @@ jobs:
             silo-ugc-sin-subtitulos \
             hyperreal-portrait
           do
-            test -s "_site/optimized_mobile/assets/videos/\${name}.mp4"
-            test -s "_site/optimized_mobile/assets/videos/\${name}.webp"
-            echo "OK \${name}"
+            test -s "_site/optimized_mobile/assets/videos/${name}.mp4"
+            test -s "_site/optimized_mobile/assets/videos/${name}.webp"
+            echo "OK ${name}"
           done
