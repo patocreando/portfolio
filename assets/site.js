@@ -67,13 +67,16 @@
         var existing = shell.querySelector(".video-tap-fallback");
         if (existing) return existing;
 
-        var button = document.createElement("a");
+        var button = document.createElement("button");
+        button.type = "button";
         button.className = "video-tap-fallback is-visible";
-        button.setAttribute("aria-label", "Abrir video");
-        button.setAttribute("href", originalSource(video));
-        button.setAttribute("target", "_self");
-        button.setAttribute("rel", "noopener");
-        button.innerHTML = "<span>Abrir video</span>";
+        button.setAttribute("aria-label", "Reproducir video");
+        button.innerHTML = "<span>Reproducir video</span>";
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          start(video, button);
+        });
         shell.appendChild(button);
         return button;
       }
@@ -95,15 +98,10 @@
         video.preload = "metadata";
         video.disablePictureInPicture = true;
 
-        // Instagram's in-app WebView may block autoplay. Keep native inline
-        // controls available there so the user can start the video manually.
-        if (instagramInApp) {
-          video.controls = true;
-          video.setAttribute("controls", "");
-        } else {
-          video.controls = false;
-          video.removeAttribute("controls");
-        }
+        // Start inline from an explicit tap in Instagram's WebView.
+        // Native controls are enabled only if the inline play request is rejected.
+        video.controls = false;
+        video.removeAttribute("controls");
 
         if (src) {
           video.src = src;
@@ -133,7 +131,9 @@
               button.classList.remove("is-playing");
               button.classList.add("is-visible");
               var label = button.querySelector("span");
-              if (label) label.textContent = "Tocar de nuevo";
+              if (label) label.textContent = "Reintentar reproducción";
+              video.controls = true;
+              video.setAttribute("controls", "");
             }
           });
         }
