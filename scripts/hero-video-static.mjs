@@ -39,6 +39,8 @@ for (const token of [
   assert.ok(fallback.includes(token),"Hero controller handles "+token);
 }
 assert.ok(siteJs.includes("respectDataPreferences"),"Mobile layout controller respects data and motion preferences");
+assert.ok(siteJs.includes('document.querySelectorAll(".project-video")'),"In-app optimizer is isolated from the hero controller");
+assert.ok(!siteJs.includes('document.querySelectorAll(".hero-video, .project-video")'),"No competing in-app loader reassigns the hero source");
 assert.ok(siteJs.includes('video.removeAttribute("autoplay")'),"Mobile layout controller does not bypass the preference-aware player");
 
 for (const selector of [
