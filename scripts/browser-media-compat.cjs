@@ -47,12 +47,27 @@ const server = http.createServer(async (req,res) => {
           await context.route("**/tracker.metricool.com/**",route=>route.abort());
           const page = await context.newPage();
           const errors=[];
+          const failedRequests=[];
+          const posterResponses=[];
           page.on("pageerror",error=>errors.push(error.message));
+          page.on("requestfailed",request=>failedRequests.push({url:request.url(),error:request.failure()?.errorText}));
+          page.on("response",response=>{
+            if(response.url().includes("hero-showreel-poster.svg"))posterResponses.push({status:response.status(),url:response.url(),contentType:response.headers()["content-type"]});
+          });
           await page.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
-          await page.waitForFunction(()=>{
-            const image=document.querySelector(".hero-video-poster");
-            return image && image.complete && image.naturalWidth>0;
-          },null,{timeout:15000});
+          try {
+            await page.waitForFunction(()=>{
+              const image=document.querySelector(".hero-video-poster");
+              return image && image.complete && image.naturalWidth>0;
+            },null,{timeout:15000});
+          } catch(error) {
+            const posterState=await page.evaluate(()=>{
+              const image=document.querySelector(".hero-video-poster");
+              return image?{src:image.currentSrc,complete:image.complete,naturalWidth:image.naturalWidth,naturalHeight:image.naturalHeight,display:getComputedStyle(image).display,visibility:getComputedStyle(image).visibility,opacity:getComputedStyle(image).opacity}:null;
+            });
+            console.error(JSON.stringify({posterLoadDiagnostic:{engine:engine.name,viewport:spec.name,posterState,posterResponses,failedRequests:failedRequests.slice(0,12),pageErrors:errors.slice(0,8)}}));
+            throw error;
+          }
           await page.waitForTimeout(900);
           const state = await page.evaluate(()=>{
             const screen=document.querySelector(".hero-phone-screen");
