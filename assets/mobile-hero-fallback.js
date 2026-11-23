@@ -41,6 +41,7 @@
   function play(fromGesture){
     if(document.hidden){buttonState("Reproducir showreel",false);return;}
     if(!fromGesture&&(reduced.matches||saveData||manualPause)){buttonState("Reproducir showreel",false);return;}
+    if(frameReady&&!video.paused){hideButton();return;}
     prepareMuted();if(fromGesture&&video.error){try{video.load();}catch(error){}}
     buttonState("Cargando showreel…",true);
     var result;try{result=video.play();}catch(error){buttonState("Reintentar reproducción",false);return;}
@@ -79,7 +80,7 @@
   video.addEventListener("ended",function(){showPoster();buttonState("Volver a reproducir",false);});
   document.addEventListener("visibilitychange",function(){
     if(document.hidden){if(!video.paused)video.pause();showPoster();buttonState("Reproducir showreel",false);}
-    else if(inView&&!manualPause&&!reduced.matches&&!saveData){play(false);}
+    else if(inView&&!manualPause&&!reduced.matches&&!saveData&&(video.paused||!frameReady)){play(false);}
   });
   function motionChanged(){
     if(reduced.matches){if(!video.paused)video.pause();showPoster();buttonState("Reproducir showreel",false);}
@@ -88,7 +89,8 @@
   if(typeof reduced.addEventListener==="function")reduced.addEventListener("change",motionChanged);
   else if(typeof reduced.addListener==="function")reduced.addListener(motionChanged);
   window.addEventListener("pageshow",function(){
-    if(inView&&!document.hidden&&!manualPause&&!reduced.matches&&!saveData)play(false);
+    if(inView&&!document.hidden&&!manualPause&&!reduced.matches&&!saveData&&(video.paused||!frameReady))play(false);
+    else if(frameReady&&!video.paused)hideButton();
   });
   if("IntersectionObserver" in window){
     var observer=new IntersectionObserver(function(entries){

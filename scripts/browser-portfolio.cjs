@@ -438,6 +438,7 @@ async function test() {
       });
       assert.ok(heroPlayback.posterLoaded,"Hero poster decodes before playback");
       assert.ok(heroPlayback.frameReady||heroPlayback.fallbackVisible,"Hero produces a decoded frame or keeps a poster and retry control");
+       if(heroPlayback.frameReady)assert.equal(heroPlayback.fallbackVisible,false,"Decoded hero frame hides the manual-play loading control");
       console.log(JSON.stringify({heroPlayback:"decoded frame or graceful fallback verified",...heroPlayback}));
       const initialPauseState=await mediaPage.locator(".editorial-case video[data-editorial-reel]").evaluateAll(nodes=>nodes.map(el=>el.dataset.userPaused));
       assert.ok(initialPauseState.every(value=>value!=="true"),"Club initial render must not mark featured videos manually paused");

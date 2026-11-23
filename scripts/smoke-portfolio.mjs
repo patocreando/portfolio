@@ -217,6 +217,7 @@ assert.ok(html.includes('data-hero-mobile-poster src="./assets/images/hero-showr
 assert.ok(fs.existsSync("assets/images/hero-showreel-poster.svg"),"Hero fallback asset exists");
 assert.ok(fs.readFileSync("assets/images/hero-showreel-poster.svg","utf8").startsWith("<svg"),"Hero fallback is a lightweight local SVG");
 has(mobileHeroFallback,"requestVideoFrameCallback","Video reveal waits for a decoded frame");
+has(mobileHeroFallback,"if(frameReady&&!video.paused)","Duplicate resume events cannot leave the loading button visible after playback starts");
 has(mobileHeroFallback,"prefers-reduced-motion","Autoplay respects reduced motion");
 has(mobileHeroFallback,"saveData","Autoplay respects data-saving mode");
 has(js,"navigator.connection || navigator.mozConnection || navigator.webkitConnection","Mobile preloader respects data-saving mode");
