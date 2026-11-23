@@ -1,0 +1,124 @@
+name: Prepare and verify cross-browser hero media
+
+on:
+  push:
+    branches:
+      - fix/hero-video-cross-browser
+    paths:
+      - .github/workflows/hero-video-media.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hero-media-cross-browser
+  cancel-in-progress: false
+
+jobs:
+  prepare-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Encode a broadly compatible H.264/AAC hero MP4 and extract its real poster
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_file="assets/videos/hero-showreel-mobile-compatible.mp4"
+          output_file="/tmp/hero-showreel-mobile-compatible.mp4"
+          poster_file="assets/images/hero-showreel-poster.jpg"
+
+          test -s "$source_file"
+          mkdir -p assets/images
+
+          ffmpeg -hide_banner -y -i "$source_file" \
+            -map 0:v:0 -map 0:a? \
+            -vf "scale='min(720,iw)':-2:flags=lanczos,fps=30,format=yuv420p" \
+            -c:v libx264 -profile:v baseline -level:v 3.1 \
+            -preset medium -crf 22 -maxrate 2500k -bufsize 5000k \
+            -g 60 -keyint_min 30 -sc_threshold 0 \
+            -tag:v avc1 -movflags +faststart \
+            -c:a aac -b:a 128k -ac 2 \
+            "$output_file"
+
+          mv "$output_file" "$source_file"
+
+          ffmpeg -hide_banner -loglevel error -y \
+            -ss 0.5 -i "$source_file" \
+            -frames:v 1 \
+            -vf "scale='min(720,iw)':-2:flags=lanczos" \
+            -q:v 3 "$poster_file"
+
+          test -s "$poster_file"
+
+          ffprobe -v error -select_streams v:0 \
+            -show_entries stream=codec_name,profile,pix_fmt,width,height,level,r_frame_rate \
+            -of json "$source_file" > /tmp/hero-video-probe.json
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          data = json.loads(Path("/tmp/hero-video-probe.json").read_text())
+          streams = data.get("streams", [])
+          assert streams, "Hero MP4 has no video stream"
+          stream = streams[0]
+          assert stream.get("codec_name") == "h264", stream
+          assert "baseline" in stream.get("profile", "").lower(), stream
+          assert stream.get("pix_fmt") == "yuv420p", stream
+          assert int(stream.get("width", 0)) <= 720, stream
+          assert int(stream.get("level", 999)) <= 31, stream
+          print("Validated hero video:", json.dumps(stream, sort_keys=True))
+          print("Poster bytes:", Path("assets/images/hero-showreel-poster.jpg").stat().st_size)
+          PY
+
+      - name: Verify JavaScript and portfolio invariants
+        run: |
+          node --check assets/site.js
+          node --check assets/mobile-hero-fallback.js
+          node --check scripts/hero-video-compatibility.mjs
+          node scripts/smoke-portfolio.mjs
+
+      - name: Install Playwright and browser engines
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium firefox webkit
+
+      - name: Test hero playback and fallbacks in Chromium, Firefox and WebKit
+        run: node scripts/hero-video-compatibility.mjs
+
+      - name: Save cross-browser screenshots
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: hero-video-cross-browser-qa
+          path: artifacts/hero-cross-browser/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Commit optimized hero media
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -- \
+            assets/videos/hero-showreel-mobile-compatible.mp4 \
+            assets/images/hero-showreel-poster.jpg
+
+          if git diff --cached --quiet; then
+            echo "Hero media is already optimized."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Prepare cross-browser hero video and poster"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
