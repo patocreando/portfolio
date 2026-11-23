@@ -16,6 +16,12 @@
       window.__PATO_INAPP_BROWSER__ = metaInApp;
       window.__PATO_INSTAGRAM_BROWSER__ = instagramInApp;
 
+      if (window.VideoManager) {
+        if (metaInApp) document.documentElement.classList.add("inapp-browser");
+        if (instagramInApp) document.documentElement.classList.add("instagram-inapp");
+        return;
+      }
+
       if (!metaInApp) return;
 
       document.documentElement.classList.add("inapp-browser");
@@ -207,6 +213,7 @@
 /* Original inline block 7 */
 (function () {
       "use strict";
+      if (window.VideoManager) return;
 
       var videos = Array.prototype.slice.call(
         document.querySelectorAll(".project-video")
@@ -735,6 +742,11 @@
         video.setAttribute("playsinline", "");
         video.setAttribute("webkit-playsinline", "");
 
+        if (window.VideoManager) {
+          if (!audioUnlocked || userSilenced) setAudio(false);
+          return;
+        }
+
         var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
         var saveData = Boolean(connection && connection.saveData);
         var preloadMode = (reduceMotionQuery.matches || saveData) ? "none" : (inAppBrowser ? "metadata" : "auto");
@@ -969,6 +981,7 @@
         if (window.ScrollTrigger) {
           ScrollTrigger.refresh();
         }
+        if (window.VideoManager) window.VideoManager.refresh();
       }
 
       if (projectPrev) {
