@@ -211,10 +211,8 @@ try {
 assert.equal(occurrences(html,'data-editorial-reel'),2,"SILO and Mariana each have one curated video");
 assert.equal(occurrences(html,'class="portfolio-project-caption"'),4,"Every gallery project has its own metadata block");
 assert.equal(occurrences(html,'class="portfolio-origin"'),7,"All showcased pieces and the Club case disclose their origin");
-assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,3,"UGC category contains three real gallery pieces");
-assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,1,"Product category contains one real concept");
 for(const origin of ["Proyecto Cliente","Concepto / Dirección Creativa","Demo Técnica"])has(html,origin);
-has(html,"Avatar de marca</strong>");
+has(html,"Avatar de marca:</strong>");
 has(html,"personajes consistentes para contenido y Ads, con uso libre para tu marca.");
 
 
@@ -248,6 +246,8 @@ for(const img of clubImages){
 has(premiumJs,'IntersectionObserver');
 
 const archivedProjects = [...html.matchAll(/<article\b[^>]*class="[^"]*\bproject-item\b[^"]*"[^>]*>[\s\S]*?<\/article>/g)].map(match => match[0]);
+assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,3,"UGC category contains three real gallery pieces");
+assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,1,"Product category contains one real concept");
 assert.equal(archivedProjects.length,4,"archive contains four unique project cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,3,"three UGC cards, including the SILO client UGC");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,1,"one product concept in the current gallery");
