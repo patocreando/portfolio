@@ -1,0 +1,312 @@
+/* LANDING DEPTH / 2026-11-23
+   Adds detail and progressive disclosure to the service, collaboration and contact chapters.
+   Keeps the existing Pato Creando palette and shared editorial language. */
+
+#services .service-card {
+  min-height: 500px;
+  padding: clamp(20px, 2.2vw, 28px);
+  border-radius: 16px;
+}
+#services .service-card-top,
+#services .service-card-body,
+#services .service-cta {
+  position: relative;
+  z-index: 1;
+}
+#services .service-card-top {
+  min-height: 45px;
+}
+#services .service-index {
+  color: rgba(231,239,226,.58);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: .16em;
+  font-variant-numeric: tabular-nums;
+}
+#services .service-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin-top: 28px;
+}
+#services .service-kicker {
+  margin: 0;
+  color: #cfe65a;
+  font-size: 9px;
+  font-weight: 780;
+  letter-spacing: .16em;
+  line-height: 1.5;
+}
+#services .service-card h3 {
+  margin-top: 10px;
+  max-width: 310px;
+  text-wrap: balance;
+}
+#services .service-card-body > p:not(.service-kicker) {
+  max-width: 370px;
+  margin: 14px 0 0;
+  color: #b1bbb5;
+  font-size: 12px;
+  line-height: 1.72;
+}
+#services .service-card-focus {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 19px;
+}
+#services .service-card-focus span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 9px;
+  border: 1px solid rgba(220,235,221,.14);
+  border-radius: 999px;
+  background: rgba(8,12,12,.34);
+  color: #d0d9d1;
+  font-size: 9px;
+  line-height: 1.25;
+  letter-spacing: .015em;
+}
+#services .service-card-more {
+  margin-top: auto;
+  padding-top: 17px;
+}
+#services .service-card-more summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 37px;
+  border-top: 1px solid rgba(235,245,235,.13);
+  padding-top: 12px;
+  color: #dce8c1;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .055em;
+  cursor: pointer;
+  list-style: none;
+}
+#services .service-card-more summary::-webkit-details-marker { display: none; }
+#services .service-card-more summary span {
+  color: #cfe65a;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1;
+  transition: transform .2s ease;
+}
+#services .service-card-more[open] summary span { transform: rotate(45deg); }
+#services .service-card-more summary:focus-visible {
+  outline: 2px solid #cfe65a;
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+#services .service-card-more-content {
+  display: grid;
+  gap: 9px;
+  padding: 12px 0 2px;
+}
+#services .service-card-more-content p {
+  margin: 0;
+  color: #aab7ae;
+  font-size: 11px;
+  line-height: 1.65;
+}
+#services .service-card-more-content strong {
+  color: #edf2e8;
+  font-weight: 700;
+}
+#services .service-cta { margin-top: 17px; }
+@media(max-width:900px) {
+  #services .service-card { min-height: 0; }
+  #services .service-card-body > p:not(.service-kicker) { max-width: 590px; }
+}
+@media(max-width:639px) {
+  #services .service-card { padding: 20px 18px; }
+  #services .service-card-body { margin-top: 22px; }
+  #services .service-card h3 { max-width: 320px; }
+  #services .service-card-body > p:not(.service-kicker) { font-size: 12px; }
+  #services .service-card-focus { justify-content: center; }
+  #services .service-card-more summary { text-align: left; }
+  #services .service-card-more-content p { text-align: left; }
+}
+
+/* Collaboration chapter: the three visible checkpoints now open into useful detail. */
+#method .pc-method-heading { max-width: 850px; }
+#method .pc-method-lead {
+  max-width: 610px;
+  margin: 14px 0 0;
+  color: #aab9b0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+#method .pc-method-track article {
+  align-items: flex-start;
+  min-height: 174px;
+}
+#method .pc-method-track article > span { margin-top: 2px; }
+#method .pc-method-stage-copy { flex: 1; min-width: 0; }
+#method .pc-method-stage-copy h3 { margin-top: 1px; }
+#method .pc-method-stage-copy > p {
+  min-height: 36px;
+  max-width: 240px;
+}
+#method .pc-method-stage-details {
+  margin-top: 13px;
+  max-width: 300px;
+}
+#method .pc-method-stage-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 31px;
+  border-top: 1px solid rgba(220,235,221,.11);
+  padding-top: 9px;
+  color: #d3e3bf;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .045em;
+  list-style: none;
+  cursor: pointer;
+}
+#method .pc-method-stage-details summary::-webkit-details-marker { display:none; }
+#method .pc-method-stage-details summary span {
+  color: #cfe65a;
+  font-size: 16px;
+  font-weight: 400;
+  transition: transform .2s ease;
+}
+#method .pc-method-stage-details[open] summary span { transform: rotate(45deg); }
+#method .pc-method-stage-details summary:focus-visible {
+  outline: 2px solid #cfe65a;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+#method .pc-method-stage-details > div {
+  padding: 10px 0 0;
+}
+#method .pc-method-stage-details > div p {
+  margin: 0;
+  color: #9eafa5;
+  font-size: 11px;
+  line-height: 1.7;
+}
+@media(max-width:950px) {
+  #method .pc-method-track article { min-height: 190px; }
+  #method .pc-method-stage-copy > p { min-height: 0; }
+}
+@media(max-width:719px) {
+  #method .pc-method-lead {
+    max-width: 490px;
+    margin: 14px auto 0;
+    text-align: center;
+  }
+  #method .pc-method-track { gap: 0; }
+  #method .pc-method-track article {
+    min-height: 0;
+    align-items: center !important;
+    padding: 22px 12px !important;
+    text-align: center;
+  }
+  #method .pc-method-track article + article {
+    border-top: 1px solid rgba(220,235,221,.10);
+    border-left: 0;
+  }
+  #method .pc-method-track article > span { margin: 0 auto 10px; }
+  #method .pc-method-stage-copy { width: 100%; }
+  #method .pc-method-stage-copy > p { max-width: 320px; margin-inline: auto; }
+  #method .pc-method-stage-details { max-width: 430px; margin: 14px auto 0; text-align: left; }
+  #method .pc-method-stage-details summary { text-align: left; }
+  #method .pc-method-stage-details > div p { text-align: left; }
+}
+
+/* Contact chapter: give visitors a miniature brief before the form. */
+#contact .contact-brief-guide {
+  max-width: 500px;
+  margin-top: 28px;
+  padding: 18px 19px 16px;
+  border: 1px solid rgba(207,230,90,.17);
+  border-radius: 13px;
+  background: linear-gradient(135deg,rgba(207,230,90,.055),rgba(255,255,255,.018) 55%),rgba(8,12,13,.28);
+}
+#contact .contact-brief-guide-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid rgba(230,240,230,.10);
+}
+#contact .contact-brief-guide-head > span {
+  color: #cfe65a;
+  font-size: 9px;
+  font-weight: 780;
+  letter-spacing: .17em;
+}
+#contact .contact-brief-guide-head small {
+  color: #788981;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  white-space: nowrap;
+}
+#contact .contact-brief-guide ol {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 2px 0 0;
+  list-style: none;
+}
+#contact .contact-brief-guide li {
+  display: grid;
+  grid-template-columns: 30px minmax(0,1fr);
+  align-items: start;
+  gap: 11px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(230,240,230,.075);
+}
+#contact .contact-brief-guide li:last-child { border-bottom: 0; }
+#contact .contact-brief-guide li > span {
+  color: #cfe65a;
+  font-size: 10px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+#contact .contact-brief-guide li strong {
+  display: block;
+  color: #e6ece4;
+  font-size: 12px;
+  font-weight: 700;
+}
+#contact .contact-brief-guide li p {
+  margin: 3px 0 0;
+  color: #9eaaa3;
+  font-size: 11px;
+  line-height: 1.55;
+}
+#contact .contact-brief-guide-note {
+  margin: 12px 0 0;
+  color: #88978e;
+  font-size: 10px;
+  line-height: 1.6;
+}
+#contact .contact-brief-hint {
+  margin: 0 0 5px;
+  color: #c1cec5;
+  font-size: 12px;
+  line-height: 1.65;
+}
+@media(max-width:639px) {
+  #contact .contact-brief-guide {
+    margin-top: 23px;
+    padding: 16px 15px 14px;
+  }
+  #contact .contact-brief-guide-head { align-items: flex-start; }
+  #contact .contact-brief-guide-head small { font-size: 7px; }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  #services .service-card-more summary span,
+  #method .pc-method-stage-details summary span { transition:none; }
+}
