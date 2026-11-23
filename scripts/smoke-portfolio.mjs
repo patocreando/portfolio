@@ -124,7 +124,7 @@ assert.equal(brandedPng.readUInt32BE(16),1550,"Social image width matches declar
 assert.equal(brandedPng.readUInt32BE(20),600,"Social image height matches declared metadata");
 assert.ok(brandedPng.length < 100_000,"Share image remains under 100 KB");
 for (const video of ["ugc-beauty.mp4","ugc-fashion.mp4","hyperreal-portrait.mp4"]) {
-  const videoMatch = html.match(new RegExp('<video[^>]*aria-label="[^"]+"[^>]*>\\s*<source src="\\./assets/videos/'+video.replace(".","\\.")+'"'));
+  const videoMatch = html.match(new RegExp('<video[^>]*aria-label="[^"]+"[^>]*>\\s*<source (?:src|data-src)="\\./assets/videos/'+video.replace(".","\\.")+'"'));
   assert.ok(videoMatch,"Gallery video has accessible descriptive name: "+video);
 }
 assert.ok(/<video[^>]*class="hero-video" aria-label="[^"]+"[^>]*>/.test(html),"Hero showreel has descriptive name");
@@ -211,7 +211,7 @@ for(const videoTag of curatedVideoTags){
 }
 const heroTag=videoTags.find(tag=>tag.includes('class="hero-video"'));
 assert.ok(heroTag && heroTag.includes('data-autoplay-managed="true"'),"First-screen showreel uses shared autoplay controller");
-assert.ok(heroTag.includes('muted') && heroTag.includes('playsinline') && heroTag.includes('preload="none"'),"Hero starts muted, inline and deferred until visible");
+assert.ok(heroTag.includes('muted') && heroTag.includes('playsinline') && heroTag.includes('preload="metadata"'),"Hero starts muted and inline with metadata-only preload");
 assert.ok(heroTag.includes('poster="./assets/images/hero-showreel-poster.svg"'),"Hero video has browser-native poster fallback");
 assert.ok(html.includes('data-hero-mobile-poster src="./assets/images/hero-showreel-poster.svg"'),"Hero retains separate visible image fallback");
 assert.ok(fs.existsSync("assets/images/hero-showreel-poster.svg"),"Hero fallback asset exists");
