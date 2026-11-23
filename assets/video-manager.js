@@ -29,7 +29,7 @@
   function stateFor(video) {
     var state = states.get(video);
     if (!state) {
-      state = { near: false, loaded: false, ratio: 0, lastUsed: 0, blocked: false, fallback: null, heroButton: null, prompt: null };
+      state = { near: false, loaded: false, ratio: 0, lastUsed: 0, blocked: false, fallback: null, heroButton: null, prompt: null, framePresented: false, framePending: false, frameCallbackId: null };
       states.set(video, state);
     }
     return state;
@@ -150,19 +150,58 @@
     else if (button === state.fallback) button.textContent = label || "Reproducir video";
   }
 
-  function markFrameReady(video) {
-    if (video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
-    var host = hostFor(video);
-    if (host) host.classList.add("is-video-ready");
-    if (video.classList.contains("hero-video")) {
-      var screen = video.closest(".hero-phone-screen");
-      var wrap = document.getElementById("heroDeviceWrap");
-      if (screen) screen.classList.add("is-video-ready");
-      if (wrap) wrap.classList.add("is-video-ready");
-      video.dataset.heroFrameReady = "true";
+  function resetFrameState(video) {
+    var state = stateFor(video);
+    if (state.frameCallbackId !== null && typeof video.cancelVideoFrameCallback === "function") {
+      try { video.cancelVideoFrameCallback(state.frameCallbackId); } catch (error) {}
     }
-    /* Decoding the first frame is not proof that playback actually started.
-       Keep the manual control available until the browser fires "playing". */
+    state.framePresented = false;
+    state.framePending = false;
+    state.frameCallbackId = null;
+  }
+
+  function markFrameReady(video) {
+    var state = stateFor(video);
+    if (state.framePresented || state.framePending) return;
+    if (video.paused || video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
+
+    function revealPresentedFrame() {
+      state.framePending = false;
+      state.frameCallbackId = null;
+      if (video.paused || video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
+
+      state.framePresented = true;
+      var host = hostFor(video);
+      if (host) host.classList.add("is-video-ready");
+      if (video.classList.contains("hero-video")) {
+        var screen = video.closest(".hero-phone-screen");
+        var wrap = document.getElementById("heroDeviceWrap");
+        if (screen) screen.classList.add("is-video-ready");
+        if (wrap) wrap.classList.add("is-video-ready");
+        video.dataset.heroFrameReady = "true";
+      }
+      /* The recovery control disappears only after a frame reaches the screen. */
+      hideFallback(video);
+    }
+
+    state.framePending = true;
+    if (typeof video.requestVideoFrameCallback === "function") {
+      try {
+        state.frameCallbackId = video.requestVideoFrameCallback(function () {
+          revealPresentedFrame();
+        });
+        return;
+      } catch (error) {
+        state.frameCallbackId = null;
+      }
+    }
+
+    /* Older Android WebViews may not implement requestVideoFrameCallback. */
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        window.setTimeout(revealPresentedFrame, 140);
+      });
+    });
   }
 
   function syncPrompt(video) {
@@ -216,6 +255,7 @@
 
     try { video.load(); } catch (error) {}
     state.loaded = false;
+    resetFrameState(video);
   }
 
   function maintainMemory() {
@@ -274,8 +314,9 @@
     video.setAttribute("webkit-playsinline", "");
     activeVideo = video;
 
-    /* Keep a real tap target visible until the browser decodes its first frame. */
-    showFallback(video, "Reproducir video");
+    /* Keep a real tap target visible until this source has presented a frame. */
+    if (state.framePresented) hideFallback(video);
+    else showFallback(video, "Reproducir video");
 
     var result;
     try {
@@ -403,6 +444,7 @@
     state.loaded = false;
     state.near = false;
     state.blocked = false;
+    resetFrameState(video);
     if (next && !isHidden(video) && nearViewport(video)) loadSource(video);
     refresh();
   }
@@ -588,7 +630,7 @@
       video.addEventListener(name, function () { markFrameReady(video); });
     });
     video.addEventListener("playing", function () {
-      hideFallback(video);
+      markFrameReady(video);
       activeVideo = video;
       if (!video.muted) audioVideo = video;
       window.__PATO_SOUND_ACTIVE_VIDEO__ = audioVideo;
@@ -600,6 +642,11 @@
       video.addEventListener(name, function () {
         if (video.error || name === "error") {
           state.blocked = true;
+          resetFrameState(video);
+          var failedScreen = video.closest(".hero-phone-screen");
+          var failedWrap = document.getElementById("heroDeviceWrap");
+          if (failedScreen) failedScreen.classList.remove("is-video-ready");
+          if (failedWrap && isHero(video)) failedWrap.classList.remove("is-video-ready");
           showFallback(video, "Reintentar reproducción");
         }
       });
