@@ -72,6 +72,23 @@ button.hero-sound-toggle {
     -webkit-backdrop-filter: none;
     animation: none;
   }
+
+  /* Keep UI layered over moving frames cheap to composite on iOS Safari. */
+  #top .hero-phone-meta-copy,
+  #top .hero-phone-year,
+  #top .hero-stage-label {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+
+  .service-card-media,
+  .pricing-pack-media,
+  .contact-proposal-media,
+  .studio-system-ambient {
+    animation: none !important;
+    filter: none !important;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .video-manager-play {
