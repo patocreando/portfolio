@@ -13,7 +13,7 @@
   <link rel="canonical" href="https://patocreando.github.io/portfolio/" />
   <meta property="og:url" content="https://patocreando.github.io/portfolio/" />
   <link rel="preconnect" href="https://d2ol7oe51mr4n9.cloudfront.net" crossorigin />
-  <link rel="preload" as="image" href="./assets/images/silo-campana-producto-recortado.jpg" fetchpriority="high" />
+  <link rel="preload" as="image" href="./assets/images/hero-showreel-poster.svg" fetchpriority="high" />
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
 
   <meta property="og:title" content="Pato Creando | Reels UGC y anuncios de producto con IA" />
@@ -347,8 +347,9 @@
               </div>
 
               <div class="hero-phone-screen">
-                <video muted loop playsinline webkit-playsinline preload="metadata" class="hero-video" data-audio-available="true" aria-label="Showreel de Pato Creando: anuncios y contenido audiovisual con inteligencia artificial">
-                  <source src="./assets/videos/hero-showreel-mobile-compatible.mp4?v=20261122-mobile-1" type="video/mp4" />
+                <img class="hero-video-poster" data-hero-mobile-poster src="./assets/images/hero-showreel-poster.svg" alt="" aria-hidden="true" fetchpriority="high" decoding="async" />
+                <video muted loop playsinline webkit-playsinline preload="none" class="hero-video" data-autoplay-managed="true" data-audio-available="true" poster="./assets/images/hero-showreel-poster.svg" aria-label="Showreel de Pato Creando: anuncios y contenido audiovisual con inteligencia artificial">
+                  <source src="./assets/videos/hero-showreel-mobile-compatible.mp4?v=20261123-header-autoplay-fallback" type="video/mp4" />
                 </video>
 
                 <button class="hero-mobile-play" type="button" data-hero-mobile-play aria-label="Reproducir showreel">

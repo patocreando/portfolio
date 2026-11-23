@@ -789,3 +789,42 @@ main#main-content::after {
     will-change: auto;
   }
 }
+
+
+/* Header showreel: decoded-frame reveal + persistent visual fallback. */
+#heroPhone .hero-phone-screen { isolation:isolate; background:#080d10 !important; }
+#heroPhone .hero-video-poster {
+  position:absolute !important; inset:0 !important; z-index:1 !important;
+  display:block !important; width:100% !important; height:100% !important;
+  object-fit:cover !important; object-position:center center !important;
+  opacity:1 !important; visibility:visible !important; pointer-events:none !important;
+  transition:opacity .24s ease,visibility .24s ease;
+}
+#heroPhone .hero-video {
+  position:absolute !important; inset:0 !important; z-index:2 !important;
+  width:100% !important; height:100% !important; object-fit:cover !important;
+  object-position:center center !important; opacity:0 !important;
+  visibility:visible !important; background:transparent !important;
+  transition:opacity .24s ease !important;
+}
+#heroPhone .hero-phone-screen.is-video-ready .hero-video { opacity:1 !important; }
+#heroPhone .hero-phone-screen.is-video-ready .hero-video-poster { opacity:0 !important; visibility:hidden !important; }
+#heroPhone .hero-mobile-play {
+  position:absolute !important; z-index:30 !important; top:50% !important; left:50% !important;
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  min-height:44px; max-width:calc(100% - 32px); padding:0 16px;
+  border:1px solid rgba(239,246,232,.22); border-radius:999px;
+  background:rgba(7,11,12,.78); color:#f0f3eb; box-shadow:0 12px 34px rgba(0,0,0,.3);
+  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+  font:700 10px/1 Inter,ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.055em; text-transform:uppercase;
+  transform:translate(-50%,-50%); cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+#heroPhone .hero-mobile-play svg { display:block; width:15px; height:15px; flex:none; fill:#cfe65a; }
+#heroPhone .hero-mobile-play span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#heroPhone .hero-mobile-play[hidden] { display:none !important; }
+#heroPhone .hero-mobile-play:disabled { cursor:wait; opacity:.82; }
+#heroPhone .hero-mobile-play:focus-visible { outline:2px solid #cfe65a; outline-offset:4px; }
+@media(prefers-reduced-motion:reduce) {
+  #heroPhone .hero-video,#heroPhone .hero-video-poster,#heroPhone .hero-mobile-play { transition:none !important; }
+}

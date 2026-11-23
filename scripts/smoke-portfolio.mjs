@@ -8,6 +8,7 @@ const css = fs.readFileSync("assets/site.css", "utf8");
 const js = fs.readFileSync("assets/site.js", "utf8");
 const premiumCss = fs.readFileSync("assets/premium-lab.css", "utf8");
 const premiumJs = fs.readFileSync("assets/premium-lab.js", "utf8");
+const mobileHeroFallback = fs.readFileSync("assets/mobile-hero-fallback.js", "utf8");
 const pagesScript = fs.readFileSync("scripts/stage-pages.mjs", "utf8");
 const has = (text, needle, context) => assert.ok(text.includes(needle), context || needle);
 const occurrences = (text, needle) => text.split(needle).length - 1;
@@ -209,7 +210,16 @@ for(const videoTag of curatedVideoTags){
   assert.ok(videoTag.includes('poster="./assets/images/'),"Featured reel retains real poster");
 }
 const heroTag=videoTags.find(tag=>tag.includes('class="hero-video"'));
-assert.ok(heroTag && heroTag.includes(" autoplay"),"First-screen showreel still autoplays");
+assert.ok(heroTag && heroTag.includes('data-autoplay-managed="true"'),"First-screen showreel uses shared autoplay controller");
+assert.ok(heroTag.includes('muted') && heroTag.includes('playsinline') && heroTag.includes('preload="none"'),"Hero starts muted, inline and deferred until visible");
+assert.ok(heroTag.includes('poster="./assets/images/hero-showreel-poster.svg"'),"Hero video has browser-native poster fallback");
+assert.ok(html.includes('data-hero-mobile-poster src="./assets/images/hero-showreel-poster.svg"'),"Hero retains separate visible image fallback");
+assert.ok(fs.existsSync("assets/images/hero-showreel-poster.svg"),"Hero fallback asset exists");
+assert.ok(fs.readFileSync("assets/images/hero-showreel-poster.svg","utf8").startsWith("<svg"),"Hero fallback is a lightweight local SVG");
+has(mobileHeroFallback,"requestVideoFrameCallback","Video reveal waits for a decoded frame");
+has(mobileHeroFallback,"prefers-reduced-motion","Autoplay respects reduced motion");
+has(mobileHeroFallback,"saveData","Autoplay respects data-saving mode");
+has(mobileHeroFallback,'video.addEventListener("error"',"Playback failures retain poster and expose retry");
 const clubImages=html.split("<img ").slice(1).map(chunk=>"<img "+chunk.split(">")[0]+">").filter(tag=>tag.includes("./assets/cases/club-del-coctel-01/"));
 assert.equal(clubImages.length,5,"Five existing case-study images retained");
 for(const img of clubImages){

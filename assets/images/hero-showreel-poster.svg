@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600" role="img" aria-label="Fondo visual de Pato Creando">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#192126"/><stop offset=".48" stop-color="#0b1013"/><stop offset="1" stop-color="#050709"/></linearGradient>
+<radialGradient id="halo" cx="50%" cy="38%" r="58%"><stop offset="0" stop-color="#cfe65a" stop-opacity=".22"/><stop offset=".4" stop-color="#8c9c62" stop-opacity=".08"/><stop offset="1" stop-color="#080b0d" stop-opacity="0"/></radialGradient>
+<linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef4e8" stop-opacity=".25"/><stop offset=".5" stop-color="#cfe65a" stop-opacity=".08"/><stop offset="1" stop-color="#eef4e8" stop-opacity=".02"/></linearGradient>
+<filter id="blur"><feGaussianBlur stdDeviation="44"/></filter>
+</defs>
+<rect width="900" height="1600" fill="url(#bg)"/><rect width="900" height="1600" fill="url(#halo)"/><ellipse cx="452" cy="540" rx="330" ry="270" fill="#cfe65a" opacity=".08" filter="url(#blur)"/>
+<g fill="none" stroke="#dbe7d0" stroke-opacity=".08"><path d="M0 250H900M0 1350H900M108 0V1600M792 0V1600" stroke-dasharray="3 18"/><circle cx="450" cy="730" r="294"/><circle cx="450" cy="730" r="246"/><circle cx="450" cy="730" r="194"/><circle cx="450" cy="730" r="142" stroke="#cfe65a" stroke-opacity=".2"/></g>
+<g transform="translate(450 730)"><circle r="92" fill="#11181a" stroke="#cfe65a" stroke-opacity=".26" stroke-width="2"/><circle r="67" fill="#0b1012" stroke="#edf3e8" stroke-opacity=".14"/><circle r="42" fill="#cfe65a" opacity=".12"/><path d="M-13 -23V23L29 0Z" fill="#e9f0df" opacity=".9"/></g>
+<g fill="none" stroke="url(#edge)" stroke-width="2"><rect x="75" y="170" width="750" height="1260" rx="34"/><path d="M75 335H130M770 335H825M75 1265H130M770 1265H825"/></g>
+<g fill="#f0f3eb" font-family="Inter,Arial,sans-serif" text-anchor="middle"><text x="450" y="220" font-size="24" font-weight="700" letter-spacing="7">PATO CREANDO</text><text x="450" y="1160" font-size="18" font-weight="600" letter-spacing="5" fill="#cfe65a">DIRECCIÓN · MOVIMIENTO · EDICIÓN</text><text x="450" y="1210" font-size="13" letter-spacing="4" fill="#b1bbb4" opacity=".7">CONTENIDO AUDIOVISUAL CON IA</text></g>
+<g fill="#cfe65a" opacity=".65"><circle cx="176" cy="430" r="3"/><circle cx="718" cy="480" r="2"/><circle cx="230" cy="1030" r="2"/><circle cx="685" cy="1000" r="3"/></g>
+</svg>

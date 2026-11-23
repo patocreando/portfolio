@@ -524,7 +524,6 @@
       var audioUnlocked = false;
       var userSilenced = false;
       var lastWidth = window.innerWidth;
-      var frameReady = false;
 
       function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
@@ -575,12 +574,6 @@
         }
 
         updateSoundUi();
-      }
-
-      function markFrameReady() {
-        if (frameReady) return;
-        frameReady = true;
-        wrap.classList.add("is-video-ready");
       }
 
       function playVideo() {
@@ -760,11 +753,7 @@
           setAudio(false);
         }
 
-        if (video.readyState >= 2) {
-          markFrameReady();
-        }
-
-        // The mobile fallback controller owns the initial muted play request.
+        // mobile-hero-fallback.js owns decoded-frame visibility and playback.
       }
 
       function refresh() {
@@ -784,10 +773,7 @@
         }
       }
 
-      video.addEventListener("loadeddata", markFrameReady);
-      video.addEventListener("canplay", markFrameReady);
       video.addEventListener("playing", function () {
-        markFrameReady();
         if (mobileQuery.matches) updateSoundUi();
       });
 
@@ -801,10 +787,7 @@
         if (mobileQuery.matches) updateSoundUi();
       });
 
-      video.addEventListener("stalled", function () {
-        wrap.classList.remove("is-video-ready");
-        frameReady = false;
-      });
+      // Shared fallback handles stalled and failed media without hiding the poster.
 
       // Audio solo desde el botón Escuchar; nunca a partir de gestos de navegación.
 

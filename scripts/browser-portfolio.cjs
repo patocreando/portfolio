@@ -6,7 +6,7 @@ const path = require("node:path");
 const assert = require("node:assert/strict");
 
 const root = process.cwd();
-const types = {".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".svg":"image/svg+xml",".png":"image/png",".webp":"image/webp"};
+const types = {".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".svg":"image/svg+xml",".png":"image/png",".webp":"image/webp",".jpg":"image/jpeg",".mp4":"video/mp4"};
 const server = http.createServer(async (req, res) => {
   try {
     const u = new URL(req.url, "http://localhost");
@@ -14,7 +14,28 @@ const server = http.createServer(async (req, res) => {
     const target = path.resolve(root, "." + pathname);
     if (!target.startsWith(root + path.sep)) { res.writeHead(403).end(); return; }
     const data = await fs.readFile(target);
-    res.writeHead(200, {"content-type":types[path.extname(target)] || "application/octet-stream"});
+    const contentType = types[path.extname(target)] || "application/octet-stream";
+    const range = req.headers.range;
+    if (range) {
+      const match = /^bytes=([0-9]*)-([0-9]*)$/.exec(range);
+      if (match) {
+        const start = match[1] ? Number(match[1]) : 0;
+        const end = match[2] ? Math.min(Number(match[2]), data.length - 1) : data.length - 1;
+        if (start <= end && start < data.length) {
+          res.writeHead(206, {
+            "content-type":contentType,
+            "accept-ranges":"bytes",
+            "content-range":`bytes ${start}-${end}/${data.length}`,
+            "content-length":end-start+1
+          });
+          res.end(data.subarray(start,end+1));
+          return;
+        }
+      }
+      res.writeHead(416, {"content-range":`bytes */${data.length}`}).end();
+      return;
+    }
+    res.writeHead(200, {"content-type":contentType,"content-length":data.length,"accept-ranges":"bytes"});
     res.end(data);
   } catch { res.writeHead(404).end(); }
 });
@@ -44,6 +65,10 @@ async function test() {
       page.on("pageerror",e=>pageErrors.push(e.message));
       await page.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
       await page.locator(".hero-summary-minimal-copy").waitFor({state:"visible",timeout:15000});
+      await page.waitForFunction(() => {
+        const poster=document.querySelector(".hero-video-poster");
+        return poster && poster.complete && poster.naturalWidth>0;
+      },null,{timeout:10000});
       const state=await page.evaluate(() => ({
         title:document.querySelector("h1")?.innerText?.replace(/\s+/g," ").trim(),
         projects:!!document.querySelector("#projects"),
@@ -59,6 +84,11 @@ async function test() {
         systemAmbientDisplay:getComputedStyle(document.querySelector("#system .studio-system-ambient")).display,
         systemScrim:getComputedStyle(document.querySelector("#system .studio-system-board"),"::before").backgroundImage,
         heroMuted:document.querySelector(".hero-video").muted,
+        heroPosterSrc:document.querySelector(".hero-video-poster")?.getAttribute("src"),
+        heroPosterLoaded:document.querySelector(".hero-video-poster")?.complete && document.querySelector(".hero-video-poster")?.naturalWidth>0,
+        heroFallbackButtonVisible:!document.querySelector("[data-hero-mobile-play]")?.hidden,
+        heroVideoOpacity:getComputedStyle(document.querySelector(".hero-video")).opacity,
+        heroVideoReady:document.querySelector(".hero-phone-screen")?.classList.contains("is-video-ready"),
         clippedDecisionLabels:[...document.querySelectorAll(".editorial-decisions b")].filter(el=>el.scrollWidth>el.clientWidth+1).length,
         premiumCaseCount:document.querySelectorAll(".editorial-case").length,
         archiveTotal:document.querySelectorAll("#projectGrid .project-item").length,
@@ -296,6 +326,11 @@ async function test() {
       assert.equal(state.systemAmbientDisplay,"none","Reduced-motion browser should hide background video");
       assert.equal(state.systemAmbientPreload,"none","Reduced-motion browser should not fetch background video");
       assert.equal(state.heroMuted,true,"Hero is muted by default");
+       assert.equal(state.heroPosterLoaded,true,"Hero poster loads in desktop and mobile viewports");
+       assert.equal(state.heroPosterSrc,"./assets/images/hero-showreel-poster.svg","Hero uses its dedicated fallback asset");
+       assert.equal(state.heroFallbackButtonVisible,true,"Reduced-motion / blocked-autoplay exposes manual playback");
+       assert.equal(state.heroVideoReady,false,"Deferred or failed video never reveals an undecoded frame");
+       assert.equal(state.heroVideoOpacity,"0","Undecoded video stays transparent over the poster");
       assert.ok(state.mainWidth <= state.innerWidth+4,"Main must fit viewport");
       if (spec.isMobile) assert.ok(state.deliveryStepWidth >= 130,"Mobile process stages must remain readable");
       await page.screenshot({path:"artifacts/"+spec.name+".png",fullPage:true,animations:"disabled"});
@@ -381,6 +416,10 @@ async function test() {
     const mediaRequests=[];
     await mediaContext.route("**/*.mp4",route=>{
       const target=new URL(route.request().url()).pathname;
+      if(target.includes("hero-showreel-mobile-compatible.mp4")) {
+        mediaRequests.push(target);
+        return route.continue();
+      }
       if(target.includes("silo-campana-producto-recortado.mp4")||target.includes("mariana-omelette-ugc.mp4"))mediaRequests.push(target);
       return route.abort();
     });
@@ -388,8 +427,18 @@ async function test() {
     try {
       const mediaPage=await mediaContext.newPage();
       await mediaPage.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
-      await mediaPage.waitForTimeout(600);
-      assert.equal(mediaRequests.length,0,"Below-fold SILO and Mariana video bytes not requested on initial mobile load");
+      await mediaPage.waitForTimeout(6500);
+      assert.ok(mediaRequests.some(p=>p.includes("hero-showreel-mobile-compatible.mp4")),"Visible first-screen hero requests its MP4 source");
+      assert.equal(mediaRequests.some(p=>p.includes("silo-campana-producto-recortado.mp4")||p.includes("mariana-omelette-ugc.mp4")),false,"Below-fold SILO and Mariana videos remain deferred");
+      const heroPlayback=await mediaPage.locator(".hero-phone-screen").evaluate(el=>{
+        const video=el.querySelector("video"),poster=el.querySelector(".hero-video-poster"),button=el.querySelector("[data-hero-mobile-play]");
+        return {frameReady:el.classList.contains("is-video-ready")&&video.videoWidth>0&&video.videoHeight>0,
+          posterLoaded:poster.complete&&poster.naturalWidth>0,fallbackVisible:!button.hidden,
+          videoError:Boolean(video.error),paused:video.paused,currentTime:video.currentTime};
+      });
+      assert.ok(heroPlayback.posterLoaded,"Hero poster decodes before playback");
+      assert.ok(heroPlayback.frameReady||heroPlayback.fallbackVisible,"Hero produces a decoded frame or keeps a poster and retry control");
+      console.log(JSON.stringify({heroPlayback:"decoded frame or graceful fallback verified",...heroPlayback}));
       const initialPauseState=await mediaPage.locator(".editorial-case video[data-editorial-reel]").evaluateAll(nodes=>nodes.map(el=>el.dataset.userPaused));
       assert.ok(initialPauseState.every(value=>value!=="true"),"Club initial render must not mark featured videos manually paused");
 

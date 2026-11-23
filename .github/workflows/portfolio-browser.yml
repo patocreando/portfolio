@@ -2,6 +2,7 @@ name: Portfolio browser QA
 on:
   push:
     branches:
+      - main
       - improve/portfolio-cold-traffic
   pull_request:
     branches:
