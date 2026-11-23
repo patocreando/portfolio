@@ -99,6 +99,7 @@
 .pc-methodology-board { position:relative; isolation:isolate; padding-bottom:0; }
 .pc-methodology-board .studio-system-boardbar,.pc-method-six,.pc-method-six-note { position:relative; z-index:2; }
 .pc-method-six {
+  background:rgba(7,13,15,.28);
   display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0 30px;
   margin:0; padding:17px clamp(20px,3vw,42px) 25px; list-style:none;
 }
