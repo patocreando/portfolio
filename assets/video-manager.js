@@ -214,9 +214,14 @@
     var loaded = allVideos.filter(function (video) { return stateFor(video).loaded; });
     if (loaded.length <= MAX_LOADED) return;
 
+    /*
+     * Never evict media that is currently visible or the active decoder.
+     * The previous policy could unload a clip while its IO callback was still
+     * arriving, causing repeated blank frames on Android during fast scrolling.
+     */
     var releasable = loaded.filter(function (video) {
       var state = stateFor(video);
-      return video !== activeVideo && !state.near && !isHidden(video);
+      return video !== activeVideo && state.ratio < ACTIVE_THRESHOLD && !state.near && !isHero(video);
     }).sort(function (a, b) {
       return stateFor(a).lastUsed - stateFor(b).lastUsed;
     });
@@ -225,14 +230,6 @@
       var victim = releasable.shift();
       releaseSource(victim);
       loaded = loaded.filter(function (video) { return video !== victim; });
-    }
-
-    if (loaded.length > MAX_LOADED) {
-      loaded.filter(function (video) {
-        return video !== activeVideo && !isHero(video);
-      }).sort(function (a, b) {
-        return stateFor(a).lastUsed - stateFor(b).lastUsed;
-      }).slice(0, loaded.length - MAX_LOADED).forEach(releaseSource);
     }
   }
 
@@ -255,12 +252,13 @@
       showFallback(video, "Reproducir video");
       return null;
     }
+    /* Stop the previous decoder before assigning a new source. */
+    stopOthers(video);
     if (!loadSource(video)) {
       showFallback(video, "Reintentar reproducción");
       return null;
     }
 
-    stopOthers(video);
     video.dataset.userPaused = "false";
     setMuted(video, true);
     video.playsInline = true;
