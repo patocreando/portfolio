@@ -256,7 +256,7 @@ async function run() {
             const button = document.querySelector("[data-hero-mobile-play]");
             const label = button?.querySelector("span")?.textContent || "";
             const video = document.querySelector(".hero-video");
-            return Boolean(label === "Tocar para reproducir" || video?.error);
+            return Boolean(label === "Tocar para reproducir" || label === "Reintentar showreel" || video?.error);
           }, null, {timeout:15000});
           const state = await assertNoBlankHero(page,engineName + "/autoplay-blocked");
           assert.ok(state.playButtonVisible || state.mediaError,engineName + ": autoplay rejection exposes a manual recovery action");
