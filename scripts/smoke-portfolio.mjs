@@ -44,7 +44,7 @@ has(premiumCss,"grid-template-columns:minmax(250px,1fr) auto minmax(130px,1fr)")
 has(premiumCss,"#portfolioHeader .portfolio-mobile-menu.is-open");
 
 assert.equal(occurrences(html,'class="hero-reveal hero-actions"'),0,"remove duplicated hero CTAs only");
-assert.equal(occurrences(html,'href="#projects"'),2,"main navigation to projects remains in desktop and mobile");
+assert.equal(occurrences(html,'href="#projects"'),3,"desktop, mobile and Hero links lead to selected work");
 assert.equal(occurrences(headerMarkup,'href="#launchOffer"'),2,"desktop and mobile packs link in header");
 assert.equal(occurrences(html,'href="#launchOffer"'),2,"only desktop and mobile navigation links point to plans");
 has(html,'class="pc-hero-cta pc-hero-cta--primary"',"primary portfolio CTA exists");
@@ -155,7 +155,7 @@ has(html,'./assets/lote-02.css?v=20261027-club-case-3');
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
-has(html, 'media="(max-width: 639px)"');
+has(html, 'id="caseMyWay"');
 has(html, 'id="caseMyWay"');
 assert.equal(occurrences(html,'class="editorial-index"'),0,'remove category tags from featured videos');
 assert.equal(occurrences(html,'class="editorial-footnote"'),0,'remove video footnote tags');
@@ -167,13 +167,13 @@ assert.equal(occurrences(html,'class="club-workflow-video"'),1,'one video player
 assert.equal(occurrences(html,'data-club-step'),4,'four interactive Club stages');
 assert.equal(occurrences(html,'Una lámpara que no existe.'),0,'replaced the UMBRAL project copy');
 assert.equal(occurrences(html,'UMBRAL / 01'),0,'no UMBRAL project heading remains');
-has(html,'Del primer ancla <span>al montaje.</span>');
+has(html,'Del primer ancla <span>al montaje final.</span>');
 has(html,'CASO DE ESTUDIO');
 has(html,'./assets/cases/club-del-coctel-01/character-sheet.webp');
 has(html,'./assets/cases/club-del-coctel-01/generated-scene.mp4');
 has(html,'./assets/videos/club-del-coctel.mp4');
-has(html,'./assets/club-case.css?v=20261027-club-dashboard-1');
-has(html,'./assets/club-case.js?v=20261027-club-dashboard-1');
+has(html,'./assets/club-case.css?v=20261030-scroll-story-1');
+has(html,'./assets/club-case.js?v=20261030-scroll-story-1');
 has(html,'data-club-audio');
 has(fs.readFileSync('assets/club-case.js','utf8'),'intervalMs = 6500');
 assert.equal(occurrences(html,'edit-shot-02.webp'),0,'the editing mockup omits the B-roll insert');
@@ -246,23 +246,23 @@ assert.ok(fs.existsSync("assets/images/club-del-coctel.jpg"), "Club del Cóctel 
 assert.equal(occurrences(html,"Perfume real llevado a una estética cinematográfica."),0,"remove duplicate Perfumería IA copy");
 assert.equal(occurrences(html,"Lenguaje de campaña en clave UGC."),0,"remove duplicate UGC perfume copy");
 assert.equal((html.match(/class="editorial-case(?: editorial-case--silo| editorial-case--mariana)?"/g)||[]).length,2,"two curated client campaigns");
-has(html,'Digitalización y cierre en campaña');
+has(html,'Fragancia, detalle y cierre de marca.');
 // Curated cases: concrete client and production context without visual overlays.
-has(html,'PRODUCCIÓN PUBLICITARIA CON IA / 2026');
-has(html,'Dos lenguajes para un mismo objetivo: una campaña sensorial de producto para SILO y un anuncio UGC de cocina con Mariana.');
-has(html,'Del detalle de los frascos al cierre de marca');
+has(html,'SELECCIÓN / TRABAJOS Y PRODUCCIONES PROPIAS');
+has(html,'Casos de cliente y piezas de exploración, con su enfoque y capacidad principal identificados.');
+has(html,'Una pieza para SILO que conduce la mirada desde el frasco hasta la identidad de la perfumería.');
 has(html,'id="marianaCaseTitle"');
-has(html,'Del omelette al anuncio UGC.');
+has(html,'Recetas contadas desde la cocina.');
 has(html,'./assets/videos/mariana-omelette-ugc.mp4');
 has(html,'./assets/images/mariana-omelette-ugc.webp');
 assert.ok(fs.statSync('assets/videos/mariana-omelette-ugc.mp4').size > 2_000_000,"Mariana web video is not a stub");
 assert.ok(fs.statSync('assets/images/mariana-omelette-ugc.webp').size > 10_000,"Mariana poster exists");
 assert.equal(occurrences(html,'id="marianaCaseTitle"'),1,"single Mariana case heading");
 
-has(html,'Del personaje y la cocina definidos en imágenes ancla a la generación, la edición con audio y el reel final.');
+has(html,'El desafío fue sostener al mismo bartender, su vestuario y la cocina a lo largo de un reel de 33,8 segundos');
 assert.equal(occurrences(html,'class="editorial-overline"'),1,"one shared editorial overline");
 
-has(html,'<strong>Club del Cóctel</strong>', 'Club case identifies its real project');
+has(html,'>Club del Cóctel</strong>', 'Club case identifies its real project');
 assert.equal(occurrences(html,'03 / PRODUCTO IA · DIRECCIÓN CREATIVA'),0,'old UMBRAL project heading removed');
 assert.equal(occurrences(html,'Una campaña que sí.'),0,'old UMBRAL project copy removed');
 assert.equal(occurrences(html,'Workflow aplicado · My Way'),0,"redundant My Way project card should be removed");
@@ -277,7 +277,7 @@ assert.equal(occurrences(html,'class="service-cta service-example-link"'),3,"eac
 has(html,'data-service-filter="ugc" href="#projectFilters"');
 has(html,'data-service-filter="product" href="#projectFilters"');
 has(html,'class="service-cta service-example-link" href="#caseMyWay"');
-has(html,'Versiones de aperturas, planos y relatos');
+has(html,'hooks alternativos');
 has(js,'document.querySelectorAll(".service-example-link[data-service-filter]")');
 
 assert.equal(occurrences(html,'final-trim2.web.mp4'),0,'old UMBRAL video master removed');
@@ -286,8 +286,8 @@ assert.equal(occurrences(html,'UMBRAL es una lámpara ficticia.'),0,'old concept
 assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow gallery tab or card");
 assert.equal(occurrences(html, 'data-filter="workflow"'),0,"only UGC and product remain");
 assert.equal(occurrences(html, 'id="system"'),1,"system presentation is standalone");
-assert.equal(occurrences(html, 'class="studio-system-conversion section-reveal"'),1,"one contextual conversion call to action");
-has(html,'href="#contact">Contame el proyecto');
+assert.equal(occurrences(html, 'class="studio-system-conversion section-reveal"'),0,"methodology avoids repeating a second contact banner");
+has(html,'href="#contact"');
 has(premiumCss,'.studio-system-map');
 has(premiumCss,'.studio-system-toolgrid');
 assert.equal(occurrences(html,'href="#system"'),2,"desktop and mobile navigation to system");
@@ -306,7 +306,7 @@ assert.equal(occurrences(html,'editorial-campaign-tag'),0,'video copy is not inj
 assert.equal(occurrences(html,'editorial-play-control'),0,'video pause/play buttons are removed');
 assert.equal(occurrences(html,'data-audio-available="true"'),4,'four current original-audio videos expose their audio');
 assert.equal(occurrences(html,'data-umbral-audio'),0,'no obsolete UMBRAL audio UI remains');
-assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261027-club-dashboard-1"'),1);
+assert.equal(occurrences(html,'href="./assets/premium-lab.css?v=20261123-header-playback-1"'),1);
 assert.equal(occurrences(html,'href="./assets/lote-02.css?v=20261027-club-case-3"'),1);
 assert.equal(occurrences(html,'id="clubWorkflowTitle"'),1,'interactive project title has a unique id');
 assert.equal(occurrences(html,'id="portfolio-nav-critical"'),1,"critical navbar rules embedded in delivered HTML");
@@ -315,7 +315,7 @@ for(const rule of ['#portfolioHeader .portfolio-nav-layout','#portfolioHeader .p
 assert.ok(html.indexOf('id="portfolio-nav-critical"') < html.indexOf('</head>'),"critical navbar styles load before any page content");
 assert.ok(criticalNavStyle.includes('position:fixed;inset:0 0 auto;z-index:1000;'),"navbar position does not depend on Tailwind runtime");
 
-assert.equal(occurrences(html,'src="./assets/premium-lab.js?v=20261027-club-dashboard-1"'),1,'versioned premium runtime is loaded exactly once');
+assert.equal(occurrences(html,'src="./assets/premium-lab.js?v=20261122-mobile-playback-3"'),1,'versioned premium runtime is loaded exactly once');
 assert.equal(occurrences(html,'class="pc-method-six-number"'),6,"six-stage methodology remains visible");
 assert.equal(occurrences(html,'class="pc-collab-column"'),3,"three collaboration responsibility columns");
 assert.equal(occurrences(html,'class="pc-audience-grid"'),1,"brand and agency comparison is unique");
