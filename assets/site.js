@@ -1600,7 +1600,6 @@
 
         var revealCards = gsap.utils.toArray([
           "#projects .project-intro-card",
-          "#projectGrid .project-item:not(.is-hidden)",
           "#services .service-card",
           ".pricing-pack",
           ".club-workflow",
