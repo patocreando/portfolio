@@ -32,7 +32,7 @@ const publicAssets = new Set();
 const sourceFiles = [...rootFiles];
 for (const file of rootFiles.filter(name => name.endsWith('.html'))) {
   const html = await fs.readFile(path.join(root, file), 'utf8');
-  for (const match of html.matchAll(/(?:src|href|poster|data-src)\s*=\s*["']\.\/(assets\/[A-Za-z0-9._/-]+)(?:\?[^"']*)?["']/g)) {
+  for (const match of html.matchAll(/(?:src|href|poster|data-src)\s*=\s*["']\.\/((?:assets|optimized_mobile\/assets)\/[A-Za-z0-9._/-]+)(?:\?[^"']*)?["']/g)) {
     publicAssets.add(match[1]);
   }
 }
@@ -40,7 +40,7 @@ for (const file of rootFiles.filter(name => name.endsWith('.html'))) {
 // CSS and JS can refer to local assets without an HTML attribute.
 for (const file of sourceFiles.filter(name => /\.(?:css|js)$/.test(name))) {
   const content = await fs.readFile(path.join(root, file), 'utf8');
-  for (const match of content.matchAll(/\.\/(assets\/[A-Za-z0-9._/-]+)/g)) {
+  for (const match of content.matchAll(/\.\/((?:assets|optimized_mobile\/assets)\/[A-Za-z0-9._/-]+)/g)) {
     publicAssets.add(match[1]);
   }
 }
