@@ -185,6 +185,7 @@
   });
 
   video.addEventListener("error", function () {
+    hasFrame = false;
     keepPosterVisible();
     // The still is a complete visual fallback. Do not expose dead native
     // controls or a retry action when the resource itself cannot be decoded.
