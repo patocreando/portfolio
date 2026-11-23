@@ -538,6 +538,10 @@
     video.setAttribute("webkit-playsinline", "");
     video.removeAttribute("autoplay");
     var mobileContent = mobileViewport.matches && video.dataset.videoRole === "content";
+    var mobilePlayback = mobileViewport.matches && (isHero(video) || video.dataset.videoRole === "content");
+    video.controls = mobilePlayback;
+    if (mobilePlayback) video.setAttribute("controls", "");
+    else video.removeAttribute("controls");
     var preloadMode = (isHero(video) || mobileContent) ? "metadata" : "none";
     video.preload = preloadMode;
     video.setAttribute("preload", preloadMode);
@@ -571,6 +575,7 @@
 
     video.addEventListener("click", function (event) {
       if (event.target && event.target.closest && event.target.closest("button")) return;
+      if (mobileViewport.matches && video.controls) return;
       if (window.__PATO_INSTAGRAM_BROWSER__ === true) return;
       activateAudio(video, event);
     });
@@ -640,6 +645,10 @@
     window.addEventListener("resize", function () {
       allVideos.forEach(function (video) {
         if (isHero(video) || video.dataset.videoRole === "content") {
+          var mobilePlayback = mobileViewport.matches;
+          video.controls = mobilePlayback;
+          if (mobilePlayback) video.setAttribute("controls", "");
+          else video.removeAttribute("controls");
           if (mobileViewport.matches && video.paused) {
             showFallback(video, isHero(video) ? "Reproducir showreel" : "Reproducir video");
           } else if (!mobileViewport.matches) {
