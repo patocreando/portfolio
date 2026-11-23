@@ -323,6 +323,7 @@
     video.defaultMuted = false;
     video.muted = false;
     video.volume = 1;
+    video.dataset.userUnmuted = "true";
     video.removeAttribute("muted");
     audioVideo = video;
     activeVideo = video;
