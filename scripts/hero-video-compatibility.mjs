@@ -371,6 +371,17 @@ async function run() {
               const video = document.querySelector(".hero-video");
               return Boolean(label === "Tocar para reproducir" || label === "Reintentar showreel" || video?.error);
             }, null, {timeout:15000});
+            await page.waitForFunction(() => {
+              const screen = document.querySelector("#heroDeviceWrap .hero-phone-screen");
+              const video = screen?.querySelector(".hero-video");
+              const poster = screen?.querySelector("[data-hero-mobile-poster]");
+              if (!screen || !video || !poster) return false;
+              const videoOpacity = Number.parseFloat(getComputedStyle(video).opacity);
+              const posterOpacity = Number.parseFloat(getComputedStyle(poster).opacity);
+              return screen.classList.contains("is-video-ready")
+                ? videoOpacity > 0.9
+                : posterOpacity > 0.9 && videoOpacity < 0.1;
+            }, null, {timeout:3000});
             const state = await assertNoBlankHero(page,engineName + "/autoplay-blocked");
             assert.ok(state.playButtonVisible || state.mediaError,engineName + ": autoplay rejection exposes a manual recovery action");
             assert.ok(state.posterVisible || state.frameReady,engineName + ": no black screen after autoplay rejection");
