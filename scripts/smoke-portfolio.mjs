@@ -299,7 +299,7 @@ assert.equal(occurrences(html,'final-trim2.web.mp4'),0,'old UMBRAL video master 
 assert.equal(occurrences(html,'monument-trim2.web.mp4'),0,'old UMBRAL hero removed');
 assert.equal(occurrences(html,'UMBRAL es una lámpara ficticia.'),0,'old conceptual disclaimer removed');
 assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow gallery tab or card");
-assert.equal(occurrences(html, 'data-filter="workflow"'),0,"only UGC and product remain");
+assert.equal(occurrences(html, 'data-filter="workflow"'),0,"No workflow category is published; the real filters are All, UGC and Product");
 assert.equal(occurrences(html, 'id="system"'),1,"system presentation is standalone");
 assert.equal(occurrences(html, 'class="studio-system-conversion section-reveal"'),0,"methodology avoids repeating a second contact banner");
 has(html,'href="#contact"');
