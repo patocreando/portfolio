@@ -94,6 +94,24 @@ function engineContext(engineName, options) {
 }
 
 async function waitForPoster(page, label = "unknown browser/viewport") {
+  const posterNetwork = [];
+  const record = (event, request, response) => {
+    if (!request.url().includes("hero-showreel-poster")) return;
+    posterNetwork.push({
+      event,
+      url:request.url(),
+      status:response?.status() ?? null,
+      contentType:response?.headers()["content-type"] ?? null,
+      contentLength:response?.headers()["content-length"] ?? null,
+      failure:request.failure()?.errorText ?? null
+    });
+  };
+  const onRequest = request => record("request",request);
+  const onResponse = response => record("response",response.request(),response);
+  const onFailure = request => record("requestfailed",request);
+  page.on("request",onRequest);
+  page.on("response",onResponse);
+  page.on("requestfailed",onFailure);
   try {
     await page.waitForFunction(() => {
       const img = document.querySelector("[data-hero-mobile-poster]");
@@ -124,7 +142,27 @@ async function waitForPoster(page, label = "unknown browser/viewport") {
           .map(entry=>({name:entry.name,duration:entry.duration,transferSize:entry.transferSize,encodedBodySize:entry.encodedBodySize}))
       };
     }).catch(e=>({diagnosticError:String(e)}));
-    throw new Error(label + " poster image did not decode: " + JSON.stringify(diagnostics) + "; " + error.message);
+    const fetchDiagnostics = await page.evaluate(async () => {
+      const img = document.querySelector("[data-hero-mobile-poster]");
+      if (!img) return null;
+      try {
+        const response = await fetch(img.currentSrc || img.src,{cache:"no-store"});
+        const blob = await response.blob();
+        let bitmap = null;
+        if (typeof createImageBitmap === "function") {
+          try {
+            const decoded = await createImageBitmap(blob);
+            bitmap = {width:decoded.width,height:decoded.height};
+            decoded.close();
+          } catch (e) { bitmap = {error:String(e)}; }
+        }
+        return {status:response.status,contentType:response.headers.get("content-type"),bytes:blob.size,bitmap};
+      } catch (e) { return {fetchError:String(e)}; }
+    }).catch(e=>({diagnosticError:String(e)}));
+    page.off("request",onRequest);
+    page.off("response",onResponse);
+    page.off("requestfailed",onFailure);
+    throw new Error(label + " poster image did not decode: " + JSON.stringify({diagnostics,fetchDiagnostics,posterNetwork}) + "; " + error.message);
   }
 }
 
