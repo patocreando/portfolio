@@ -108,7 +108,8 @@ async function heroState(page) {
       muted: video.muted,
       playsInline: video.playsInline,
       canPlayMp4: video.canPlayType("video/mp4"),
-      canPlayH264Aac: video.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"'),
+      canPlayH264Aac: video.canPlayType('video/mp4; codecs="avc1.42401f, mp4a.40.2"'),
+      sourceSupported: video.dataset.heroSourceSupported === "true",
       sourceElement: {
         src: video.querySelector("source")?.getAttribute("src") || "",
         type: video.querySelector("source")?.getAttribute("type") || ""
@@ -146,7 +147,11 @@ async function assertNoBlankHero(page, label) {
   } else {
     assert.ok(state.posterVisible, label + ": poster remains visible when video is not ready");
     assert.ok(state.videoOpacity < 0.1, label + ": undecoded video cannot cover the fallback with black");
-    assert.ok(state.playButtonVisible || state.mediaError, label + ": blocked/failed playback has a visible fallback state");
+    if (state.sourceSupported) {
+      assert.ok(state.playButtonVisible || state.mediaError, label + ": blocked/failed playback has a visible fallback state");
+    } else {
+      assert.equal(state.playButtonVisible, false, label + ": unsupported codec does not expose a nonfunctional play control");
+    }
   }
   return state;
 }
@@ -155,15 +160,15 @@ async function run() {
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
   const baseUrl = "http://127.0.0.1:" + server.address().port + "/";
   const engines = [
-    ["chromium",chromium],
-    ["firefox",firefox],
-    ["webkit",webkit]
+    ["chrome",chromium,{channel:"chrome"}],
+    ["firefox",firefox,{}],
+    ["webkit",webkit,{}]
   ];
   const summaries = [];
 
   try {
-    for (const [engineName,engine] of engines) {
-      const browser = await engine.launch({headless:true});
+    for (const [engineName,engine,launchOptions] of engines) {
+      const browser = await engine.launch({headless:true,...launchOptions});
       try {
         // Real source path, all target layout classes, and autoplay allowed/rejected
         // by each engine's own media policy. Either a real frame or the poster
@@ -208,8 +213,8 @@ async function run() {
               const button = screen?.querySelector("[data-hero-mobile-play]");
               const label = button?.querySelector("span")?.textContent || "";
               return Boolean(screen?.classList.contains("is-video-ready") ||
-                video?.error || label === "Tocar para reproducir" ||
-                label === "Reintentar showreel");
+                video?.error || video?.dataset.heroSourceUnsupported === "true" ||
+                label === "Tocar para reproducir" || label === "Reintentar showreel");
             }, null, {timeout:18000});
           } catch (error) {
             const diagnostics = await heroState(page);
@@ -257,16 +262,22 @@ async function run() {
           await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
           await waitForPoster(page);
           await page.waitForFunction(() => {
+            const video = document.querySelector(".hero-video");
             const button = document.querySelector("[data-hero-mobile-play]");
-            return Boolean(button && !button.hidden);
+            return Boolean(video && (video.dataset.heroSourceSupported === "true" ||
+              video.dataset.heroSourceUnsupported === "true") && (video.dataset.heroSourceUnsupported === "true" || (button && !button.hidden)));
           }, null, {timeout:10000});
           const state = await heroState(page);
           assert.ok(state.posterVisible,engineName + ": reduced motion keeps the actual poster visible");
           assert.equal(state.frameReady,false,engineName + ": reduced motion does not force playback");
           assert.equal(state.paused,true,engineName + ": reduced motion leaves the video paused");
-          assert.ok(state.playButtonVisible,engineName + ": reduced motion offers explicit playback");
+          if (state.sourceSupported) {
+            assert.ok(state.playButtonVisible,engineName + ": reduced motion offers explicit playback");
+          } else {
+            assert.equal(state.playButtonVisible,false,engineName + ": unsupported codec retains a poster-only fallback");
+          }
           assert.equal(mediaRequests,0,engineName + ": reduced motion does not request the large MP4");
-          summaries.push({engine:engineName,scenario:"reduced-motion",pass:true,mediaRequests});
+          summaries.push({engine:engineName,scenario:"reduced-motion",pass:true,mediaRequests,sourceSupported:state.sourceSupported});
           await context.close();
         }
 
@@ -284,18 +295,26 @@ async function run() {
           await page.route("**/hero-showreel-mobile-compatible.mp4*", route => route.abort("failed"));
           await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
           await waitForPoster(page);
-          await page.locator(".hero-video").evaluate(video => {
-            video.preload = "auto";
-            video.load();
-          });
-          await page.waitForFunction(() => {
-            const video = document.querySelector(".hero-video");
-            return Boolean(video && video.error);
-          }, null, {timeout:20000});
-          const state = await assertNoBlankHero(page,engineName + "/media-error");
-          assert.ok(state.mediaError,engineName + ": media error is detected");
-          assert.ok(state.posterVisible,engineName + ": poster survives fatal media error");
-          summaries.push({engine:engineName,scenario:"media-error",errorCode:state.mediaError.code,posterVisible:state.posterVisible});
+          await page.locator("#heroDeviceWrap").scrollIntoViewIfNeeded();
+          await page.waitForTimeout(1000);
+          const initialState = await heroState(page);
+          if (!initialState.sourceSupported) {
+            assert.ok(initialState.posterVisible,engineName + ": unsupported codec keeps poster visible under media failure");
+            summaries.push({engine:engineName,scenario:"media-error-not-applicable-unsupported-codec",posterVisible:initialState.posterVisible});
+          } else {
+            await page.locator(".hero-video").evaluate(video => {
+              video.preload = "auto";
+              video.load();
+            });
+            await page.waitForFunction(() => {
+              const video = document.querySelector(".hero-video");
+              return Boolean(video && video.error);
+            }, null, {timeout:20000});
+            const state = await assertNoBlankHero(page,engineName + "/media-error");
+            assert.ok(state.mediaError,engineName + ": media error is detected");
+            assert.ok(state.posterVisible,engineName + ": poster survives fatal media error");
+            summaries.push({engine:engineName,scenario:"media-error",errorCode:state.mediaError.code,posterVisible:state.posterVisible});
+          }
           await context.close();
         }
 
@@ -321,16 +340,23 @@ async function run() {
           const page = await context.newPage();
           await page.goto(baseUrl,{waitUntil:"domcontentloaded",timeout:90000});
           await waitForPoster(page);
-          await page.waitForFunction(() => {
-            const button = document.querySelector("[data-hero-mobile-play]");
-            const label = button?.querySelector("span")?.textContent || "";
-            const video = document.querySelector(".hero-video");
-            return Boolean(label === "Tocar para reproducir" || label === "Reintentar showreel" || video?.error);
-          }, null, {timeout:15000});
-          const state = await assertNoBlankHero(page,engineName + "/autoplay-blocked");
-          assert.ok(state.playButtonVisible || state.mediaError,engineName + ": autoplay rejection exposes a manual recovery action");
-          assert.ok(state.posterVisible || state.frameReady,engineName + ": no black screen after autoplay rejection");
-          summaries.push({engine:engineName,scenario:"autoplay-rejected",playButtonVisible:state.playButtonVisible,posterVisible:state.posterVisible});
+          await page.locator("#heroDeviceWrap").scrollIntoViewIfNeeded();
+          const stateBefore = await heroState(page);
+          if (!stateBefore.sourceSupported) {
+            assert.ok(stateBefore.posterVisible,engineName + ": unsupported codec keeps the real poster as fallback");
+            summaries.push({engine:engineName,scenario:"autoplay-rejected-not-applicable-unsupported-codec",posterVisible:stateBefore.posterVisible});
+          } else {
+            await page.waitForFunction(() => {
+              const button = document.querySelector("[data-hero-mobile-play]");
+              const label = button?.querySelector("span")?.textContent || "";
+              const video = document.querySelector(".hero-video");
+              return Boolean(label === "Tocar para reproducir" || label === "Reintentar showreel" || video?.error);
+            }, null, {timeout:15000});
+            const state = await assertNoBlankHero(page,engineName + "/autoplay-blocked");
+            assert.ok(state.playButtonVisible || state.mediaError,engineName + ": autoplay rejection exposes a manual recovery action");
+            assert.ok(state.posterVisible || state.frameReady,engineName + ": no black screen after autoplay rejection");
+            summaries.push({engine:engineName,scenario:"autoplay-rejected",playButtonVisible:state.playButtonVisible,posterVisible:state.posterVisible});
+          }
           await context.close();
         }
       } finally {
