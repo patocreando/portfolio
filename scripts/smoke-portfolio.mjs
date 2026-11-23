@@ -8,6 +8,8 @@ const css = fs.readFileSync("assets/site.css", "utf8");
 const js = fs.readFileSync("assets/site.js", "utf8");
 const premiumCss = fs.readFileSync("assets/premium-lab.css", "utf8");
 const premiumJs = fs.readFileSync("assets/premium-lab.js", "utf8");
+const heroFallbackJs = fs.readFileSync("assets/mobile-hero-fallback.js", "utf8");
+const mobileStabilityCss = fs.readFileSync("assets/mobile-stability.css", "utf8");
 const pagesScript = fs.readFileSync("scripts/stage-pages.mjs", "utf8");
 const has = (text, needle, context) => assert.ok(text.includes(needle), context || needle);
 const occurrences = (text, needle) => text.split(needle).length - 1;
@@ -209,7 +211,19 @@ for(const videoTag of curatedVideoTags){
   assert.ok(videoTag.includes('poster="./assets/images/'),"Featured reel retains real poster");
 }
 const heroTag=videoTags.find(tag=>tag.includes('class="hero-video"'));
-assert.ok(heroTag && heroTag.includes(" autoplay"),"First-screen showreel still autoplays");
+assert.ok(heroTag && heroTag.includes(" muted"),"Hero showreel starts muted for autoplay policy compliance");
+assert.ok(heroTag.includes(" playsinline") && heroTag.includes(" webkit-playsinline"),"Hero playback remains inline on iOS and mobile WebKit");
+assert.ok(heroTag.includes('preload="none"'),"Hero does not download video when motion/data preferences disable autoplay");
+assert.ok(heroTag.includes('poster="./assets/images/hero-showreel-poster.jpg?v=20261123-hero-cross-browser-1"'),"Hero video declares its real still fallback");
+assert.ok(!heroTag.includes(" autoplay"),"Hero autoplay is managed by the preference-aware playback controller");
+has(html,'data-hero-mobile-poster',"Hero has a persistent image fallback independent of video decoding");
+has(html,'./assets/videos/hero-showreel-mobile-compatible.mp4?v=20261123-hero-cross-browser-1',"Hero source has an explicit cache-busted MP4 URL");
+has(heroFallbackJs,"video.play()","Hero controller attempts playback on desktop and mobile");
+has(heroFallbackJs,"requestVideoFrameCallback","Hero poster is not removed until an actual frame is submitted");
+has(heroFallbackJs,'video.addEventListener("error"',"Hero controller handles fatal media load/decode errors");
+has(heroFallbackJs,'promise.catch(function ()' ,"Hero controller handles autoplay rejection");
+has(mobileStabilityCss,"#top .hero-phone-screen.is-video-ready .hero-mobile-poster","Mobile poster only fades after video frame readiness");
+assert.ok(!mobileStabilityCss.includes("#top .hero-mobile-poster {\n    display: none !important;"),"Mobile CSS never hides the real poster fallback");
 const clubImages=html.split("<img ").slice(1).map(chunk=>"<img "+chunk.split(">")[0]+">").filter(tag=>tag.includes("./assets/cases/club-del-coctel-01/"));
 assert.equal(clubImages.length,5,"Five existing case-study images retained");
 for(const img of clubImages){
