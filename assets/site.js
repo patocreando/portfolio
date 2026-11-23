@@ -899,7 +899,7 @@
       var activeProjectCategory = "all";
       var categoryCopy = {
         all: "Seis piezas publicadas: dos trabajos destacados y cuatro producciones en galería.",
-        ugc: "Tres piezas: campañas para clientes y una demo de personaje.",
+        ugc: "Tres piezas: una campaña para cliente y dos demos técnicas.",
         product: "Una producción propia de producto con dirección creativa."
       };
 
