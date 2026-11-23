@@ -60,7 +60,7 @@ has(html,'aria-label="Responsabilidades de la colaboración"');
 assert.equal(occurrences(html,'class="pc-collab-column"'),3,"three collaboration responsibility columns");
 has(html,'Para marcas que necesitan mostrar mejor sus productos.');
 has(html,'Un apoyo de producción para briefs creativos.');
-has(html,'No incluye gestión de Meta Ads ni media buying.');
+has(html,'no incluye gestión de Meta Ads ni media buying.');
 has(premiumCss,'.studio-system-board::before');
 has(premiumJs,'systemBackgroundPlayback');
 has(premiumJs,'prefers-reduced-motion: reduce');
