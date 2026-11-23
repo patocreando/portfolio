@@ -143,6 +143,7 @@ jobs:
         # Firefox receives responsive viewport sizes without mobile emulation flags.
         # Include detailed image-resource diagnostics for the WebKit poster fallback.
         # Keep the poster in an unambiguous RGB PNG format across WebKit builds.
+        # Capture exact image HTTP status and an independent WebKit decode result.
         # Wait for the poster-to-frame opacity transition before capturing QA screenshots.
         run: node scripts/hero-video-compatibility.mjs
 
