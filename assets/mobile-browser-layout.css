@@ -1,5 +1,5 @@
 /* Mobile browser layout — full-size showreel and complete default project gallery. */
-#top .hero-mobile-poster { display: none; }
+#top [data-hero-mobile-poster] { display: none; }
 @media (max-width: 719px) {
   #top {
     display: block !important;
@@ -18,11 +18,11 @@
   }
 
   .hero-device-wrap {
-    width: 100vw !important;
-    max-width: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
-    margin: 0 0 0 calc(50% - 50vw) !important;
+    margin: 0 !important;
     position: relative !important;
     overflow: visible !important;
   }
@@ -31,7 +31,8 @@
     position: relative !important;
     top: auto !important;
     display: block !important;
-    width: 100vw !important;
+    width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
@@ -88,7 +89,7 @@
     background: #0b0e11 !important;
   }
 
-  #top .hero-mobile-poster {
+  #top [data-hero-mobile-poster] {
     position: absolute !important;
     z-index: 1 !important;
     inset: 0 !important;
@@ -103,7 +104,7 @@
     pointer-events: none !important;
   }
 
-  #top .hero-phone-screen.is-video-ready .hero-mobile-poster {
+  #top .hero-phone-screen.is-video-ready [data-hero-mobile-poster] {
     opacity: 0 !important;
     visibility: hidden !important;
   }
