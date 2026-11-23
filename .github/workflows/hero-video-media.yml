@@ -132,6 +132,7 @@ jobs:
         # Scroll each emulated device viewport to the hero before judging autoplay.
         # Emit codec and HTTP-range diagnostics when an engine cannot select the MP4.
         # Test fatal media errors with a real 404 rather than aborting a live stream.
+        # Verify the complete poster fade-in after the media error.
         # Wait for the poster-to-frame opacity transition before capturing QA screenshots.
         run: node scripts/hero-video-compatibility.mjs
 
