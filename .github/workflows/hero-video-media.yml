@@ -142,6 +142,7 @@ jobs:
         # Wait for the paused first-frame state after a denied autoplay promise.
         # Firefox receives responsive viewport sizes without mobile emulation flags.
         # Include detailed image-resource diagnostics for the WebKit poster fallback.
+        # Keep the poster in an unambiguous RGB PNG format across WebKit builds.
         # Wait for the poster-to-frame opacity transition before capturing QA screenshots.
         run: node scripts/hero-video-compatibility.mjs
 
