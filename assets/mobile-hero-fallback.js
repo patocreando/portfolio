@@ -14,6 +14,9 @@
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   var saveData = Boolean(connection && connection.saveData);
+  var sourceElement = video.querySelector("source");
+  var sourceType = sourceElement ? (sourceElement.getAttribute("type") || "video/mp4") : "video/mp4";
+  var sourceSupported = video.canPlayType(sourceType) !== "";
   var hasFrame = false;
   var playPending = false;
   var observer = null;
@@ -96,6 +99,13 @@
   function attemptPlay(fromGesture) {
     if (document.hidden || (!fromGesture && !isVisible())) return;
     if (!fromGesture && video.dataset.userPaused === "true") return;
+
+    if (!sourceSupported) {
+      video.dataset.heroSourceUnsupported = "true";
+      keepPosterVisible();
+      hideButton();
+      return;
+    }
 
     if (!fromGesture && (reducedMotion.matches || saveData)) {
       video.preload = "none";
@@ -253,6 +263,12 @@
 
   video.controls = false;
   video.removeAttribute("controls");
+  video.dataset.heroSourceSupported = String(sourceSupported);
+  if (!sourceSupported) {
+    video.dataset.heroSourceUnsupported = "true";
+    keepPosterVisible();
+    hideButton();
+  }
   video.playsInline = true;
   video.setAttribute("playsinline", "");
   video.setAttribute("webkit-playsinline", "");
