@@ -58,7 +58,7 @@ async function test() {
     ]) {
       const context = await browser.newContext({viewport:{width:spec.width,height:spec.height},isMobile:spec.isMobile,hasTouch:spec.isMobile,deviceScaleFactor:1,reducedMotion:"reduce"});
       // Media bytes are unchanged and checked statically. Avoid loading large campaign videos during screenshot QA.
-      await context.route("**/*.mp4", route => route.abort());
+      await context.route("**/*.mp4*", route => route.abort());
       await context.route("**/tracker.metricool.com/**", route => route.abort());
       const page = await context.newPage();
       const pageErrors=[];
@@ -401,7 +401,7 @@ async function test() {
     // then is requested when its own card becomes visible (normal motion).
     const mediaContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:1,reducedMotion:"no-preference"});
     const mediaRequests=[];
-    await mediaContext.route("**/*.mp4",route=>{
+    await mediaContext.route("**/*.mp4*",route=>{
       const target=new URL(route.request().url()).pathname;
       if(target.includes("hero-showreel-mobile-compatible.mp4")) {
         mediaRequests.push(target);
@@ -449,7 +449,7 @@ async function test() {
       {success:"true",message:"Form submission successful"}
     ];
     const submittedPayloads=[];
-    await leadContext.route("**/*.mp4",route=>route.abort());
+    await leadContext.route("**/*.mp4*",route=>route.abort());
     await leadContext.route("https://formsubmit.co/ajax/**",async route=>{
       assert.equal(route.request().method(),"POST","Lead form sends POST");
       submittedPayloads.push(JSON.parse(route.request().postData()));
@@ -503,7 +503,7 @@ async function test() {
     for (const staleSpec of [{name:"desktop-stale-css",width:1366,height:900},{name:"mobile-stale-css",width:390,height:844}]) {
       const staleContext=await browser.newContext({viewport:{width:staleSpec.width,height:staleSpec.height},reducedMotion:"reduce"});
       await staleContext.route("**/assets/premium-lab.css*",route=>route.fulfill({status:200,contentType:"text/css",body:cachedPremiumCss}));
-      await staleContext.route("**/*.mp4",route=>route.abort());
+      await staleContext.route("**/*.mp4*",route=>route.abort());
       const page=await staleContext.newPage();
       try {
         await page.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
