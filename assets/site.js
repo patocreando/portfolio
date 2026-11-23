@@ -914,7 +914,7 @@
       var activeProjectCategory = "ugc";
       var categoryCopy = {
         ugc: "Avatares y producto en verticales con estética nativa.",
-        product: "Campañas de producto con control de forma, escala y materiales."
+        product: "Productos IA con control de forma, escala y materiales."
       };
 
       function getVisibleProjectItems() {
