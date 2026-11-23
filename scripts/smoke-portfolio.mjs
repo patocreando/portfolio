@@ -94,7 +94,7 @@ assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed"
 // Commercial copy: preserve base scope and the three fixed plan amounts.
 has(html,'<strong>Anuncios de producto, UGC y campañas visuales con IA.</strong>');
 has(html,'De la idea al video final: dirección creativa, generación realista y postproducción');
-has(html,'<strong>De una pieza a una campaña visual.</strong>');
+has(html,'<h4 class="display">Una idea, cuatro salidas.</h4>');
 assert.equal(occurrences(html,'<span><i data-lucide="check"></i>Propuesta visual previa</span>'),3,"Preproduction included in three plans");
 has(html,'Los planes base no incluyen copy ni subtítulos; pueden cotizarse por separado, al igual que imágenes, carruseles o variantes adicionales.');
 assert.ok(!html.includes('Pagás por el clip terminado, sin copy ni subtítulos añadidos.'),"Retired limitation is no longer a headline");
