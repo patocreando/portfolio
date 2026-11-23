@@ -197,7 +197,7 @@ async function test() {
        assert.equal(state.siloGallerySources,1,"Second SILO ad appears in campaign gallery");
       assert.equal(state.ugcPerfumeSources,0,"Retired external perfume UGC source stays excluded");
       assert.equal(state.editorialHeadings.length,2,"SILO and Mariana editorial headings must render");
-      assert.equal(await page.locator(".editorial-case--mariana video[data-editorial-reel] source[src='./assets/videos/mariana-omelette-ugc.mp4']").count(),1,"Mariana has its own playable media");
+      assert.equal(await page.locator(".editorial-case--mariana video[data-editorial-reel] source[data-src='./assets/videos/mariana-omelette-ugc.mp4'], .editorial-case--mariana video[data-editorial-reel] source[src='./assets/videos/mariana-omelette-ugc.mp4']").count(),1,"Mariana has its own playable media");
       assert.equal(await page.locator(".editorial-case--mariana video[poster='./assets/images/mariana-omelette-ugc.webp']").count(),1,"Mariana has authentic poster");
       assert.equal(await page.locator(".editorial-case--mariana [data-video-audio-prompt]").count(),1,"Mariana audio has an accessible control");
 
