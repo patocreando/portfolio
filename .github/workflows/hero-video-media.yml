@@ -123,6 +123,7 @@ jobs:
           npx playwright install --with-deps chromium firefox webkit
 
       - name: Test hero playback and fallbacks in Chromium, Firefox and WebKit
+        # Scroll each emulated device viewport to the hero before judging autoplay.
         run: node scripts/hero-video-compatibility.mjs
 
       - name: Save cross-browser screenshots
