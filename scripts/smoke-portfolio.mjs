@@ -120,9 +120,12 @@ assert.deepEqual([...brandedPng.subarray(0,8)],[137,80,78,71,13,10,26,10],"Valid
 assert.equal(brandedPng.readUInt32BE(16),1550,"Social image width matches declared metadata");
 assert.equal(brandedPng.readUInt32BE(20),600,"Social image height matches declared metadata");
 assert.ok(brandedPng.length < 100_000,"Share image remains under 100 KB");
-for (const video of ["ugc-beauty.mp4","ugc-fashion.mp4","hyperreal-portrait.mp4"]) {
-  const videoMatch = html.match(new RegExp('<video[^>]*aria-label="[^"]+"[^>]*>\\s*<source src="\\./assets/videos/'+video.replace(".","\\.")+'"'));
-  assert.ok(videoMatch,"Gallery video has accessible descriptive name: "+video);
+for (const video of ["ugc-beauty.mp4","producto_WEB.mp4","silo-ugc-sin-subtitulos.mp4","hyperreal-portrait.mp4"]) {
+  const sourceIndex = html.indexOf('src="./assets/videos/' + video);
+  assert.ok(sourceIndex >= 0,"Current gallery video source is retained: "+video);
+  const videoOpen = html.lastIndexOf("<video",sourceIndex);
+  assert.ok(videoOpen >= 0 && videoOpen > html.lastIndexOf("</video>",sourceIndex),"Video tag opens before its source: "+video);
+  assert.ok(html.slice(videoOpen,sourceIndex).includes('aria-label="'),"Gallery video has accessible descriptive name: "+video);
 }
 assert.ok(/<video[^>]*class="hero-video" aria-label="[^"]+"[^>]*>/.test(html),"Hero showreel has descriptive name");
 
