@@ -107,6 +107,12 @@ async function heroState(page) {
       poster: video.poster,
       muted: video.muted,
       playsInline: video.playsInline,
+      canPlayMp4: video.canPlayType("video/mp4"),
+      canPlayH264Aac: video.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"'),
+      sourceElement: {
+        src: video.querySelector("source")?.getAttribute("src") || "",
+        type: video.querySelector("source")?.getAttribute("type") || ""
+      },
       controls: video.controls,
       paused: video.paused,
       readyState: video.readyState,
@@ -172,7 +178,23 @@ async function run() {
           });
           const page = await context.newPage();
           const pageErrors = [];
+          const mediaNetwork = [];
           page.on("pageerror", error => pageErrors.push(error.message));
+          page.on("request", request => {
+            if (request.url().includes("hero-showreel-mobile-compatible.mp4")) {
+              mediaNetwork.push({event:"request",url:request.url(),range:request.headers()["range"] || null});
+            }
+          });
+          page.on("requestfailed", request => {
+            if (request.url().includes("hero-showreel-mobile-compatible.mp4")) {
+              mediaNetwork.push({event:"requestfailed",failure:request.failure()?.errorText || "unknown"});
+            }
+          });
+          page.on("response", response => {
+            if (response.url().includes("hero-showreel-mobile-compatible.mp4")) {
+              mediaNetwork.push({event:"response",status:response.status(),contentType:response.headers()["content-type"] || null,contentRange:response.headers()["content-range"] || null});
+            }
+          });
           await page.route("**/tracker.metricool.com/**", route => route.abort());
           await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
           // Bring the hero into the viewport so the controller's visibility gate
@@ -192,7 +214,8 @@ async function run() {
           } catch (error) {
             const diagnostics = await heroState(page);
             throw new Error(engineName + "/" + spec.name + " did not produce a frame or autoplay fallback: " +
-              JSON.stringify(diagnostics) + "; pageErrors=" + pageErrors.join(" | "));
+              JSON.stringify(diagnostics) + "; mediaNetwork=" + JSON.stringify(mediaNetwork) +
+              "; pageErrors=" + pageErrors.join(" | "));
           }
 
           const state = await assertNoBlankHero(page, engineName + "/" + spec.name);
