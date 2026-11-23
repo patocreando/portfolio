@@ -37,7 +37,7 @@ jobs:
           assert.ok(png.length < 100000);
           const hero = html.match(/<video[^>]*class="hero-video"[^>]*>/);
           assert.ok(hero && hero[0].includes('aria-label="'), 'Hero video accessible name');
-          for (const name of ['ugc-beauty.mp4','ugc-fashion.mp4','hyperreal-portrait.mp4']) {
+          for (const name of ['ugc-beauty.mp4','silo-ugc-sin-subtitulos.mp4','hyperreal-portrait.mp4']) {
             const srcNeedles = [
               '<source src="./assets/videos/' + name,
               '<source data-src="./assets/videos/' + name
