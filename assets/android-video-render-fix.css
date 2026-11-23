@@ -1,0 +1,51 @@
+/* Android video compositing: keep native video surfaces out of transformed 3D layers. */
+@media (max-width: 767px), (hover: none) and (pointer: coarse) {
+  #top .hero-device-stage {
+    perspective: none !important;
+    -webkit-perspective: none !important;
+  }
+
+  #top .hero-device-wrap.mobile-takeover-enabled .hero-phone-shell,
+  #top .hero-phone-shell {
+    transform: none !important;
+    -webkit-transform: none !important;
+    transform-style: flat !important;
+    -webkit-transform-style: flat !important;
+    will-change: auto !important;
+    filter: none !important;
+  }
+
+  #top .hero-phone-screen,
+  #projects .editorial-media {
+    isolation: auto !important;
+    contain: none !important;
+  }
+
+  #top .hero-video,
+  #projects .editorial-media video,
+  #projects .phone-screen video,
+  #projects .clean-media-frame video,
+  #projects .project-video {
+    transform: none !important;
+    -webkit-transform: none !important;
+    backface-visibility: visible !important;
+    -webkit-backface-visibility: visible !important;
+    filter: none !important;
+    transition: none !important;
+  }
+
+  #projects .editorial-case,
+  #projects .editorial-media-stack,
+  #projects .editorial-media,
+  #projects .mockup-stage,
+  #projects .phone-shell,
+  #projects .clean-media-frame {
+    transform: none !important;
+    -webkit-transform: none !important;
+    transform-style: flat !important;
+    -webkit-transform-style: flat !important;
+    perspective: none !important;
+    will-change: auto !important;
+    filter: none !important;
+  }
+}
