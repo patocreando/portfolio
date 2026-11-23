@@ -35,7 +35,7 @@ jobs:
           set -euo pipefail
           source_file="assets/videos/hero-showreel-mobile-compatible.mp4"
           output_file="/tmp/hero-showreel-mobile-compatible.mp4"
-          poster_file="assets/images/hero-showreel-poster.jpg"
+          poster_file="assets/images/hero-showreel-poster.png"
 
           test -s "$source_file"
           mkdir -p assets/images
@@ -56,9 +56,15 @@ jobs:
             -ss 0.5 -i "$source_file" \
             -frames:v 1 \
             -vf "scale='min(720,iw)':-2:flags=lanczos" \
-            -q:v 3 "$poster_file"
+            -pix_fmt rgb24 -compression_level 9 -pred mixed "$poster_file"
 
           test -s "$poster_file"
+          python3 - <<'PY'
+          from pathlib import Path
+          poster = Path("assets/images/hero-showreel-poster.png").read_bytes()
+          assert poster.startswith(bytes([137, 80, 78, 71, 13, 10, 26, 10])), "Hero fallback must be a standard PNG"
+          print("Validated PNG poster bytes:", len(poster))
+          PY
 
           ffprobe -v error -select_streams v:0 \
             -show_entries stream=codec_name,profile,pix_fmt,width,height,level,r_frame_rate \
@@ -106,7 +112,7 @@ jobs:
 
           print("Validated hero video:", json.dumps(stream, sort_keys=True))
           print("Validated AAC audio and faststart atom order")
-          print("Poster bytes:", Path("assets/images/hero-showreel-poster.jpg").stat().st_size)
+          print("Poster bytes:", Path("assets/images/hero-showreel-poster.png").stat().st_size)
           PY
 
       - name: Verify JavaScript and portfolio invariants
@@ -154,7 +160,7 @@ jobs:
           set -euo pipefail
           git add -- \
             assets/videos/hero-showreel-mobile-compatible.mp4 \
-            assets/images/hero-showreel-poster.jpg
+            assets/images/hero-showreel-poster.png
 
           if git diff --cached --quiet; then
             echo "Hero media is already optimized."
