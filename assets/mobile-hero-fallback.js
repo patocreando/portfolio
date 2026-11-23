@@ -50,7 +50,7 @@
     screen.classList.add("is-video-ready");
     wrap.classList.add("is-video-ready");
     video.dataset.heroFrameReady = "true";
-    hideButton();
+    if (!video.paused) hideButton();
   }
 
   function confirmDecodedFrame() {
@@ -154,8 +154,9 @@
     event.preventDefault();
     event.stopPropagation();
     video.dataset.userPaused = "false";
-    button.disabled = true;
+    button.disabled = false;
     showButton("Cargando showreel…");
+    button.disabled = true;
     attemptPlay(true);
   });
 
