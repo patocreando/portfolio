@@ -271,7 +271,7 @@ assert.equal((html.match(/class="editorial-case(?: editorial-case--silo| editori
 has(html,'Fragancia, detalle y cierre de marca.');
 // Curated cases: concrete client and production context without visual overlays.
 has(html,'Un portfolio.');
-has(html,'Casos de cliente y piezas de exploración, con su enfoque y capacidad principal identificados.');
+has(html,'Seis trabajos, seis enfoques.');
 has(html,'Una pieza para SILO que conduce la mirada desde el frasco hasta la identidad de la perfumería.');
 has(html,'id="marianaCaseTitle"');
 has(html,'Recetas contadas desde la cocina.');
