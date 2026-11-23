@@ -77,7 +77,35 @@ jobs:
           assert stream.get("pix_fmt") == "yuv420p", stream
           assert int(stream.get("width", 0)) <= 720, stream
           assert int(stream.get("level", 999)) <= 31, stream
+          audio_data = json.loads(__import__("subprocess").check_output([
+              "ffprobe", "-v", "error", "-select_streams", "a:0",
+              "-show_entries", "stream=codec_name", "-of", "json",
+              "assets/videos/hero-showreel-mobile-compatible.mp4"
+          ]))
+          assert audio_data.get("streams") and audio_data["streams"][0].get("codec_name") == "aac", audio_data
+
+          # +faststart must place the MP4 movie metadata before media data.
+          raw = Path("assets/videos/hero-showreel-mobile-compatible.mp4").read_bytes()
+          offset = 0
+          box_positions = {}
+          while offset + 8 <= len(raw) and offset < 2_000_000:
+              size = int.from_bytes(raw[offset:offset+4], "big")
+              kind = raw[offset+4:offset+8].decode("ascii", errors="ignore")
+              header = 8
+              if size == 1:
+                  size = int.from_bytes(raw[offset+8:offset+16], "big")
+                  header = 16
+              if kind in ("moov", "mdat"):
+                  box_positions[kind] = offset
+              if kind == "mdat":
+                  break
+              if size < header:
+                  break
+              offset += size
+          assert "moov" in box_positions and "mdat" in box_positions and box_positions["moov"] < box_positions["mdat"], box_positions
+
           print("Validated hero video:", json.dumps(stream, sort_keys=True))
+          print("Validated AAC audio and faststart atom order")
           print("Poster bytes:", Path("assets/images/hero-showreel-poster.jpg").stat().st_size)
           PY
 
