@@ -13,7 +13,7 @@ permissions:
 jobs:
   screenshots:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -21,9 +21,11 @@ jobs:
       - name: Install Playwright
         run: |
           npm install --no-save playwright@1.56.1
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium firefox webkit
       - name: Browser smoke checks
-        run: node scripts/browser-portfolio.cjs
+        run: |
+          node scripts/browser-portfolio.cjs
+          node scripts/browser-media-compat.cjs
       - name: Save mobile and desktop screenshots
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

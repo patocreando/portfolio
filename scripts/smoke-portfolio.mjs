@@ -219,6 +219,7 @@ assert.ok(fs.readFileSync("assets/images/hero-showreel-poster.svg","utf8").start
 has(mobileHeroFallback,"requestVideoFrameCallback","Video reveal waits for a decoded frame");
 has(mobileHeroFallback,"prefers-reduced-motion","Autoplay respects reduced motion");
 has(mobileHeroFallback,"saveData","Autoplay respects data-saving mode");
+has(js,"navigator.connection || navigator.mozConnection || navigator.webkitConnection","Mobile preloader respects data-saving mode");
 has(mobileHeroFallback,'["error","abort","stalled"]',"Playback failures retain poster and expose retry");
 const clubImages=html.split("<img ").slice(1).map(chunk=>"<img "+chunk.split(">")[0]+">").filter(tag=>tag.includes("./assets/cases/club-del-coctel-01/"));
 assert.equal(clubImages.length,5,"Five existing case-study images retained");

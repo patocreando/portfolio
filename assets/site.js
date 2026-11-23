@@ -735,7 +735,9 @@
         video.setAttribute("playsinline", "");
         video.setAttribute("webkit-playsinline", "");
 
-        var preloadMode = inAppBrowser ? "metadata" : "auto";
+        var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        var saveData = Boolean(connection && connection.saveData);
+        var preloadMode = (reduceMotionQuery.matches || saveData) ? "none" : (inAppBrowser ? "metadata" : "auto");
         video.preload = preloadMode;
         video.setAttribute("preload", preloadMode);
         video.removeAttribute("autoplay");
@@ -745,7 +747,7 @@
           if (directSource && directSource.src) video.src = directSource.src;
         }
 
-        if (inAppBrowser) {
+        if (inAppBrowser && !reduceMotionQuery.matches && !saveData) {
           try { video.load(); } catch (e) {}
         }
 
