@@ -131,6 +131,7 @@ jobs:
       - name: Test hero playback and fallbacks in Chromium, Firefox and WebKit
         # Scroll each emulated device viewport to the hero before judging autoplay.
         # Emit codec and HTTP-range diagnostics when an engine cannot select the MP4.
+        # Wait for the poster-to-frame opacity transition before capturing QA screenshots.
         run: node scripts/hero-video-compatibility.mjs
 
       - name: Save cross-browser screenshots
