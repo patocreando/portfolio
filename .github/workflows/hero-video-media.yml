@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   prepare-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
       - name: Checkout
@@ -117,6 +117,7 @@ jobs:
           node scripts/hero-video-static.mjs
 
       - name: Install Playwright and browser engines
+        # Pin to a Playwright-supported LTS runner; ubuntu-latest moved ahead of this toolchain.
         run: |
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium firefox webkit
