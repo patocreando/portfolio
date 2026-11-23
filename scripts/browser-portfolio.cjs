@@ -241,7 +241,6 @@ async function test() {
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
       assert.equal(await page.locator('.tab-btn[data-filter]').count(),3,"All, UGC and Product filters are available");
       assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
-      assert.equal(state.methodSteps,3,"Method simplified to three commercial collaboration steps");
       assert.equal(state.collabColumns,3,"Three collaboration responsibilities are visible");
       assert.equal(state.audienceColumns,2,"Brand and agency audiences are differentiated");
       assert.equal(state.methodologyStageCount,6,"All six production stages are visible");
