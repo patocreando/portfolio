@@ -20,6 +20,12 @@ assert.ok(!/\scontrols(?:\s|>)/.test(heroTag),"Hero never displays native browse
 assert.ok(!/\sautoplay(?:\s|>)/.test(heroTag),"Autoplay is policy-aware and controlled by JavaScript");
 assert.ok(heroTag.includes('poster="./assets/images/hero-showreel-poster.jpg?v=20261123-hero-cross-browser-1"'),
   "Video poster URL points to the extracted showreel frame");
+assert.ok(html.includes('type=\'video/mp4; codecs="avc1.42401f, mp4a.40.2"\''),
+  "Video source declares the exact H264 Constrained Baseline and AAC-LC codecs");
+assert.ok(fallback.includes('video.canPlayType(sourceType) !== ""'),
+  "Playback controller detects unsupported codecs before attempting playback");
+assert.ok(fallback.includes('heroSourceUnsupported'),
+  "Unsupported codec path falls back to the real poster without a dead play button");
 assert.ok(posterTag.includes('src="./assets/images/hero-showreel-poster.jpg?v=20261123-hero-cross-browser-1"'),
   "Visible fallback and native video poster share the same local asset");
 assert.ok(html.includes('href="./assets/images/hero-showreel-poster.jpg?v=20261123-hero-cross-browser-1"'),
