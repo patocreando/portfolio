@@ -244,7 +244,7 @@ async function run() {
           // Bring the hero into the viewport so the controller's visibility gate
           // can request playback instead of leaving the video in metadata-only mode.
           await page.locator("#heroDeviceWrap").scrollIntoViewIfNeeded();
-          await waitForPoster(page,engineName + "/" + (spec?.name || "special-scenario"));
+          await waitForPoster(page,engineName + "/" + spec.name);
           try {
             await page.waitForFunction(() => {
               const screen = document.querySelector("#heroDeviceWrap .hero-phone-screen");
@@ -312,7 +312,7 @@ async function run() {
             if (request.url().includes("hero-showreel-mobile-compatible.mp4")) mediaRequests += 1;
           });
           await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
-          await waitForPoster(page,engineName + "/" + (spec?.name || "special-scenario"));
+          await waitForPoster(page,engineName + "/special-scenario");
           await page.waitForFunction(() => {
             const video = document.querySelector(".hero-video");
             const button = document.querySelector("[data-hero-mobile-play]");
@@ -345,7 +345,7 @@ async function run() {
           }));
           const page = await context.newPage();
           await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
-          await waitForPoster(page,engineName + "/" + (spec?.name || "special-scenario"));
+          await waitForPoster(page,engineName + "/special-scenario");
           await page.locator("#heroDeviceWrap").scrollIntoViewIfNeeded();
           await page.waitForTimeout(500);
           const initialState = await heroState(page);
@@ -397,7 +397,7 @@ async function run() {
           });
           const page = await context.newPage();
           await page.goto(baseUrl,{waitUntil:"domcontentloaded",timeout:90000});
-          await waitForPoster(page,engineName + "/" + (spec?.name || "special-scenario"));
+          await waitForPoster(page,engineName + "/special-scenario");
           await page.locator("#heroDeviceWrap").scrollIntoViewIfNeeded();
           const stateBefore = await heroState(page);
           if (!stateBefore.sourceSupported) {
