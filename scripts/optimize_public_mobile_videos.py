@@ -16,13 +16,13 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "optimized_mobile" / "assets" / "videos"
 
 TARGETS = {
-    "hero-showreel-mobile-compatible.mp4": (1080, 1920, 3800),
-    "silo-campana-producto-recortado.mp4": (720, 1280, 2600),
-    "mariana-omelette-ugc.mp4": (720, 1280, 2600),
-    "ugc-beauty.mp4": (720, 1280, 2600),
-    "producto_WEB.mp4": (720, 1280, 2600),
-    "silo-ugc-sin-subtitulos.mp4": (720, 1280, 2600),
-    "hyperreal-portrait.mp4": (720, 1280, 2600),
+    "hero-showreel-mobile-compatible.mp4": (720, 1280, 3500),
+    "silo-campana-producto-recortado.mp4": (720, 1280, 3500),
+    "mariana-omelette-ugc.mp4": (720, 1280, 3500),
+    "ugc-beauty.mp4": (720, 1280, 3500),
+    "producto_WEB.mp4": (720, 1280, 3500),
+    "silo-ugc-sin-subtitulos.mp4": (720, 1280, 3500),
+    "hyperreal-portrait.mp4": (720, 1280, 3500),
 }
 
 
@@ -85,10 +85,10 @@ def encode(name: str, dimensions: tuple[int, int, int]) -> None:
         "ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(source),
         "-map", "0:v:0", "-map", "0:a:0?",
         "-vf", video_filter,
-        "-c:v", "libx264", "-profile:v", "main", "-level:v", "4.0",
+        "-c:v", "libx264", "-profile:v", "baseline", "-level:v", "3.1",
         "-pix_fmt", "yuv420p", "-r", f"{fps:.6f}",
         "-crf", "23", "-maxrate", f"{maxrate}k", "-bufsize", f"{maxrate * 2}k",
-        "-preset", "veryfast",
+        "-preset", "medium", "-g", "60", "-keyint_min", "30", "-sc_threshold", "0",
         "-c:a", "aac", "-b:a", "128k", "-ar", "48000", "-ac", "2",
         "-movflags", "+faststart", "-sn", "-dn", str(output),
     ])
@@ -119,7 +119,7 @@ def encode(name: str, dimensions: tuple[int, int, int]) -> None:
 
     encoded = probe(output)
     v = encoded["video"]
-    if v.get("codec_name") != "h264" or v.get("pix_fmt") != "yuv420p":
+    if v.get("codec_name") != "h264" or v.get("profile") not in {"Baseline", "Constrained Baseline"} or v.get("pix_fmt") != "yuv420p" or v.get("level") != 31:
         raise RuntimeError(f"Codificación móvil inesperada en {name}: {v.get('codec_name')} / {v.get('pix_fmt')}")
     if encoded["audio"] and encoded["audio"].get("codec_name") != "aac":
         raise RuntimeError(f"Audio no AAC en {name}")
@@ -130,7 +130,7 @@ def encode(name: str, dimensions: tuple[int, int, int]) -> None:
     output_mb = output.stat().st_size / (1024 * 1024)
     print(
         f"OK {name}: {source_mb:.2f} MB -> {output_mb:.2f} MB | "
-        f"{v.get('width')}x{v.get('height')} | H.264 {v.get('profile')} / "
+        f"{v.get('width')}x{v.get('height')} | H.264 {v.get('profile')} L{v.get('level')} / "
         f"{encoded['audio'].get('codec_name') if encoded['audio'] else 'sin audio'} | "
         f"{v.get('pix_fmt')} | faststart | poster {poster.stat().st_size / 1024:.0f} KB"
     )
