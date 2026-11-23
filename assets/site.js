@@ -517,6 +517,8 @@
 
       var mobileQuery = window.matchMedia("(max-width: 719px)");
       var reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      var saveData = Boolean(connection && connection.saveData);
       var inAppBrowser = window.__PATO_INAPP_BROWSER__ === true;
       if (inAppBrowser) return;
       var rafId = null;
@@ -742,17 +744,18 @@
         video.setAttribute("playsinline", "");
         video.setAttribute("webkit-playsinline", "");
 
-        var preloadMode = inAppBrowser ? "metadata" : "auto";
+        var respectDataPreferences = reduceMotionQuery.matches || saveData;
+        var preloadMode = respectDataPreferences ? "none" : "metadata";
         video.preload = preloadMode;
         video.setAttribute("preload", preloadMode);
         video.removeAttribute("autoplay");
 
-        if (inAppBrowser && !video.getAttribute("src")) {
+        if (inAppBrowser && !respectDataPreferences && !video.getAttribute("src")) {
           var directSource = video.querySelector("source[src]");
           if (directSource && directSource.src) video.src = directSource.src;
         }
 
-        if (inAppBrowser) {
+        if (inAppBrowser && !respectDataPreferences) {
           try { video.load(); } catch (e) {}
         }
 
