@@ -187,8 +187,8 @@ assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should no
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
 has(js, 'soundToggle.addEventListener("click", toggleAudio)');
 has(js, 'button.addEventListener("keydown"');
-assert.equal(occurrences(html, 'src="./assets/site.js?v=20261027-club-case-3"'),1);
-assert.equal(occurrences(html, 'href="./assets/site.css"'), 1);
+assert.equal(occurrences(html, 'src="./assets/site.js?v=20261123-hero-cross-browser-1"'),1);
+assert.equal(occurrences(html, 'href="./assets/site.css?v=20261123-hero-poster-states-1"'), 1);
 // Compare against main as ground truth for preservation.
 try {
   const baseline = execFileSync("git", ["show", "origin/main:index.html"], {encoding:"utf8"});
