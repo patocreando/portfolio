@@ -56,8 +56,8 @@
   }
 
   function sourceUrl(video) {
-    if (video.dataset.videoSrc) return video.dataset.videoSrc;
     if (video.getAttribute("data-src")) return video.getAttribute("data-src");
+    if (video.dataset.videoSrc) return video.dataset.videoSrc;
     var sources = originalSources(video);
     for (var i = 0; i < sources.length; i += 1) {
       var url = sources[i].getAttribute("src") || sources[i].getAttribute("data-src");
@@ -73,7 +73,7 @@
       return true;
     }
 
-    var direct = video.dataset.videoSrc || video.getAttribute("data-src");
+    var direct = video.getAttribute("data-src") || video.dataset.videoSrc;
     var sourceElements = originalSources(video);
     var changed = false;
 
@@ -193,7 +193,7 @@
 
     var direct = video.getAttribute("src");
     if (direct) {
-      if (!video.dataset.videoSrc) video.dataset.videoSrc = direct;
+      if (!video.getAttribute("data-src")) video.setAttribute("data-src", direct);
       video.removeAttribute("src");
     }
 
@@ -372,12 +372,13 @@
 
     deactivate(video, { release: true });
     video.removeAttribute("src");
+    video.removeAttribute("data-src");
+    delete video.dataset.videoSrc;
     originalSources(video).forEach(function (source) {
       source.removeAttribute("src");
       source.removeAttribute("data-src");
     });
-    if (next) video.dataset.videoSrc = next;
-    else delete video.dataset.videoSrc;
+    if (next) video.setAttribute("data-src", next);
 
     var state = stateFor(video);
     state.loaded = false;
