@@ -61,6 +61,17 @@ async function test() {
       await context.route("**/*.mp4", route => route.abort());
       await context.route("**/tracker.metricool.com/**", route => route.abort());
       const page = await context.newPage();
+      // Isolate playback wiring from media downloads. These stubs let the
+      // browser smoke check verify user-gesture handlers without decoding MP4s.
+      await page.addInitScript(() => {
+        HTMLMediaElement.prototype.load = function () {
+          this.__testLoadCalls = (this.__testLoadCalls || 0) + 1;
+        };
+        HTMLMediaElement.prototype.play = function () {
+          this.__testPlayCalls = (this.__testPlayCalls || 0) + 1;
+          return Promise.resolve();
+        };
+      });
       const pageErrors=[];
       page.on("pageerror",e=>pageErrors.push(e.message));
       await page.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
@@ -69,6 +80,27 @@ async function test() {
         const poster=document.querySelector(".hero-video-poster");
         return poster && poster.complete && poster.naturalWidth>0;
       },null,{timeout:10000});
+      const playbackWiring = await page.evaluate(() => {
+        const hero = document.querySelector(".hero-video");
+        const heroButton = document.querySelector("[data-hero-mobile-play]");
+        if (!hero || !heroButton || !window.VideoManager) return { heroCalls: 0, projectCalls: 0, projectButtonVisible: false };
+        heroButton.click();
+        const heroCalls = hero.__testPlayCalls || 0;
+
+        const project = [...document.querySelectorAll("#projectGrid video.project-video")]
+          .find(video => !video.closest(".project-item")?.classList.contains("is-hidden"));
+        if (!project) return { heroCalls, projectCalls: 0, projectButtonVisible: false };
+        window.VideoManager.play(project, true);
+        const host = project.closest(".hero-phone-screen, .editorial-media, .phone-screen, .clean-media-frame, .club-workflow-screen, .service-card, .pricing-pack, .studio-system-board, .contact-proposal-card") || project.parentElement;
+        const button = host && host.querySelector(".video-manager-play");
+        const projectButtonVisible = Boolean(button && !button.hidden);
+        if (button) button.click();
+        return { heroCalls, projectCalls: project.__testPlayCalls || 0, projectButtonVisible };
+      });
+      assert.ok(playbackWiring.heroCalls > 0, "Hero tap invokes the video playback API");
+      assert.ok(playbackWiring.projectButtonVisible, "Project playback exposes a usable manual fallback");
+      assert.ok(playbackWiring.projectCalls >= 2, "Project fallback tap invokes playback again");
+
       const state=await page.evaluate(() => ({
         title:document.querySelector("h1")?.innerText?.replace(/\s+/g," ").trim(),
         projects:!!document.querySelector("#projects"),
@@ -97,8 +129,8 @@ async function test() {
         siloFeaturedSources:document.querySelectorAll('video[src*="silo-campana-producto-recortado.mp4"],video[data-src*="silo-campana-producto-recortado.mp4"],source[src*="silo-campana-producto-recortado.mp4"],source[data-src*="silo-campana-producto-recortado.mp4"]').length,
         siloGallerySources:document.querySelectorAll('video[src*="silo-ugc-sin-subtitulos.mp4"],video[data-src*="silo-ugc-sin-subtitulos.mp4"],source[src*="silo-ugc-sin-subtitulos.mp4"],source[data-src*="silo-ugc-sin-subtitulos.mp4"]').length,
         ugcPerfumeSources:document.querySelectorAll('video[src*="d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"],video[data-src*="d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"],source[src*="d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"],source[data-src*="d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]').length,
-        methodSteps:document.querySelectorAll("#method .method-brief-grid > article").length,
-        methodWidth:document.querySelector("#method .method-brief-stage")?.getBoundingClientRect().width,
+        methodSteps:document.querySelectorAll("#method .pc-method-track > article").length,
+        methodWidth:document.querySelector("#method .pc-method-track")?.getBoundingClientRect().width,
         methodContainerWidth:document.querySelector("#method > .site-shell")?.getBoundingClientRect().width,
         sectionOrder:[...document.querySelectorAll("main section[id]")].map(el=>el.id),
         systemMap:!!document.querySelector("#system .studio-system-map"),
@@ -123,6 +155,8 @@ async function test() {
         documentClientWidth:document.documentElement.clientWidth,
         innerWidth:window.innerWidth
       }));
+      if (spec.isMobile) assert.ok(state.documentWidth <= state.documentClientWidth + 1, "Mobile page does not overflow horizontally");
+
 
       const navState=await page.evaluate(() => {
         const $=selector=>document.querySelector(selector);
@@ -241,12 +275,12 @@ async function test() {
       assert.equal(await page.locator('.tab-btn[data-filter]').count(),2,"UGC and product filters remain");
       assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
       assert.equal(state.methodSteps,3,"Method simplified to three commercial collaboration steps");
-      const terms=await page.locator("#method .method-brief-scope").evaluate(el=>{
+      const terms=await page.locator("#method .pc-method-details > div").evaluate(el=>{
         const box=el.getBoundingClientRect();
         return {text:el.textContent.trim().replace(/\s+/g," "),width:box.width,visible:getComputedStyle(el).display!=="none",boldSections:[...el.querySelectorAll("strong")].map(n=>n.textContent.trim())};
       });
-      assert.equal(terms.text,"Alcance, revisiones y plazos de entrega: se definen por escrito luego de evaluar la complejidad del resumen del proyecto, la fidelidad de producto, las escenas y las piezas solicitadas. No se inicia la generación final hasta validar la propuesta visual y el presupuesto. Pago: se realiza al momento de la entrega final.","Explicit timeline and payment terms");
-      assert.deepEqual(terms.boldSections,["Alcance, revisiones y plazos de entrega:","Pago:"],"Terms have clear hierarchy");
+      assert.equal(terms.text,"Alcance, revisiones y plazos se acuerdan por escrito según producto, complejidad, escenas y piezas solicitadas. No se inicia la generación final hasta validar la propuesta visual y el presupuesto. Modalidad de reserva: 50% de adelanto para bloquear turno de producción y aprobar guiones, y 50% restante contra la entrega final de los videos listos para pautar (vía transferencia o Mercado Pago).","Explicit timeline and payment terms");
+      assert.deepEqual(terms.boldSections,["Alcance, revisiones y plazos","Modalidad de reserva:"],"Terms have clear hierarchy");
       assert.ok(terms.visible&&terms.width<=spec.width+2,"Terms fit on mobile and desktop");
       assert.ok(state.methodWidth<=state.innerWidth+2,"Method stage fits viewport");
       assert.ok(state.methodWidth<=state.methodContainerWidth+2,"Method stage fits its container");
