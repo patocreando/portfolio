@@ -22,7 +22,7 @@
   function stateFor(video) {
     var state = states.get(video);
     if (!state) {
-      state = { near: false, loaded: false, ratio: 0, lastUsed: 0, fallback: null, heroButton: null, prompt: null };
+      state = { near: false, loaded: false, ratio: 0, lastUsed: 0, blocked: false, fallback: null, heroButton: null, prompt: null };
       states.set(video, state);
     }
     return state;
@@ -247,6 +247,9 @@
 
   function playMuted(video, userGesture) {
     if (!video || isHidden(video)) return null;
+    var state = stateFor(video);
+    if (!userGesture && state.blocked) return null;
+    if (userGesture) state.blocked = false;
     if (!userGesture && (document.hidden || reducedMotion.matches || saveData)) {
       showFallback(video, "Reproducir video");
       return null;
@@ -274,9 +277,11 @@
 
     if (result && typeof result.catch === "function") {
       result.then(function () {
+        state.blocked = false;
         hideFallback(video);
       }).catch(function (error) {
         if (error && error.name === "AbortError") return;
+        state.blocked = true;
         pauseElement(video);
         if (audioVideo === video) audioVideo = null;
         window.__PATO_SOUND_ACTIVE_VIDEO__ = audioVideo;
@@ -321,6 +326,7 @@
     video.removeAttribute("muted");
     audioVideo = video;
     activeVideo = video;
+    stateFor(video).blocked = false;
     window.__PATO_SOUND_ACTIVE_VIDEO__ = video;
     syncPrompt(video);
 
@@ -338,6 +344,7 @@
 
     if (result && typeof result.catch === "function") {
       result.catch(function () {
+        stateFor(video).blocked = true;
         setMuted(video, true);
         audioVideo = null;
         if (activeVideo === video) activeVideo = null;
@@ -383,6 +390,7 @@
     var state = stateFor(video);
     state.loaded = false;
     state.near = false;
+    state.blocked = false;
     if (next && !isHidden(video) && nearViewport(video)) loadSource(video);
     refresh();
   }
@@ -563,7 +571,10 @@
     video.addEventListener("volumechange", function () { syncPrompt(video); });
     ["error", "abort", "stalled"].forEach(function (name) {
       video.addEventListener(name, function () {
-        if (video.error || name === "error") showFallback(video, "Reintentar reproducción");
+        if (video.error || name === "error") {
+          state.blocked = true;
+          showFallback(video, "Reintentar reproducción");
+        }
       });
     });
 
