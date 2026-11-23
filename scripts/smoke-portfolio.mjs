@@ -189,7 +189,10 @@ assert.equal(occurrences(html,'03 / PRODUCTO IA · PERFUMERÍA'),0,'old case rep
 assert.ok(!js.includes("pricingPackMobileLoop"), "pricing carousel should be manual");
 assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should not autoplay");
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
-has(js, 'soundToggle.addEventListener("click", toggleAudio)');
+has(html,'class="portfolio-audio-prompt project-audio-prompt hero-audio-prompt"');
+has(html,'data-video-audio-prompt');
+has(premiumJs,'prompt.addEventListener("click",function(event){activate(video,event);});');
+has(premiumJs,'video.addEventListener("keydown",function(event){');
 has(js, 'button.addEventListener("keydown"');
 assert.equal(occurrences(html, 'src="./assets/site.js?v=20261123-editorial-cro-2"'),1);
 has(html,'href="./assets/portfolio-refresh.css?v=20261123-editorial-cro-1"');
