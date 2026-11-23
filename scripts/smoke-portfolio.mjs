@@ -166,7 +166,7 @@ assert.equal(occurrences(html,'class="editorial-index"'),0,'remove category tags
 assert.equal(occurrences(html,'class="editorial-footnote"'),0,'remove video footnote tags');
 assert.equal(occurrences(html,'class="service-chips"'),0,'remove service badges layered with video cards');
 assert.equal(occurrences(html,'class="pricing-pack-badge"'),0,'remove floating tag above the plan video');
-assert.equal(occurrences(html,'class="service-kicker"'),0,'remove category labels from service video cards');
+assert.equal(occurrences(html,'class="service-kicker"'),3,'retain the three current service card kickers');
 assert.equal(occurrences(html,'data-umbral-reel'),0,'legacy UMBRAL showcase removed');
 assert.equal(occurrences(html,'class="club-workflow-video"'),1,'one video player is reused across the interactive stages');
 assert.equal(occurrences(html,'data-club-step'),4,'four interactive Club stages');
