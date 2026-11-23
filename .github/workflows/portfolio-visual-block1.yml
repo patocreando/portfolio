@@ -38,7 +38,7 @@ jobs:
           const hero = html.match(/<video[^>]*class="hero-video"[^>]*>/);
           assert.ok(hero && hero[0].includes('aria-label="'), 'Hero video accessible name');
           for (const name of ['ugc-beauty.mp4','ugc-fashion.mp4','hyperreal-portrait.mp4']) {
-            const srcPattern = new RegExp('<source\\s+(?:src|data-src)="\\./assets/videos/' + name.replace('.', '\\\\.') + '"');
+            const srcPattern = new RegExp('<source\\s+(?:src|data-src)="\\./assets/videos/' + name.replace('.', '\\\\.') + '(?:\\?[^"]*)?"');
             const match = srcPattern.exec(html);
             assert.ok(match, 'Video source or lazy source retained: ' + name);
             const idx = match.index;
