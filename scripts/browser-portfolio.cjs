@@ -119,6 +119,8 @@ async function test() {
         railWidth:document.querySelector("#pricingPackRail").clientWidth,
         railScroll:document.querySelector("#pricingPackRail").scrollLeft,
         mainWidth:document.querySelector("main").getBoundingClientRect().width,
+        documentWidth:document.documentElement.scrollWidth,
+        documentClientWidth:document.documentElement.clientWidth,
         innerWidth:window.innerWidth
       }));
 
@@ -332,6 +334,7 @@ async function test() {
        assert.equal(state.heroVideoReady,false,"Deferred or failed video never reveals an undecoded frame");
        assert.equal(state.heroVideoOpacity,"0","Undecoded video stays transparent over the poster");
       assert.ok(state.mainWidth <= state.innerWidth+4,"Main must fit viewport");
+      assert.ok(state.documentWidth <= state.documentClientWidth+2,"Document must not create a horizontal scrollbar");
       if (spec.isMobile) assert.ok(state.deliveryStepWidth >= 130,"Mobile process stages must remain readable");
       await page.screenshot({path:"artifacts/"+spec.name+".png",fullPage:true,animations:"disabled"});
 
