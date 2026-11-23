@@ -340,7 +340,7 @@ assert.ok(criticalNavStyle.includes('position:fixed;inset:0 0 auto;z-index:1000;
 assert.equal(occurrences(html,'src="./assets/premium-lab.js?v=20261122-mobile-playback-3"'),1,'versioned premium runtime is loaded exactly once');
 assert.equal(occurrences(html,'class="pc-method-six-number"'),6,"six-stage methodology remains visible");
 assert.equal(occurrences(html,'class="pc-collab-column"'),3,"three collaboration responsibility columns");
-assert.equal(occurrences(html,'class="pc-audience-grid"'),1,"brand and agency comparison is unique");
+assert.equal(occurrences(html,'class="pc-audience-grid section-reveal"'),1,"brand and agency comparison is unique");
 assert.equal(occurrences(html,'id="bottleneck"'),0,"remove duplicate bottleneck");
 assert.equal(occurrences(html,'id="fit"'),0,"remove duplicate fit");
 assert.equal(occurrences(html,'id="creativePaths"'),0,"remove duplicate creative paths");
