@@ -1,6 +1,7 @@
 /* Content reels start muted. Click/tap a video to play its original audio; click again to pause. */
 (function () {
   "use strict";
+  if (window.VideoManager) return;
   var videos=Array.prototype.slice.call(document.querySelectorAll("video[data-editorial-reel], video.project-video, video.hero-video, video.club-workflow-video"));
   if(!videos.length) return;
   var reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
