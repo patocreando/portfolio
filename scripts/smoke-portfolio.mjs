@@ -130,7 +130,6 @@ for (const video of ["ugc-beauty.mp4","ugc-fashion.mp4","hyperreal-portrait.mp4"
   const opening = html.lastIndexOf("<video",videoMatchIndex);
   assert.ok(opening >= 0 && opening > html.lastIndexOf("</video>",videoMatchIndex));
   assert.ok(html.slice(opening,videoMatchIndex).includes('aria-label="'),"Gallery video has descriptive accessible name: "+video);
-  assert.ok(videoMatch,"Gallery video has accessible descriptive name: "+video);
 }
 assert.ok(/<video[^>]*class="hero-video"[^>]*aria-label="[^"]+"[^>]*>/.test(html),"Hero showreel has descriptive name");
 
