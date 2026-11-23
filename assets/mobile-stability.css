@@ -55,13 +55,9 @@
     overflow: hidden !important;
   }
 
-  /* Do not cover the showreel with an unrelated product still.
-     Reveal the actual video frame as soon as the browser decodes it. */
-  #top .hero-mobile-poster {
-    display: none !important;
-  }
 
-  #top .hero-video {
+  /* The real showreel still is the fallback; never replace it with a black frame or a generic gradient. */
+  #top .hero-mobile-poster {
     display: block !important;
     position: absolute !important;
     z-index: 2 !important;
@@ -69,9 +65,38 @@
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+    object-position: center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+  }
+
+  #top .hero-video {
+    display: block !important;
+    position: absolute !important;
+    z-index: 3 !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    opacity: 0 !important;
+    visibility: visible !important;
+  }
+
+  #top .hero-phone-screen.is-video-ready .hero-mobile-poster {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  #top .hero-phone-screen.is-video-ready .hero-video {
     opacity: 1 !important;
     visibility: visible !important;
   }
+
+  #top .hero-mobile-play[hidden] {
+    display: none !important;
+  }
+
 
   #projects {
     display: block !important;
