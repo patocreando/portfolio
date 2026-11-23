@@ -124,7 +124,7 @@ assert.deepEqual([...brandedPng.subarray(0,8)],[137,80,78,71,13,10,26,10],"Valid
 assert.equal(brandedPng.readUInt32BE(16),1550,"Social image width matches declared metadata");
 assert.equal(brandedPng.readUInt32BE(20),600,"Social image height matches declared metadata");
 assert.ok(brandedPng.length < 100_000,"Share image remains under 100 KB");
-for (const video of ["ugc-beauty.mp4","ugc-fashion.mp4","hyperreal-portrait.mp4"]) {
+for (const video of ["ugc-beauty.mp4","silo-ugc-sin-subtitulos.mp4","hyperreal-portrait.mp4"]) {
   const sourceNeedle = ['<source src="./assets/videos/'+video, '<source data-src="./assets/videos/'+video].find(candidate => html.includes(candidate));
   assert.ok(sourceNeedle,"Gallery video source retained: "+video);
   const videoMatchIndex = html.indexOf(sourceNeedle);
