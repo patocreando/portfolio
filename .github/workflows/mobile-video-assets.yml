@@ -1,0 +1,55 @@
+name: Mobile video assets QA
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "assets/videos/**"
+      - "index.html"
+      - "scripts/optimize_public_mobile_videos.py"
+      - "scripts/stage-pages.mjs"
+      - ".github/workflows/pages.yml"
+      - ".github/workflows/mobile-video-assets.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-mobile-video-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Encode and verify mobile videos
+        run: python3 scripts/optimize_public_mobile_videos.py
+
+      - name: Build Pages staging directory
+        run: |
+          node scripts/stage-pages.mjs
+          test -f _site/index.html
+
+      - name: Confirm all generated files are published
+        run: |
+          set -euo pipefail
+          for name in \
+            hero-showreel-mobile-compatible \
+            silo-campana-producto-recortado \
+            mariana-omelette-ugc \
+            ugc-beauty \
+            producto_WEB \
+            silo-ugc-sin-subtitulos \
+            hyperreal-portrait
+          do
+            test -s "_site/optimized_mobile/assets/videos/${name}.mp4"
+            test -s "_site/optimized_mobile/assets/videos/${name}.webp"
+            echo "OK ${name}"
+          done
