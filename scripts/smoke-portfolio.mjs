@@ -172,7 +172,7 @@ assert.equal(occurrences(html,'class="club-workflow-video"'),1,'one video player
 assert.equal(occurrences(html,'data-club-step'),4,'four interactive Club stages');
 assert.equal(occurrences(html,'Una lámpara que no existe.'),0,'replaced the UMBRAL project copy');
 assert.equal(occurrences(html,'UMBRAL / 01'),0,'no UMBRAL project heading remains');
-has(html,'Del primer ancla <span>al montaje.</span>');
+has(html,'Del primer ancla <span>al montaje final.</span>');
 has(html,'CASO DE ESTUDIO');
 has(html,'./assets/cases/club-del-coctel-01/character-sheet.webp');
 has(html,'./assets/cases/club-del-coctel-01/generated-scene.mp4');
