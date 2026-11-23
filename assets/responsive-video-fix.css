@@ -1,0 +1,279 @@
+/*
+ * Android / iOS viewport and video-frame correction.
+ * Loaded after the legacy mobile overrides so 100vw + negative-margin rules
+ * cannot widen the document on mobile browsers.
+ */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+@supports (overflow: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+video[data-video-managed] {
+  display: block;
+  max-width: 100%;
+}
+@media (max-width: 719px) {
+  html,
+  body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: clip !important;
+  }
+
+  #top,
+  #projects,
+  main {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #top > .site-shell {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: calc(100% - 24px) !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-inline: auto !important;
+  }
+
+  /* Replace the old full-bleed 100vw treatment with the actual content width. */
+  #top .hero-device-wrap {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  #top .hero-device-stage,
+  #top .hero-device-wrap.mobile-takeover-enabled .hero-device-stage {
+    position: relative !important;
+    display: block !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 9 / 16 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 20px !important;
+    box-shadow: none !important;
+    perspective: none !important;
+  }
+
+  #top .hero-audio-stack {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #top #heroPhone,
+  #top .hero-phone-shell,
+  #top .hero-device-wrap.mobile-takeover-enabled .hero-phone-shell {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    aspect-ratio: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: inherit !important;
+    overflow: hidden !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    clip-path: none !important;
+    -webkit-clip-path: none !important;
+    box-shadow: none !important;
+  }
+
+  #top .hero-phone-screen {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: inherit !important;
+    overflow: hidden !important;
+    background: #080a0c !important;
+  }
+
+  /* The actual HTML poster is data-hero-mobile-poster, not .hero-mobile-poster. */
+  #top .hero-phone-screen [data-hero-mobile-poster] {
+    position: absolute !important;
+    z-index: 3 !important;
+    display: block !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+    transition: opacity .18s ease !important;
+  }
+
+  #top .hero-phone-screen.is-video-ready [data-hero-mobile-poster] {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  #top .hero-video,
+  #top .hero-device-wrap.mobile-takeover-enabled .hero-video {
+    position: absolute !important;
+    z-index: 2 !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    aspect-ratio: auto !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    opacity: 0 !important;
+    visibility: visible !important;
+    transform: none !important;
+    border: 0 !important;
+    background: transparent !important;
+    transition: opacity .18s ease !important;
+  }
+
+  #top .hero-phone-screen.is-video-ready .hero-video {
+    opacity: 1 !important;
+  }
+
+  #top .hero-mobile-play {
+    z-index: 20 !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    touch-action: manipulation !important;
+  }
+
+  #top .hero-mobile-play[hidden] {
+    display: none !important;
+  }
+
+  /* Editorial reels and project cards retain their 9:16 frame on narrow screens. */
+  #projects .editorial-showcase,
+  #projects .editorial-case,
+  #projects .editorial-media-stack,
+  #projects .project-item,
+  #projects .mockup-stage {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  #projects .editorial-media {
+    position: relative !important;
+    display: block !important;
+    width: min(100%, 340px) !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 9 / 16 !important;
+    margin-inline: auto !important;
+    overflow: hidden !important;
+    background: #080a0c !important;
+  }
+
+  #projects .editorial-media video,
+  #projects .phone-screen video,
+  #projects .clean-media-frame video,
+  #projects .desktop-frame video,
+  #projects video.project-video {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    background: #080a0c !important;
+  }
+
+  #projects .phone-shell,
+  #projects .clean-media-frame,
+  #projects .desktop-frame {
+    position: relative !important;
+    display: block !important;
+    width: min(100%, 340px) !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 9 / 16 !important;
+    margin-inline: auto !important;
+    overflow: hidden !important;
+  }
+
+  #projects .phone-screen {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    border-radius: inherit !important;
+  }
+
+  #projects .project-item:not(.is-hidden) {
+    width: min(100%, 420px) !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-inline: auto !important;
+  }
+
+  #projects #projectViewport,
+  #projects #projectGrid {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #projects #projectGrid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    transform: none !important;
+  }
+
+  /* Prevent intrinsic media width and old negative margins from widening the page. */
+  img,
+  video,
+  iframe,
+  canvas,
+  svg {
+    max-width: 100%;
+  }
+}

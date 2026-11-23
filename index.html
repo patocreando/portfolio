@@ -223,9 +223,11 @@
   <link rel="stylesheet" href="./assets/silo-update.css?v=20261023-2" />
   <link rel="stylesheet" href="./assets/compact-flow.css?v=20261029-1" />
   <link rel="stylesheet" href="./assets/orbital-motion.css?v=20261030-1" />
-  <link rel="stylesheet" href="./assets/mobile-browser-layout.css?v=20261122-project-gallery-a20-2" />
-  <link rel="stylesheet" href="./assets/mobile-stability.css?v=20261122-stability-2" />
+  <link rel="stylesheet" href="./assets/mobile-browser-layout.css?v=20261123-android-viewport-3" />
+  <link rel="stylesheet" href="./assets/mobile-stability.css?v=20261123-android-poster-3" />
+  <link rel="stylesheet" href="./assets/video-manager.css?v=20261123-1" />
   <link rel="stylesheet" href="./assets/landing-depth.css?v=20261123-service-card-layer-repair-4" />
+  <link rel="stylesheet" href="./assets/responsive-video-fix.css?v=20261123-android-mobile-layout-1" />
   <style id="hero-audio-prompt-layout">
     .hero-audio-stack {
       position: relative;
@@ -349,7 +351,7 @@
 
               <div class="hero-phone-screen">
                 <img class="hero-video-poster" data-hero-mobile-poster src="./assets/images/hero-showreel-poster.svg" alt="" aria-hidden="true" fetchpriority="high" decoding="async" />
-                <video muted loop playsinline webkit-playsinline preload="none" class="hero-video" data-autoplay-managed="true" data-audio-available="true" poster="./assets/images/hero-showreel-poster.svg" aria-label="Showreel de Pato Creando: anuncios y contenido audiovisual con inteligencia artificial">
+                <video data-video-role="hero" data-video-managed="true" muted loop playsinline webkit-playsinline preload="metadata" class="hero-video" data-autoplay-managed="true" data-audio-available="true" poster="./assets/images/hero-showreel-poster.svg" aria-label="Showreel de Pato Creando: anuncios y contenido audiovisual con inteligencia artificial">
                   <source src="./assets/videos/hero-showreel-mobile-compatible.mp4?v=20261123-header-autoplay-fallback" type="video/mp4" />
                 </video>
 
@@ -406,8 +408,8 @@
           <article class="editorial-case editorial-case--silo" aria-labelledby="siloCaseTitle">
             <div class="editorial-media-stack">
               <div class="editorial-media">
-                <video data-editorial-reel data-audio-available="true" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/silo-campana-producto-recortado.jpg" aria-label="Anuncio de SILO Perfumería de Autor: fragancias y escenas de producto">
-                  <source src="./assets/videos/silo-campana-producto-recortado.mp4" type="video/mp4" />
+                <video data-video-role="content" data-video-managed="true" data-editorial-reel data-audio-available="true" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/silo-campana-producto-recortado.jpg" aria-label="Anuncio de SILO Perfumería de Autor: fragancias y escenas de producto">
+                  <source data-src="./assets/videos/silo-campana-producto-recortado.mp4" type="video/mp4" />
                 </video>
               </div>
               <button class="portfolio-audio-prompt" type="button" data-video-audio-prompt aria-pressed="false"><svg class="audio-prompt-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg><span data-audio-prompt-label>Escuchar audio</span></button>
@@ -426,8 +428,8 @@
           <article class="editorial-case editorial-case--mariana" aria-labelledby="marianaCaseTitle">
             <div class="editorial-media-stack">
               <div class="editorial-media">
-                <video data-editorial-reel data-audio-available="true" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/mariana-omelette-ugc.webp" aria-label="Anuncio UGC de Mariana preparando un omelette y mostrando recetas con Air Fryer; toca para escuchar el audio original">
-                  <source src="./assets/videos/mariana-omelette-ugc.mp4" type="video/mp4" />
+                <video data-video-role="content" data-video-managed="true" data-editorial-reel data-audio-available="true" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/mariana-omelette-ugc.webp" aria-label="Anuncio UGC de Mariana preparando un omelette y mostrando recetas con Air Fryer; toca para escuchar el audio original">
+                  <source data-src="./assets/videos/mariana-omelette-ugc.mp4" type="video/mp4" />
                 </video>
               </div>
               <button class="portfolio-audio-prompt" type="button" data-video-audio-prompt aria-pressed="false"><svg class="audio-prompt-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg><span data-audio-prompt-label>Escuchar audio</span></button>
@@ -479,8 +481,8 @@
             <div class="mockup-stage">
               <div class="phone-shell">
                 <div class="phone-screen">
-                  <video class="project-video" data-audio-available="true" muted loop playsinline webkit-playsinline preload="none" aria-label="Video UGC de belleza realizado con inteligencia artificial; toca para escuchar el audio original">
-                    <source src="./assets/videos/ugc-beauty.mp4?v=20261123-sola-ugc-v1" type="video/mp4" />
+                  <video data-video-role="content" data-video-managed="true" class="project-video" data-audio-available="true" muted loop playsinline webkit-playsinline preload="none" aria-label="Video UGC de belleza realizado con inteligencia artificial; toca para escuchar el audio original" poster="./assets/images/hero-showreel-poster.svg">
+                    <source data-src="./assets/videos/ugc-beauty.mp4?v=20261123-sola-ugc-v1" type="video/mp4" />
                   </video>
                 </div>
               </div>
@@ -493,8 +495,8 @@
           <article class="project-item project-clean-media project-reveal" data-category="product">
             <div class="mockup-stage">
               <div class="clean-media-frame">
-                <video class="project-video" data-audio-available="true" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-label="Video de producto; toca para escuchar el audio original">
-                  <source src="./assets/videos/producto_WEB.mp4?v=20261123-producto-web-1" type="video/mp4" />
+                <video data-video-role="content" data-video-managed="true" class="project-video" data-audio-available="true" muted loop playsinline webkit-playsinline preload="none" aria-label="Video de producto; toca para escuchar el audio original" poster="./assets/images/hero-showreel-poster.svg">
+                  <source data-src="./assets/videos/producto_WEB.mp4?v=20261123-producto-web-1" type="video/mp4" />
                 </video>
               </div>
             </div>
@@ -505,8 +507,8 @@
           <article class="project-item project-clean-media project-reveal project-item--silo" data-category="product">
             <div class="mockup-stage">
               <div class="clean-media-frame">
-                <video class="project-video" data-audio-available="true" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/silo-ugc.jpg" aria-label="Anuncio UGC de SILO: presentación de una fragancia en cámara">
-                  <source src="./assets/videos/silo-ugc-sin-subtitulos.mp4" type="video/mp4" />
+                <video data-video-role="content" data-video-managed="true" class="project-video" data-audio-available="true" muted loop playsinline webkit-playsinline preload="none" poster="./assets/images/silo-ugc.jpg" aria-label="Anuncio UGC de SILO: presentación de una fragancia en cámara">
+                  <source data-src="./assets/videos/silo-ugc-sin-subtitulos.mp4" type="video/mp4" />
                 </video>
               </div>
             </div>
@@ -518,8 +520,8 @@
           <article class="project-item project-clean-media project-reveal" data-category="ugc">
             <div class="mockup-stage">
               <div class="clean-media-frame">
-                <video class="project-video" data-audio-available="true" muted loop playsinline webkit-playsinline preload="none" aria-label="Reel completo de retrato hiperrealista generado con inteligencia artificial; toca para escuchar el audio original">
-                  <source src="./assets/videos/hyperreal-portrait.mp4?v=20261123-hyperreal-full-reel-audio" type="video/mp4" />
+                <video data-video-role="content" data-video-managed="true" class="project-video" data-audio-available="true" muted loop playsinline webkit-playsinline preload="none" aria-label="Reel completo de retrato hiperrealista generado con inteligencia artificial; toca para escuchar el audio original" poster="./assets/images/hero-showreel-poster.svg">
+                  <source data-src="./assets/videos/hyperreal-portrait.mp4?v=20261123-hyperreal-full-reel-audio" type="video/mp4" />
                 </video>
               </div>
             </div>
@@ -595,7 +597,7 @@
                 <div class="club-edit-audio" aria-label="Pista de audio"><div aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
               </div>
 
-              <video class="club-workflow-video" data-club-video data-audio-available="true" muted playsinline webkit-playsinline preload="none" poster="./assets/cases/club-del-coctel-01/kitchen-anchor.webp" aria-label="Video del proyecto Club del Cóctel; toca para escuchar el audio original" hidden></video>
+              <video data-video-role="club" data-video-managed="true" class="club-workflow-video" data-club-video data-audio-available="true" muted playsinline webkit-playsinline preload="none" poster="./assets/cases/club-del-coctel-01/kitchen-anchor.webp" aria-label="Video del proyecto Club del Cóctel; toca para escuchar el audio original" hidden></video>
             </div>
             <button class="club-workflow-audio-prompt" type="button" data-club-audio hidden aria-pressed="false">
               <svg class="club-workflow-audio-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
@@ -653,8 +655,8 @@
 
         <div class="services-grid">
           <article class="section-reveal service-card service-card-ugc">
-            <video class="service-card-media" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true">
-              <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/73062545-d569-4992-b9f9-b28ab614c089.mp4" type="video/mp4" />
+            <video data-video-role="ambient" data-video-managed="true" class="service-card-media" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true" poster="./assets/images/hero-showreel-poster.svg">
+              <source data-src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/73062545-d569-4992-b9f9-b28ab614c089.mp4" type="video/mp4" />
             </video>
             <span class="service-card-glow" aria-hidden="true"></span>
 
@@ -688,8 +690,8 @@
           </article>
 
           <article class="section-reveal service-card service-card-product">
-            <video class="service-card-media" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true">
-              <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/6f49d876-a222-4664-823c-f22b0f5a2203.mp4" type="video/mp4" />
+            <video data-video-role="ambient" data-video-managed="true" class="service-card-media" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true" poster="./assets/images/hero-showreel-poster.svg">
+              <source data-src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/6f49d876-a222-4664-823c-f22b0f5a2203.mp4" type="video/mp4" />
             </video>
             <span class="service-card-glow" aria-hidden="true"></span>
 
@@ -723,8 +725,8 @@
           </article>
 
           <article class="section-reveal service-card service-card-testing">
-            <video class="service-card-media" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true">
-              <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/5ec5e7d8-909c-4e05-baa8-7165c57e3a9c.mp4" type="video/mp4" />
+            <video data-video-role="ambient" data-video-managed="true" class="service-card-media" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true" poster="./assets/images/hero-showreel-poster.svg">
+              <source data-src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/5ec5e7d8-909c-4e05-baa8-7165c57e3a9c.mp4" type="video/mp4" />
             </video>
             <span class="service-card-glow" aria-hidden="true"></span>
 
@@ -810,8 +812,8 @@
         </article>
 
         <article class="pricing-pack pricing-pack-featured" aria-label="Plan Multiformato, opción destacada">
-          <video class="pricing-pack-media" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true">
-            <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/6f49d876-a222-4664-823c-f22b0f5a2203.mp4" type="video/mp4" />
+          <video data-video-role="ambient" data-video-managed="true" class="pricing-pack-media" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true" poster="./assets/images/hero-showreel-poster.svg">
+            <source data-src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/6f49d876-a222-4664-823c-f22b0f5a2203.mp4" type="video/mp4" />
           </video>
           <div class="pricing-pack-top">
             <p class="pricing-pack-kicker">Multiformato</p>
@@ -885,8 +887,8 @@
           </div>
         </header>
         <div class="studio-system-board section-reveal" aria-label="Esquema de trabajo: entradas de marca, sistema creativo y entregables">
-          <video class="studio-system-ambient" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true" tabindex="-1">
-            <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/8ece9361-a363-477c-8a2e-e6d221cdc562.mp4" type="video/mp4" />
+          <video data-video-role="ambient" data-video-managed="true" class="studio-system-ambient" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true" tabindex="-1" poster="./assets/images/hero-showreel-poster.svg">
+            <source data-src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/8ece9361-a363-477c-8a2e-e6d221cdc562.mp4" type="video/mp4" />
           </video>
           <div class="studio-system-boardbar"><strong><span class="studio-system-dot" aria-hidden="true"></span> PATO / SISTEMA DE PRODUCCIÓN</strong><span>Del resumen del proyecto a la entrega</span></div>
           <div class="studio-system-map">
@@ -1051,8 +1053,8 @@
 
       <div class="site-shell relative z-10">
         <div class="glass rounded-[34px] p-6 md:p-10 lg:p-14 overflow-hidden relative contact-proposal-card">
-          <video class="contact-proposal-media" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true">
-            <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/0481a04b-f326-488e-8ef3-8f247439d94e.mp4" type="video/mp4" />
+          <video data-video-role="ambient" data-video-managed="true" class="contact-proposal-media" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true" poster="./assets/images/hero-showreel-poster.svg">
+            <source data-src="https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/0481a04b-f326-488e-8ef3-8f247439d94e.mp4" type="video/mp4" />
           </video>
           <div class="contact-proposal-overlay" aria-hidden="true"></div>
 
@@ -1227,10 +1229,11 @@
   </main>
 
 
-  <script src="./assets/site.js?v=20261123-instagram-inline-playback-1"></script>
-  <script defer src="./assets/mobile-hero-fallback.js?v=20261123-crossbrowser-playback-2"></script>
-  <script defer src="./assets/premium-lab.js?v=20261122-mobile-playback-3"></script>
-  <script defer src="./assets/club-case.js?v=20261030-scroll-story-1"></script>
+  <script src="./assets/video-manager.js?v=20261123-mobile-play-control-3"></script>
+<script src="./assets/site.js?v=20261123-mobile-play-control-2"></script>
+  <script defer src="./assets/mobile-hero-fallback.js?v=20261123-video-manager-fallback-1"></script>
+  <script defer src="./assets/premium-lab.js?v=20261123-video-manager-1"></script>
+  <script defer src="./assets/club-case.js?v=20261123-video-manager-1"></script>
   <script defer src="./assets/compact-flow.js?v=20261029-1"></script>
   <script defer src="./assets/orbital-motion.js?v=20261030-1"></script>
 

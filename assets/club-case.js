@@ -69,11 +69,15 @@
   }
 
   function stopStageVideo() {
-    video.pause();
-    video.muted = true;
-    video.defaultMuted = true;
-    video.volume = 0;
-    video.setAttribute("muted", "");
+    if (window.VideoManager) {
+      window.VideoManager.deactivate(video, { release: true });
+    } else {
+      video.pause();
+      video.muted = true;
+      video.defaultMuted = true;
+      video.volume = 0;
+      video.setAttribute("muted", "");
+    }
     video.dataset.userUnmuted = "false";
     video.dataset.userPaused = "true";
     if (window.__PATO_SOUND_ACTIVE_VIDEO__ === video) window.__PATO_SOUND_ACTIVE_VIDEO__ = null;
@@ -123,7 +127,9 @@
       var stageName = tab.dataset.alt || (tab.querySelector(".club-workflow-step-copy strong") || {}).textContent || "Video";
       video.setAttribute("aria-label", stageName + ". Presiona para escuchar el audio original; vuelve a presionar para pausar.");
       var nextSrc = tab.dataset.src || "";
-      if (video.getAttribute("src") !== nextSrc) {
+      if (window.VideoManager) {
+        window.VideoManager.setSource(video, nextSrc);
+      } else if (video.getAttribute("src") !== nextSrc) {
         if (fromScroll) {
           video.removeAttribute("src");
           video.load();
@@ -138,8 +144,12 @@
       video.defaultMuted = true;
       video.volume = 0;
       video.setAttribute("muted", "");
-      var attempt = video.play();
-      if (attempt && typeof attempt.catch === "function") attempt.catch(function () {});
+      if (window.VideoManager) {
+        window.VideoManager.requestPlayback(video);
+      } else {
+        var attempt = video.play();
+        if (attempt && typeof attempt.catch === "function") attempt.catch(function () {});
+      }
     } else if (kind === "edit") {
       video.hidden = true;
       proposal.hidden = true;

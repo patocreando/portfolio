@@ -1,6 +1,7 @@
 /* Cross-device hero playback. Keep the poster until the first decoded frame. */
 (function () {
   "use strict";
+  if (window.VideoManager) return;
   var wrap=document.getElementById("heroDeviceWrap");
   var screen=wrap&&wrap.querySelector(".hero-phone-screen");
   var video=screen&&screen.querySelector(".hero-video");

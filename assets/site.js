@@ -16,6 +16,12 @@
       window.__PATO_INAPP_BROWSER__ = metaInApp;
       window.__PATO_INSTAGRAM_BROWSER__ = instagramInApp;
 
+      if (window.VideoManager) {
+        if (metaInApp) document.documentElement.classList.add("inapp-browser");
+        if (instagramInApp) document.documentElement.classList.add("instagram-inapp");
+        return;
+      }
+
       if (!metaInApp) return;
 
       document.documentElement.classList.add("inapp-browser");
@@ -207,6 +213,7 @@
 /* Original inline block 7 */
 (function () {
       "use strict";
+      if (window.VideoManager) return;
 
       var videos = Array.prototype.slice.call(
         document.querySelectorAll(".project-video")
@@ -625,6 +632,11 @@
       function toggleAudio(event) {
         if (!mobileQuery.matches) return;
 
+        if (window.VideoManager) {
+          window.VideoManager.activateAudio(video, event);
+          return;
+        }
+
         event.preventDefault();
         event.stopPropagation();
         if (typeof event.stopImmediatePropagation === "function") {
@@ -714,13 +726,12 @@
         document.body.classList.remove("hero-takeover-active");
 
         if (nearViewport) {
-          if (audioUnlocked && !userSilenced) {
+          if (!window.VideoManager && audioUnlocked && !userSilenced) {
             setAudio(true);
           }
 
-          // Playback is owned by mobile-hero-fallback.js. This controller
-          // only manages the hero layout and the explicit audio toggle.
-        } else if (!video.paused) {
+          // VideoManager owns playback, pausing and audio whenever it is present.
+        } else if (!window.VideoManager && !video.paused) {
           try { video.pause(); } catch (e) {}
         }
       }
@@ -731,6 +742,10 @@
       }
 
       function primeVideo() {
+        // The central manager owns all media state. This legacy block only
+        // maintains the mobile takeover layout when VideoManager is present.
+        if (window.VideoManager) return;
+
         video.playsInline = true;
         video.setAttribute("playsinline", "");
         video.setAttribute("webkit-playsinline", "");
@@ -819,7 +834,7 @@
 
       document.addEventListener("visibilitychange", function () {
         if (document.hidden) {
-          if (!video.paused) {
+          if (!window.VideoManager && !video.paused) {
             try { video.pause(); } catch (e) {}
           }
         } else if (enabled) {
@@ -969,6 +984,7 @@
         if (window.ScrollTrigger) {
           ScrollTrigger.refresh();
         }
+        if (window.VideoManager) window.VideoManager.refresh();
       }
 
       if (projectPrev) {

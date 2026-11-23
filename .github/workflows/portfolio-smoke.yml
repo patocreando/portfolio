@@ -21,6 +21,9 @@ jobs:
       - name: Verify JavaScript syntax
         run: |
           node --check assets/site.js
+          node --check assets/video-manager.js
+          node --check assets/club-case.js
           node --check assets/mobile-hero-fallback.js
+          node --check assets/premium-lab.js
       - name: Verify portfolio invariants
         run: node scripts/smoke-portfolio.mjs
