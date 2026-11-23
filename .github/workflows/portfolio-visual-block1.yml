@@ -37,9 +37,9 @@ jobs:
           assert.ok(png.length < 100000);
           const hero = html.match(/<video[^>]*class="hero-video"[^>]*>/);
           assert.ok(hero && hero[0].includes('aria-label="'), 'Hero video accessible name');
-          for (const name of ['ugc-beauty.mp4','ugc-fashion.mp4','hyperreal-portrait.mp4']) {
-            const idx = html.indexOf('<source src="./assets/videos/' + name + '"');
-            assert.ok(idx >= 0, 'Video source retained: ' + name);
+          for (const name of ['ugc-beauty.mp4','producto_WEB.mp4','silo-ugc-sin-subtitulos.mp4','hyperreal-portrait.mp4']) {
+            const idx = html.indexOf('src="./assets/videos/' + name);
+            assert.ok(idx >= 0, 'Current gallery video source retained: ' + name);
             const opening = html.lastIndexOf('<video',idx);
             assert.ok(opening > html.lastIndexOf('</video>',idx));
             assert.ok(html.slice(opening,idx).includes('aria-label="'), 'Video accessible name: ' + name);

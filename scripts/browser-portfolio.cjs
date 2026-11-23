@@ -58,7 +58,7 @@ async function test() {
     ]) {
       const context = await browser.newContext({viewport:{width:spec.width,height:spec.height},isMobile:spec.isMobile,hasTouch:spec.isMobile,deviceScaleFactor:1,reducedMotion:"reduce"});
       // Media bytes are unchanged and checked statically. Avoid loading large campaign videos during screenshot QA.
-      await context.route("**/*.mp4", route => route.abort());
+      await context.route("**/*.mp4*", route => route.abort());
       await context.route("**/tracker.metricool.com/**", route => route.abort());
       const page = await context.newPage();
       const pageErrors=[];
@@ -78,6 +78,7 @@ async function test() {
         ctaCount:document.querySelectorAll("#launchOffer .pricing-pack-cta").length,
         css:getComputedStyle(document.querySelector(".studio-system-dot")).backgroundColor,
         heroActionCount:document.querySelectorAll("#top .hero-actions a").length,
+        heroCtaCount:document.querySelectorAll("#top .hero-conversion-actions a").length,
         systemAmbientCount:document.querySelectorAll("#system .studio-system-ambient").length,
         systemAmbientMuted:document.querySelector("#system .studio-system-ambient")?.muted,
         systemAmbientPreload:document.querySelector("#system .studio-system-ambient")?.preload,
@@ -94,25 +95,27 @@ async function test() {
         archiveTotal:document.querySelectorAll("#projectGrid .project-item").length,
         archiveUGC:document.querySelectorAll('#projectGrid .project-item[data-category="ugc"]').length,
         archiveProduct:document.querySelectorAll('#projectGrid .project-item[data-category="product"]').length,
+        captionCount:document.querySelectorAll("#projectGrid .portfolio-project-caption").length,
+        originLabelCount:document.querySelectorAll("#projects .portfolio-origin").length,
+        serviceMediaCount:document.querySelectorAll("#services video.service-card-media").length,
+        serviceMediaSources:[...document.querySelectorAll("#services video.service-card-media source")].map(el=>el.getAttribute("src")),
         siloFeaturedSources:document.querySelectorAll('source[src*="silo-campana-producto-recortado.mp4"]').length,
         siloGallerySources:document.querySelectorAll('source[src*="silo-ugc-sin-subtitulos.mp4"]').length,
         ugcPerfumeSources:document.querySelectorAll('source[src*="d5ea268d-4d9f-4c93-9139-439d4b8ace03.mp4"]').length,
-        methodSteps:document.querySelectorAll("#method .method-brief-grid > article").length,
-        methodWidth:document.querySelector("#method .method-brief-stage")?.getBoundingClientRect().width,
-        methodContainerWidth:document.querySelector("#method > .site-shell")?.getBoundingClientRect().width,
+        collabColumns:document.querySelectorAll("#method .pc-collab-column").length,
+        audienceColumns:document.querySelectorAll("#method .pc-audience-grid article").length,
+        methodologyStageCount:document.querySelectorAll("#system .pc-method-six > li").length,
+        methodologyWidth:document.querySelector("#system .pc-method-six")?.getBoundingClientRect().width,
+        methodologyContainerWidth:document.querySelector("#system .studio-system-board")?.getBoundingClientRect().width,
+        methodStepsWithinViewport:[...document.querySelectorAll("#system .pc-method-six > li")].every(el=>{const r=el.getBoundingClientRect();return r.left>=-2&&r.right<=innerWidth+2;}),
         sectionOrder:[...document.querySelectorAll("main section[id]")].map(el=>el.id),
-        systemMap:!!document.querySelector("#system .studio-system-map"),
-        systemStepCount:document.querySelectorAll("#system .studio-system-sequence li").length,
-        systemToolCount:document.querySelectorAll("#system .studio-system-toolgrid > div").length,
-        toolNames:[...document.querySelectorAll("#system .tool-app-name")].map(e=>e.textContent.trim()),
-        localIconPaths:[...document.querySelectorAll("#system .tool-app-logo img")].map(img=>img.getAttribute("src")),
-        pipelineCards:document.querySelectorAll("#system .tool-pipeline-card").length,
-        toolGridWidth:document.querySelector("#system .studio-system-toolgrid")?.getBoundingClientRect().width,
-        toolCardsWithinViewport:[...document.querySelectorAll("#system .tool-pipeline-card")].every(el=>{const r=el.getBoundingClientRect();return r.left>=-2&&r.right<=innerWidth+2;}),
+        methodologyVisible:!!document.querySelector("#system .pc-method-six"),
+        systemStepCount:document.querySelectorAll("#system .pc-method-six > li").length,
 
         systemBoardWidth:document.querySelector("#system .studio-system-board")?.getBoundingClientRect().width,
         systemBoardContainer:document.querySelector("#system > .site-shell")?.getBoundingClientRect().width,
-        systemCta:document.querySelector("#system .studio-system-cta")?.getAttribute("href"),
+        profileSelect:!!document.querySelector("#profileType"),
+        projectTypeSelect:!!document.querySelector("#projectType") && document.querySelector("#projectType").tagName==="SELECT",
         editorialHeadings:[...document.querySelectorAll(".editorial-case h4")].map(n=>n.innerText),
         premiumLinks:[...document.querySelectorAll(".editorial-project-link")].map(n=>n.getAttribute("href")),
         deliveryStepWidth:document.querySelector("#caseMyWay .club-workflow-step")?.getBoundingClientRect().width,
@@ -191,8 +194,8 @@ async function test() {
       assert.equal(state.clippedDecisionLabels,0,"Case decision labels must fit available grid columns");
       assert.equal(state.premiumCaseCount,2,"Two distinct featured cases: SILO and Mariana");
       assert.equal(state.archiveTotal,4,"Archive contains four non-duplicated projects");
-      assert.equal(state.archiveUGC,2,"UGC archive retains two distinct pieces");
-      assert.equal(state.archiveProduct,2,"Campaign archive retains two distinct pieces");
+      assert.equal(state.archiveUGC,3,"UGC archive retains three distinct pieces, including the SILO UGC client piece");
+      assert.equal(state.archiveProduct,1,"Product archive retains one concept piece");
       assert.equal(state.siloFeaturedSources,1,"First SILO ad appears in featured campaign");
        assert.equal(state.siloGallerySources,1,"Second SILO ad appears in campaign gallery");
       assert.equal(state.ugcPerfumeSources,0,"Retired external perfume UGC source stays excluded");
@@ -236,40 +239,18 @@ async function test() {
       assert.equal(await page.getByText("Explorar otros formatos",{exact:true}).count(),0,"Requested editorial CTA removed");
       assert.equal(await page.locator('.project-item[data-category="workflow"]').count(),0,"Workflow gallery card must be removed");
       assert.equal(await page.locator('[data-filter="workflow"]').count(),0,"Workflow gallery tab must be removed");
-      assert.equal(await page.locator('.tab-btn[data-filter]').count(),2,"UGC and product filters remain");
+      assert.equal(await page.locator('.tab-btn[data-filter]').count(),3,"All, UGC and Product filters are available");
       assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
-      assert.equal(state.methodSteps,3,"Method simplified to three commercial collaboration steps");
-      const terms=await page.locator("#method .method-brief-scope").evaluate(el=>{
-        const box=el.getBoundingClientRect();
-        return {text:el.textContent.trim().replace(/\s+/g," "),width:box.width,visible:getComputedStyle(el).display!=="none",boldSections:[...el.querySelectorAll("strong")].map(n=>n.textContent.trim())};
-      });
-      assert.equal(terms.text,"Alcance, revisiones y plazos de entrega: se definen por escrito luego de evaluar la complejidad del resumen del proyecto, la fidelidad de producto, las escenas y las piezas solicitadas. No se inicia la generación final hasta validar la propuesta visual y el presupuesto. Pago: se realiza al momento de la entrega final.","Explicit timeline and payment terms");
-      assert.deepEqual(terms.boldSections,["Alcance, revisiones y plazos de entrega:","Pago:"],"Terms have clear hierarchy");
-      assert.ok(terms.visible&&terms.width<=spec.width+2,"Terms fit on mobile and desktop");
-      assert.ok(state.methodWidth<=state.innerWidth+2,"Method stage fits viewport");
-      assert.ok(state.methodWidth<=state.methodContainerWidth+2,"Method stage fits its container");
-      assert.ok(state.systemMap,"Dedicated production system is visible in DOM");
-      assert.equal(state.systemStepCount,4,"Four studio system phases");
-      assert.equal(state.systemToolCount,3,"Three functional tool groups");
-      assert.equal(state.pipelineCards,3,"Three new functional tool cards");
-      assert.deepEqual(state.toolNames,["ChatGPT","Nano Banana Pro","Higgsfield Soul","Omni 1.1 Flash","Google Flow Labs","Python","CapCut","Canva"],"Exact functional tool order");
-      assert.equal(await page.locator("#system .tool-pipeline-direction .tool-app").count(),3,"Direction shows ChatGPT, Nano and Soul");
-      assert.equal(await page.locator("#system .tool-pipeline-generation .tool-app").count(),2,"Generation shows Omni and Google Flow Labs");
-      assert.equal(await page.locator("#system .tool-pipeline-finishing .tool-app").count(),3,"Finishing has three icons");
-      const alignment=await page.locator("#system .tool-pipeline-generation .tool-apps").evaluate(el=>{
-        const items=[...el.querySelectorAll(".tool-app")].map(x=>x.getBoundingClientRect());
-        const container=el.getBoundingClientRect();
-        const usedLeft=items[0].left-container.left;
-        const usedRight=container.right-items[items.length-1].right;
-        return {usedLeft,usedRight,width:container.width};
-      });
-      assert.ok(Math.abs(alignment.usedLeft-alignment.usedRight)<4,"Two generation logos are horizontally centered");
-      assert.equal(new Set(state.localIconPaths).size,8,"Eight unique local SVG assets");
-      assert.ok(state.localIconPaths.every(x=>x.startsWith("./assets/tool-icons/")),"Logos self-hosted");
-      assert.ok(state.toolCardsWithinViewport,"No tool card horizontally clips");
-      assert.ok(state.toolGridWidth<=state.innerWidth+2,"Tool grid fits viewport");
+      assert.equal(state.collabColumns,3,"Three collaboration responsibilities are visible");
+      assert.equal(state.audienceColumns,2,"Brand and agency audiences are differentiated");
+      assert.equal(state.methodologyStageCount,6,"All six production stages are visible");
+      assert.ok(state.methodologyWidth<=state.innerWidth+2,"Methodology rows fit the viewport");
+      assert.ok(state.methodologyWidth<=state.methodologyContainerWidth+2,"Methodology rows remain within the board");
+      assert.ok(state.methodStepsWithinViewport,"No methodology row clips horizontally");
+      assert.equal(state.methodologyVisible,true,"The six-stage method is visible");
+      assert.equal(state.systemStepCount,6,"Six visible production stages render");
+      assert.equal(await page.locator("#system .pc-method-six > li").count(),6,"Six rows are shown rather than a generic tool stack");
 
-      assert.equal(state.systemCta,"#contact","Contact CTA must stay internal");
       assert.ok(state.systemBoardWidth <= state.innerWidth+2,"System diagram must fit viewport");
       assert.ok(state.systemBoardWidth <= state.systemBoardContainer+2,"System diagram must fit site-shell");
       assert.equal(await page.locator('[aria-labelledby="siloCaseTitle"]').count(),1,"SILO editorial case is featured");
@@ -293,16 +274,25 @@ async function test() {
 
       await page.locator('[data-filter="product"]').click();
       assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product filter is selected");
+      assert.equal(await page.locator('#projectGrid .project-item[data-category="product"]:not(.is-hidden)').count(),1,"Product filter exposes the one current product concept");
       const siloCard=page.locator('#projectGrid .project-item--silo');
-      assert.equal(await siloCard.count(),1,"Second SILO ad appears in product gallery");
-      assert.equal(await siloCard.evaluate(el=>el.classList.contains("is-hidden")),false,"SILO ad becomes visible in product gallery");
-      await siloCard.screenshot({path:"artifacts/silo-gallery-"+spec.name+".png",animations:"disabled"});
+      assert.equal(await siloCard.count(),1,"SILO UGC item remains in the repository gallery");
+      assert.equal(await siloCard.evaluate(el=>el.classList.contains("is-hidden")),true,"SILO UGC is excluded from the product filter");
       await page.locator('[data-filter="ugc"]').click();
       assert.equal(await page.locator('[data-filter="ugc"]').getAttribute("aria-selected"),"true","UGC tab restored");
-      assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),1,"Visual dashboard stage is present");
+      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),3,"UGC filter exposes three real pieces");
+      assert.equal(await siloCard.evaluate(el=>el.classList.contains("is-hidden")),false,"SILO UGC appears under the UGC filter");
+      await siloCard.screenshot({path:"artifacts/silo-ugc-gallery-"+spec.name+".png",animations:"disabled"});
+      assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),0,"Pricing does not repeat the inclusions in a second summary block");
+      assert.equal(state.serviceMediaCount,3,"All three original Service background videos remain present");
+      assert.equal(state.serviceMediaSources.length,3,"Each Service card retains its original video source");
+      assert.equal(state.captionCount,4,"Every gallery project has a context block");
+      assert.ok(state.originLabelCount>=6,"Featured and gallery pieces disclose their origin");
+      assert.equal(state.profileSelect,true,"Contact captures prospect profile");
+      assert.equal(state.projectTypeSelect,true,"Contact captures selected piece type");
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
-      assert.equal(await page.title(),"Pato Creando | Reels UGC y anuncios de producto con IA","Spanish title fits content strategy");
+      assert.equal(await page.title(),"Pato Creando | Dirección creativa y producción audiovisual con IA","Updated commercial title is present");
       assert.equal(await page.locator("#launchOffer .pricing-secondary-contact a[href='#contact']").count(),1,"Visitor can use contact form instead of Instagram");
       assert.equal(await page.locator("#submitLabel").textContent(),"Enviar consulta","Contact button invites a consultation");
       assert.equal(await page.locator("#contactForm .contact-brief-hint").count(),1,"Brief helper appears above form");
@@ -319,7 +309,8 @@ async function test() {
 
       assert.ok(state.projects && state.caseStudy,"Projects and the Club workflow must be in DOM");
       assert.equal(state.css,"rgb(207, 230, 90)","Accent system styling must load");
-      assert.equal(state.heroActionCount,0,"Requested hero CTA pair removed");
+      assert.equal(state.heroActionCount,0,"Legacy hero CTA wrapper remains absent");
+      assert.equal(state.heroCtaCount,2,"Hero contains the two requested conversion paths");
       assert.equal(state.systemAmbientCount,1,"One ambient system backdrop");
       assert.equal(state.systemAmbientMuted,true,"Ambient system backdrop always muted");
       assert.ok(state.systemScrim.includes("linear-gradient"),"Dark overlay preserves readable contrast");
@@ -338,21 +329,16 @@ async function test() {
       // An additional real-animation CSS pass: the baseline QA uses reduced motion and
       // would otherwise hide the video in every screenshot.
 
-      await page.locator("#system .studio-system-toolgrid").scrollIntoViewIfNeeded();
-      await page.waitForFunction(() => [...document.querySelectorAll("#system .tool-app-logo img")].every(el=>el.complete && el.naturalWidth>0),{timeout:12000});
-      assert.equal(await page.locator("#system .tool-app-logo img").count(),8,"Tool logos render in all viewports");
-      const disabledWave=await page.locator("#system .tool-pipeline-card").first().evaluate(el=>getComputedStyle(el,"::before").animationName);
-      assert.equal(disabledWave,"none","Reduced motion disables RGB wave");
-      await page.locator("#system .studio-system-toolgrid").screenshot({path:"artifacts/stack-tools-"+spec.name+".png",animations:"disabled"});
+      await page.locator("#system .pc-method-six").scrollIntoViewIfNeeded();
+      assert.equal(await page.locator("#system .pc-method-six > li").count(),6,"All six method rows render in every viewport");
+      await page.locator("#system .studio-system-board").screenshot({path:"artifacts/methodology-"+spec.name+".png",animations:"disabled"});
       await page.emulateMedia({reducedMotion:"no-preference"});
-      const activeWave=await page.locator("#system .tool-pipeline-card").first().evaluate(el=>getComputedStyle(el,"::before").animationName);
-      assert.ok(activeWave.includes("tool-pipeline-border-wave"),"RGB wave enabled in normal motion");
       await page.locator("#system .studio-system-board").scrollIntoViewIfNeeded();
       await page.waitForTimeout(450);
       const cinematic=await page.evaluate(() => {
         const board=document.querySelector("#system .studio-system-board");
         const video=document.querySelector("#system .studio-system-ambient");
-        const panel=document.querySelector("#system .studio-system-panel");
+        const panel=document.querySelector("#system .pc-method-six > li");
         const active=getComputedStyle(video);
         return {
           videoDisplay:active.display,
@@ -360,13 +346,14 @@ async function test() {
           scrim:getComputedStyle(board,"::before").backgroundImage,
           atmosphere:getComputedStyle(board,"::after").backgroundImage,
           atmosphereAnimation:getComputedStyle(board,"::after").animationName,
-          panelBackground:getComputedStyle(panel).backgroundColor,
+          panelBorder:getComputedStyle(panel).borderBottomColor,
           border:getComputedStyle(board).borderColor,
           width:board.getBoundingClientRect().width
         };
       });
       assert.notEqual(cinematic.videoDisplay,"none","Normal motion must reveal the ambient video layer");
       assert.ok(cinematic.videoOpacity>=.64,"Cinematic layer should be visually perceptible");
+      assert.ok(cinematic.panelBorder,"Method rows retain visible separators");
       assert.ok(cinematic.scrim.includes("linear-gradient"),"Readable cinematic scrim must remain");
       assert.ok(cinematic.atmosphere.includes("radial-gradient"),"Decorative fallback must remain visible without video bytes");
       assert.ok(cinematic.atmosphereAnimation.includes("studio-system-atmosphere"),"Controlled atmospheric layer active");
@@ -393,16 +380,16 @@ async function test() {
       const audioInstruction=await featuredVideo.getAttribute("aria-label");
       assert.ok(audioInstruction.includes("escuchar el audio original"),"Video remains directly operable without on-screen buttons");
       await page.locator('[data-filter="ugc"]').click();
-      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),2,"UGC filter displays the two unique cards");
+      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),3,"UGC filter displays three real pieces");
       await page.locator('[data-filter="product"]').click();
-      assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),2,"Campaign filter displays the two unique cards");
+      assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),1,"Product filter displays the one current product piece");
       assert.equal(await page.locator("#services .service-example-link").count(),3,"All services have contextual next steps");
       await page.locator("#services .service-card-ugc .service-example-link").click();
       assert.equal(await page.locator('[data-filter="ugc"]').getAttribute("aria-selected"),"true","UGC example shortcut selects the UGC projects");
-      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),2,"UGC projects visible after shortcut");
+      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),3,"UGC projects visible after shortcut");
       await page.locator("#services .service-card-product .service-example-link").click();
       assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product example shortcut selects product campaign projects");
-      assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),2,"Product projects visible after shortcut");
+      assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),1,"Product projects visible after shortcut");
       assert.equal(await page.locator("#services .service-card-testing .service-example-link").getAttribute("href"),"#caseMyWay","Variant service points to actual process example");
       await page.locator("#services .services-grid").screenshot({path:"artifacts/services-"+spec.name+".png",animations:"disabled"});
       // Page-error report is informational: third-party video/CDN failures are tested separately.
@@ -414,7 +401,7 @@ async function test() {
     // then is requested when its own card becomes visible (normal motion).
     const mediaContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:1,reducedMotion:"no-preference"});
     const mediaRequests=[];
-    await mediaContext.route("**/*.mp4",route=>{
+    await mediaContext.route("**/*.mp4*",route=>{
       const target=new URL(route.request().url()).pathname;
       if(target.includes("hero-showreel-mobile-compatible.mp4")) {
         mediaRequests.push(target);
@@ -462,7 +449,7 @@ async function test() {
       {success:"true",message:"Form submission successful"}
     ];
     const submittedPayloads=[];
-    await leadContext.route("**/*.mp4",route=>route.abort());
+    await leadContext.route("**/*.mp4*",route=>route.abort());
     await leadContext.route("https://formsubmit.co/ajax/**",async route=>{
       assert.equal(route.request().method(),"POST","Lead form sends POST");
       submittedPayloads.push(JSON.parse(route.request().postData()));
@@ -475,7 +462,8 @@ async function test() {
       await leadPage.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
       await leadPage.locator("#name").fill("Marca prueba QA");
       await leadPage.locator("#email").fill("cliente@example.com");
-      await leadPage.locator("#projectType").fill("2 reels UGC");
+      await leadPage.locator("#profileType").selectOption("Marca e-commerce / DTC");
+      await leadPage.locator("#projectType").selectOption("Video de producto");
       await leadPage.locator("#message").fill("Quiero consultar por dos anuncios de producto.");
       await leadPage.locator('#contactForm button[type="submit"]').click();
       await leadPage.locator("#formStatus.is-error").waitFor({state:"visible",timeout:10000});
@@ -501,7 +489,8 @@ async function test() {
       assert.equal(await leadPage.locator("#message").inputValue(),"",
         "Form resets only on confirmed success");
       assert.equal(submittedPayloads.length,2,"Exactly two intercepted submissions");
-      assert.equal(submittedPayloads[0].project,"2 reels UGC","Project context reaches the provider");
+      assert.equal(submittedPayloads[0].profile,"Marca e-commerce / DTC","Prospect profile reaches the provider");
+      assert.equal(submittedPayloads[0].project,"Video de producto","Selected piece type reaches the provider");
       console.log(JSON.stringify({formConversionQA:"rejected and accepted provider responses verified",realEmailsSent:0}));
     } finally {
       await leadContext.close();
@@ -514,7 +503,7 @@ async function test() {
     for (const staleSpec of [{name:"desktop-stale-css",width:1366,height:900},{name:"mobile-stale-css",width:390,height:844}]) {
       const staleContext=await browser.newContext({viewport:{width:staleSpec.width,height:staleSpec.height},reducedMotion:"reduce"});
       await staleContext.route("**/assets/premium-lab.css*",route=>route.fulfill({status:200,contentType:"text/css",body:cachedPremiumCss}));
-      await staleContext.route("**/*.mp4",route=>route.abort());
+      await staleContext.route("**/*.mp4*",route=>route.abort());
       const page=await staleContext.newPage();
       try {
         await page.goto(url,{waitUntil:"domcontentloaded",timeout:90000});

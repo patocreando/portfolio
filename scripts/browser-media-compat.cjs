@@ -28,8 +28,10 @@ const server = http.createServer(async (req,res) => {
 });
 
 (async function main() {
-  await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));
-  const url = "http://127.0.0.1:"+server.address().port+"/";
+  // localhost is treated as a trustworthy local origin by WebKit; 127.0.0.1
+  // was upgraded to HTTPS in its Linux runner, although the fixture server is HTTP.
+  await new Promise(resolve=>server.listen(0,resolve));
+  const url = "http://localhost:"+server.address().port+"/";
   try {
     for (const engine of [{name:"Firefox",type:firefox},{name:"WebKit",type:webkit}]) {
       const browser = await engine.type.launch({headless:true});
@@ -47,12 +49,27 @@ const server = http.createServer(async (req,res) => {
           await context.route("**/tracker.metricool.com/**",route=>route.abort());
           const page = await context.newPage();
           const errors=[];
+          const failedRequests=[];
+          const posterResponses=[];
           page.on("pageerror",error=>errors.push(error.message));
+          page.on("requestfailed",request=>failedRequests.push({url:request.url(),error:request.failure()?.errorText}));
+          page.on("response",response=>{
+            if(response.url().includes("hero-showreel-poster.svg"))posterResponses.push({status:response.status(),url:response.url(),contentType:response.headers()["content-type"]});
+          });
           await page.goto(url,{waitUntil:"domcontentloaded",timeout:90000});
-          await page.waitForFunction(()=>{
-            const image=document.querySelector(".hero-video-poster");
-            return image && image.complete && image.naturalWidth>0;
-          },null,{timeout:15000});
+          try {
+            await page.waitForFunction(()=>{
+              const image=document.querySelector(".hero-video-poster");
+              return image && image.complete && image.naturalWidth>0;
+            },null,{timeout:15000});
+          } catch(error) {
+            const posterState=await page.evaluate(()=>{
+              const image=document.querySelector(".hero-video-poster");
+              return image?{src:image.currentSrc,complete:image.complete,naturalWidth:image.naturalWidth,naturalHeight:image.naturalHeight,display:getComputedStyle(image).display,visibility:getComputedStyle(image).visibility,opacity:getComputedStyle(image).opacity}:null;
+            });
+            console.error(JSON.stringify({posterLoadDiagnostic:{engine:engine.name,viewport:spec.name,posterState,posterResponses,failedRequests:failedRequests.slice(0,12),pageErrors:errors.slice(0,8)}}));
+            throw error;
+          }
           await page.waitForTimeout(900);
           const state = await page.evaluate(()=>{
             const screen=document.querySelector(".hero-phone-screen");

@@ -55,10 +55,15 @@
     overflow: hidden !important;
   }
 
-  /* Do not cover the showreel with an unrelated product still.
-     Reveal the actual video frame as soon as the browser decodes it. */
+  /* Keep the dedicated Hero poster until the playback controller confirms a decoded frame. */
   #top .hero-mobile-poster {
-    display: none !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  #top .hero-phone-screen.is-video-ready .hero-mobile-poster {
+    opacity: 0 !important;
+    visibility: hidden !important;
   }
 
   #top .hero-video {
@@ -69,8 +74,11 @@
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    opacity: 1 !important;
+    opacity: 0 !important;
     visibility: visible !important;
+  }
+  #top .hero-phone-screen.is-video-ready .hero-video {
+    opacity: 1 !important;
   }
 
   #projects {
