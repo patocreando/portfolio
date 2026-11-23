@@ -478,7 +478,10 @@
       }
     }
 
-    if (best && best.paused && videoAllowedToAutoplay()) playMuted(best, false);
+    if (best && best.paused) {
+      if (videoAllowedToAutoplay()) playMuted(best, false);
+      else if (!document.hidden) showFallback(best, "Reproducir video");
+    }
     maintainMemory();
   }
 
