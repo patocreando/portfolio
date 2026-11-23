@@ -242,37 +242,16 @@ async function test() {
       assert.equal(await page.locator('.tab-btn[data-filter]').count(),3,"All, UGC and Product filters are available");
       assert.deepEqual(state.sectionOrder,["top","projects","caseMyWay","services","launchOffer","system","method","contact"],"Cold-traffic narrative order");
       assert.equal(state.methodSteps,3,"Method simplified to three commercial collaboration steps");
-      const terms=await page.locator("#method .method-brief-scope").evaluate(el=>{
-        const box=el.getBoundingClientRect();
-        return {text:el.textContent.trim().replace(/\s+/g," "),width:box.width,visible:getComputedStyle(el).display!=="none",boldSections:[...el.querySelectorAll("strong")].map(n=>n.textContent.trim())};
-      });
-      assert.equal(terms.text,"Alcance, revisiones y plazos de entrega: se definen por escrito luego de evaluar la complejidad del resumen del proyecto, la fidelidad de producto, las escenas y las piezas solicitadas. No se inicia la generación final hasta validar la propuesta visual y el presupuesto. Pago: se realiza al momento de la entrega final.","Explicit timeline and payment terms");
-      assert.deepEqual(terms.boldSections,["Alcance, revisiones y plazos de entrega:","Pago:"],"Terms have clear hierarchy");
-      assert.ok(terms.visible&&terms.width<=spec.width+2,"Terms fit on mobile and desktop");
-      assert.ok(state.methodWidth<=state.innerWidth+2,"Method stage fits viewport");
-      assert.ok(state.methodWidth<=state.methodContainerWidth+2,"Method stage fits its container");
-      assert.ok(state.systemMap,"Dedicated production system is visible in DOM");
-      assert.equal(state.systemStepCount,4,"Four studio system phases");
-      assert.equal(state.systemToolCount,3,"Three functional tool groups");
-      assert.equal(state.pipelineCards,3,"Three new functional tool cards");
-      assert.deepEqual(state.toolNames,["ChatGPT","Nano Banana Pro","Higgsfield Soul","Omni 1.1 Flash","Google Flow Labs","Python","CapCut","Canva"],"Exact functional tool order");
-      assert.equal(await page.locator("#system .tool-pipeline-direction .tool-app").count(),3,"Direction shows ChatGPT, Nano and Soul");
-      assert.equal(await page.locator("#system .tool-pipeline-generation .tool-app").count(),2,"Generation shows Omni and Google Flow Labs");
-      assert.equal(await page.locator("#system .tool-pipeline-finishing .tool-app").count(),3,"Finishing has three icons");
-      const alignment=await page.locator("#system .tool-pipeline-generation .tool-apps").evaluate(el=>{
-        const items=[...el.querySelectorAll(".tool-app")].map(x=>x.getBoundingClientRect());
-        const container=el.getBoundingClientRect();
-        const usedLeft=items[0].left-container.left;
-        const usedRight=container.right-items[items.length-1].right;
-        return {usedLeft,usedRight,width:container.width};
-      });
-      assert.ok(Math.abs(alignment.usedLeft-alignment.usedRight)<4,"Two generation logos are horizontally centered");
-      assert.equal(new Set(state.localIconPaths).size,8,"Eight unique local SVG assets");
-      assert.ok(state.localIconPaths.every(x=>x.startsWith("./assets/tool-icons/")),"Logos self-hosted");
-      assert.ok(state.toolCardsWithinViewport,"No tool card horizontally clips");
-      assert.ok(state.toolGridWidth<=state.innerWidth+2,"Tool grid fits viewport");
+      assert.equal(state.collabColumns,3,"Three collaboration responsibilities are visible");
+      assert.equal(state.audienceColumns,2,"Brand and agency audiences are differentiated");
+      assert.equal(state.methodologyStageCount,6,"All six production stages are visible");
+      assert.ok(state.methodologyWidth<=state.innerWidth+2,"Methodology rows fit the viewport");
+      assert.ok(state.methodologyWidth<=state.methodologyContainerWidth+2,"Methodology rows remain within the board");
+      assert.ok(state.methodStepsWithinViewport,"No methodology row clips horizontally");
+      assert.equal(state.methodologyVisible,true,"The six-stage method is visible");
+      assert.equal(state.systemStepCount,6,"Six visible production stages render");
+      assert.equal(await page.locator("#system .pc-method-six > li").count(),6,"Six rows are shown rather than a generic tool stack");
 
-      assert.equal(state.systemCta,"#contact","Contact CTA must stay internal");
       assert.ok(state.systemBoardWidth <= state.innerWidth+2,"System diagram must fit viewport");
       assert.ok(state.systemBoardWidth <= state.systemBoardContainer+2,"System diagram must fit site-shell");
       assert.equal(await page.locator('[aria-labelledby="siloCaseTitle"]').count(),1,"SILO editorial case is featured");
@@ -296,13 +275,22 @@ async function test() {
 
       await page.locator('[data-filter="product"]').click();
       assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product filter is selected");
+      assert.equal(await page.locator('#projectGrid .project-item[data-category="product"]:not(.is-hidden)').count(),1,"Product filter exposes the one current product concept");
       const siloCard=page.locator('#projectGrid .project-item--silo');
-      assert.equal(await siloCard.count(),1,"Second SILO ad appears in product gallery");
-      assert.equal(await siloCard.evaluate(el=>el.classList.contains("is-hidden")),false,"SILO ad becomes visible in product gallery");
-      await siloCard.screenshot({path:"artifacts/silo-gallery-"+spec.name+".png",animations:"disabled"});
+      assert.equal(await siloCard.count(),1,"SILO UGC item remains in the repository gallery");
+      assert.equal(await siloCard.evaluate(el=>el.classList.contains("is-hidden")),true,"SILO UGC is excluded from the product filter");
       await page.locator('[data-filter="ugc"]').click();
       assert.equal(await page.locator('[data-filter="ugc"]').getAttribute("aria-selected"),"true","UGC tab restored");
-      assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),1,"Visual dashboard stage is present");
+      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),3,"UGC filter exposes three real pieces");
+      assert.equal(await siloCard.evaluate(el=>el.classList.contains("is-hidden")),false,"SILO UGC appears under the UGC filter");
+      await siloCard.screenshot({path:"artifacts/silo-ugc-gallery-"+spec.name+".png",animations:"disabled"});
+      assert.equal(await page.locator("#launchOffer .pricing-preproduction").count(),1,"Plan inclusions are explained once");
+      assert.equal(state.serviceMediaCount,3,"All three original Service background videos remain present");
+      assert.equal(state.serviceMediaSources.length,3,"Each Service card retains its original video source");
+      assert.equal(state.captionCount,4,"Every gallery project has a context block");
+      assert.ok(state.originLabelCount>=7,"Featured and gallery pieces disclose their origin");
+      assert.equal(state.profileSelect,true,"Contact captures prospect profile");
+      assert.equal(state.projectTypeSelect,true,"Contact captures selected piece type");
       assert.equal(state.packCount,3,"Three packs rendered");
       assert.equal(state.ctaCount,3,"Three pack CTAs rendered");
       assert.equal(await page.title(),"Pato Creando | Dirección creativa y producción audiovisual con IA","Updated commercial title is present");
@@ -342,21 +330,16 @@ async function test() {
       // An additional real-animation CSS pass: the baseline QA uses reduced motion and
       // would otherwise hide the video in every screenshot.
 
-      await page.locator("#system .studio-system-toolgrid").scrollIntoViewIfNeeded();
-      await page.waitForFunction(() => [...document.querySelectorAll("#system .tool-app-logo img")].every(el=>el.complete && el.naturalWidth>0),{timeout:12000});
-      assert.equal(await page.locator("#system .tool-app-logo img").count(),8,"Tool logos render in all viewports");
-      const disabledWave=await page.locator("#system .tool-pipeline-card").first().evaluate(el=>getComputedStyle(el,"::before").animationName);
-      assert.equal(disabledWave,"none","Reduced motion disables RGB wave");
-      await page.locator("#system .studio-system-toolgrid").screenshot({path:"artifacts/stack-tools-"+spec.name+".png",animations:"disabled"});
+      await page.locator("#system .pc-method-six").scrollIntoViewIfNeeded();
+      assert.equal(await page.locator("#system .pc-method-six > li").count(),6,"All six method rows render in every viewport");
+      await page.locator("#system .studio-system-board").screenshot({path:"artifacts/methodology-"+spec.name+".png",animations:"disabled"});
       await page.emulateMedia({reducedMotion:"no-preference"});
-      const activeWave=await page.locator("#system .tool-pipeline-card").first().evaluate(el=>getComputedStyle(el,"::before").animationName);
-      assert.ok(activeWave.includes("tool-pipeline-border-wave"),"RGB wave enabled in normal motion");
       await page.locator("#system .studio-system-board").scrollIntoViewIfNeeded();
       await page.waitForTimeout(450);
       const cinematic=await page.evaluate(() => {
         const board=document.querySelector("#system .studio-system-board");
         const video=document.querySelector("#system .studio-system-ambient");
-        const panel=document.querySelector("#system .studio-system-panel");
+        const panel=document.querySelector("#system .pc-method-six > li");
         const active=getComputedStyle(video);
         return {
           videoDisplay:active.display,
@@ -364,13 +347,14 @@ async function test() {
           scrim:getComputedStyle(board,"::before").backgroundImage,
           atmosphere:getComputedStyle(board,"::after").backgroundImage,
           atmosphereAnimation:getComputedStyle(board,"::after").animationName,
-          panelBackground:getComputedStyle(panel).backgroundColor,
+          panelBorder:getComputedStyle(panel).borderBottomColor,
           border:getComputedStyle(board).borderColor,
           width:board.getBoundingClientRect().width
         };
       });
       assert.notEqual(cinematic.videoDisplay,"none","Normal motion must reveal the ambient video layer");
       assert.ok(cinematic.videoOpacity>=.64,"Cinematic layer should be visually perceptible");
+      assert.ok(cinematic.panelBorder,"Method rows retain visible separators");
       assert.ok(cinematic.scrim.includes("linear-gradient"),"Readable cinematic scrim must remain");
       assert.ok(cinematic.atmosphere.includes("radial-gradient"),"Decorative fallback must remain visible without video bytes");
       assert.ok(cinematic.atmosphereAnimation.includes("studio-system-atmosphere"),"Controlled atmospheric layer active");
@@ -397,16 +381,16 @@ async function test() {
       const audioInstruction=await featuredVideo.getAttribute("aria-label");
       assert.ok(audioInstruction.includes("escuchar el audio original"),"Video remains directly operable without on-screen buttons");
       await page.locator('[data-filter="ugc"]').click();
-      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),2,"UGC filter displays the two unique cards");
+      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),3,"UGC filter displays three real pieces");
       await page.locator('[data-filter="product"]').click();
-      assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),2,"Campaign filter displays the two unique cards");
+      assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),1,"Product filter displays the one current product piece");
       assert.equal(await page.locator("#services .service-example-link").count(),3,"All services have contextual next steps");
       await page.locator("#services .service-card-ugc .service-example-link").click();
       assert.equal(await page.locator('[data-filter="ugc"]').getAttribute("aria-selected"),"true","UGC example shortcut selects the UGC projects");
-      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),2,"UGC projects visible after shortcut");
+      assert.equal(await page.locator('.project-item[data-category="ugc"]:not(.is-hidden)').count(),3,"UGC projects visible after shortcut");
       await page.locator("#services .service-card-product .service-example-link").click();
       assert.equal(await page.locator('[data-filter="product"]').getAttribute("aria-selected"),"true","Product example shortcut selects product campaign projects");
-      assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),2,"Product projects visible after shortcut");
+      assert.equal(await page.locator('.project-item[data-category="product"]:not(.is-hidden)').count(),1,"Product projects visible after shortcut");
       assert.equal(await page.locator("#services .service-card-testing .service-example-link").getAttribute("href"),"#caseMyWay","Variant service points to actual process example");
       await page.locator("#services .services-grid").screenshot({path:"artifacts/services-"+spec.name+".png",animations:"disabled"});
       // Page-error report is informational: third-party video/CDN failures are tested separately.
