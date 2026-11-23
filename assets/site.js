@@ -1047,7 +1047,7 @@
         });
       });
 
-      showCategory("ugc");
+      showCategory("product");
 
       // Magnetic pointer effect
       if (finePointer && !reduceMotion) {
