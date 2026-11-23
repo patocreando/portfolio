@@ -13,7 +13,7 @@
   <link rel="canonical" href="https://patocreando.github.io/portfolio/" />
   <meta property="og:url" content="https://patocreando.github.io/portfolio/" />
   <link rel="preconnect" href="https://d2ol7oe51mr4n9.cloudfront.net" crossorigin />
-  <link rel="preload" as="image" href="./assets/images/silo-campana-producto-recortado.jpg" fetchpriority="high" />
+  <link rel="preload" as="image" href="./assets/images/hero-showreel-poster.jpg?v=20261123-hero-cross-browser-1" fetchpriority="high" />
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
 
   <meta property="og:title" content="Pato Creando | Reels UGC y anuncios de producto con IA" />
@@ -65,7 +65,7 @@
   <script src="./assets/vendor/gsap-3.12.5.min.js"></script>
   <script src="./assets/vendor/ScrollTrigger-3.12.5.min.js"></script>
 
-  <link rel="stylesheet" href="./assets/site.css?v=20261122-galaxy-a20-fallback-2" />
+  <link rel="stylesheet" href="./assets/site.css?v=20261123-hero-poster-states-1" />
   <link rel="stylesheet" href="./assets/premium-lab.css?v=20261029-continuum-1" />
   <link rel="stylesheet" href="./assets/lote-02.css?v=20261027-club-case-3" />
   <link rel="stylesheet" href="./assets/club-case.css?v=20261030-scroll-story-1" />
@@ -224,7 +224,7 @@
   <link rel="stylesheet" href="./assets/compact-flow.css?v=20261029-1" />
   <link rel="stylesheet" href="./assets/orbital-motion.css?v=20261030-1" />
   <link rel="stylesheet" href="./assets/mobile-browser-layout.css?v=20261122-project-gallery-a20-2" />
-  <link rel="stylesheet" href="./assets/mobile-stability.css?v=20261122-stability-2" />
+  <link rel="stylesheet" href="./assets/mobile-stability.css?v=20261123-hero-poster-states-1" />
   <style id="hero-audio-prompt-layout">
     .hero-audio-stack {
       position: relative;
@@ -347,11 +347,33 @@
               </div>
 
               <div class="hero-phone-screen">
-                <video muted loop playsinline webkit-playsinline preload="metadata" class="hero-video" data-audio-available="true" aria-label="Showreel de Pato Creando: anuncios y contenido audiovisual con inteligencia artificial">
-                  <source src="./assets/videos/hero-showreel-mobile-compatible.mp4?v=20261122-mobile-1" type="video/mp4" />
+                <img
+                  class="hero-mobile-poster"
+                  data-hero-mobile-poster
+                  src="./assets/images/hero-showreel-poster.jpg?v=20261123-hero-cross-browser-1"
+                  alt=""
+                  aria-hidden="true"
+                  width="720"
+                  height="1280"
+                  loading="eager"
+                  decoding="async"
+                  fetchpriority="high"
+                />
+                <video
+                  class="hero-video"
+                  muted
+                  loop
+                  playsinline
+                  webkit-playsinline
+                  preload="none"
+                  poster="./assets/images/hero-showreel-poster.jpg?v=20261123-hero-cross-browser-1"
+                  data-audio-available="true"
+                  aria-label="Showreel de Pato Creando: anuncios y contenido audiovisual con inteligencia artificial"
+                >
+                  <source src="./assets/videos/hero-showreel-mobile-compatible.mp4?v=20261123-hero-cross-browser-1" type="video/mp4" />
                 </video>
 
-                <button class="hero-mobile-play" type="button" data-hero-mobile-play aria-label="Reproducir showreel">
+                <button class="hero-mobile-play" type="button" data-hero-mobile-play aria-label="Reproducir showreel" hidden>
                   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.8v12.4L18 12 8 5.8Z"/></svg>
                   <span>Reproducir showreel</span>
                 </button>
@@ -1149,7 +1171,7 @@
 
 
   <script src="./assets/site.js?v=20261123-product-card-visibility-fix-2"></script>
-  <script defer src="./assets/mobile-hero-fallback.js?v=20261122-samsung-a20-frame-3"></script>
+  <script defer src="./assets/mobile-hero-fallback.js?v=20261123-hero-cross-browser-1"></script>
   <script defer src="./assets/premium-lab.js?v=20261122-mobile-playback-3"></script>
   <script defer src="./assets/club-case.js?v=20261030-scroll-story-1"></script>
   <script defer src="./assets/compact-flow.js?v=20261029-1"></script>
