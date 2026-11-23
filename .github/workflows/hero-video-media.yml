@@ -135,6 +135,7 @@ jobs:
         # Verify the complete poster fade-in after the media error.
         # Wait for the paused first-frame state after a denied autoplay promise.
         # Firefox receives responsive viewport sizes without mobile emulation flags.
+        # Include detailed image-resource diagnostics for the WebKit poster fallback.
         # Wait for the poster-to-frame opacity transition before capturing QA screenshots.
         run: node scripts/hero-video-compatibility.mjs
 
