@@ -82,6 +82,17 @@ const viewports = [
   {name:"desktop",width:1366,height:900,isMobile:false,hasTouch:false}
 ];
 
+function engineContext(engineName, options) {
+  const configured = {...options};
+  // Firefox supports responsive viewport widths but not Playwright's isMobile
+  // or hasTouch device emulation flags.
+  if (engineName === "firefox") {
+    delete configured.isMobile;
+    delete configured.hasTouch;
+  }
+  return configured;
+}
+
 async function waitForPoster(page) {
   await page.waitForFunction(() => {
     const img = document.querySelector("[data-hero-mobile-poster]");
@@ -174,13 +185,13 @@ async function run() {
         // by each engine's own media policy. Either a real frame or the poster
         // plus an actionable play prompt must be visible.
         for (const spec of viewports) {
-          const context = await browser.newContext({
+          const context = await browser.newContext(engineContext(engineName,{
             viewport:{width:spec.width,height:spec.height},
             isMobile:spec.isMobile,
             hasTouch:spec.hasTouch,
             deviceScaleFactor:1,
             reducedMotion:"no-preference"
-          });
+          }));
           const page = await context.newPage();
           const pageErrors = [];
           const mediaNetwork = [];
@@ -260,13 +271,13 @@ async function run() {
         // Reduced-motion preference: do not autoplay or download the video;
         // preserve the hero still and provide the user's explicit play action.
         {
-          const context = await browser.newContext({
+          const context = await browser.newContext(engineContext(engineName,{
             viewport:{width:390,height:844},
             isMobile:true,
             hasTouch:true,
             deviceScaleFactor:1,
             reducedMotion:"reduce"
-          });
+          }));
           const page = await context.newPage();
           let mediaRequests = 0;
           page.on("request", request => {
@@ -297,13 +308,13 @@ async function run() {
         // Fatal load failure: the image remains fully rendered and native controls
         // are never exposed, even when the MP4 request cannot be retrieved.
         {
-          const context = await browser.newContext({
+          const context = await browser.newContext(engineContext(engineName,{
             viewport:{width:390,height:844},
             isMobile:true,
             hasTouch:true,
             deviceScaleFactor:1,
             reducedMotion:"no-preference"
-          });
+          }));
           const page = await context.newPage();
           await page.goto(baseUrl, {waitUntil:"domcontentloaded",timeout:90000});
           await waitForPoster(page);
@@ -340,13 +351,13 @@ async function run() {
         // Simulated autoplay-policy rejection: only a user gesture can start the
         // video, so the poster and manual play prompt must remain available.
         {
-          const context = await browser.newContext({
+          const context = await browser.newContext(engineContext(engineName,{
             viewport:{width:390,height:844},
             isMobile:true,
             hasTouch:true,
             deviceScaleFactor:1,
             reducedMotion:"no-preference"
-          });
+          }));
           await context.addInitScript(() => {
             const nativePlay = HTMLMediaElement.prototype.play;
             HTMLMediaElement.prototype.play = function () {
