@@ -415,3 +415,51 @@
 @media(prefers-reduced-motion:reduce) {
   #services .service-card .service-card-media { display:none !important; }
 }
+
+
+/* Final service-card balance: solid charcoal surface with barely visible moving footage. */
+#services .service-card {
+  background-color: #171e1d !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+#services .service-card .service-card-media {
+  display: block !important;
+  opacity: .20 !important;
+  filter: blur(5px) saturate(.58) contrast(1.02) brightness(.48) !important;
+  transform: scale(1.07) !important;
+}
+#services .service-card::after {
+  display: block !important;
+  opacity: 1 !important;
+  background:
+    linear-gradient(180deg,
+      rgba(14,19,20,.90) 0%,
+      rgba(14,19,20,.94) 56%,
+      rgba(14,19,20,.975) 100%
+    ),
+    radial-gradient(circle at 78% 18%,rgba(207,230,90,.035),transparent 34%) !important;
+}
+#services .service-card:hover .service-card-media {
+  opacity: .22 !important;
+  filter: blur(5px) saturate(.62) contrast(1.02) brightness(.50) !important;
+}
+@media(max-width:639px) {
+  #services .service-card .service-card-media {
+    display: block !important;
+    opacity: .16 !important;
+  }
+  #services .service-card::after {
+    background:
+      linear-gradient(180deg,
+        rgba(14,19,20,.92) 0%,
+        rgba(14,19,20,.95) 58%,
+        rgba(14,19,20,.98) 100%
+      ),
+      radial-gradient(circle at 78% 18%,rgba(207,230,90,.03),transparent 34%) !important;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  #services .service-card .service-card-media { display: none !important; }
+}
