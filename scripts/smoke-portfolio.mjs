@@ -271,7 +271,7 @@ assert.equal(occurrences(html,'id="marianaCaseTitle"'),1,"single Mariana case he
 has(html,'Del personaje y la cocina definidos en imágenes ancla a la generación, la edición con audio y el reel final.');
 assert.equal(occurrences(html,'class="editorial-overline"'),1,"one shared editorial overline");
 
-has(html,'<strong>Club del Cóctel</strong>', 'Club case identifies its real project');
+has(html,'<strong><span class="club-project-eyebrow">PROYECTO / 01</span>Club del Cóctel</strong>', 'Club case identifies its real project');
 assert.equal(occurrences(html,'03 / PRODUCTO IA · DIRECCIÓN CREATIVA'),0,'old UMBRAL project heading removed');
 assert.equal(occurrences(html,'Una campaña que sí.'),0,'old UMBRAL project copy removed');
 assert.equal(occurrences(html,'Workflow aplicado · My Way'),0,"redundant My Way project card should be removed");
