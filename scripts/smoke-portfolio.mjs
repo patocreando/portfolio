@@ -127,7 +127,7 @@ assert.equal(brandedPng.readUInt32BE(16),1550,"Social image width matches declar
 assert.equal(brandedPng.readUInt32BE(20),600,"Social image height matches declared metadata");
 assert.ok(brandedPng.length < 100_000,"Share image remains under 100 KB");
 for (const video of ["ugc-beauty.mp4","silo-ugc-sin-subtitulos.mp4","hyperreal-portrait.mp4"]) {
-  const sourceNeedle = ['data-src="./optimized_mobile/assets/videos/'+video, 'src="./optimized_mobile/assets/videos/'+video, '<source src="./assets/videos/'+video, '<source data-src="./assets/videos/'+video].find(candidate => html.includes(candidate));
+  const sourceNeedle = ['data-src="./assets/videos/'+video, 'src="./assets/videos/'+video, '<source src="./assets/videos/'+video, '<source data-src="./assets/videos/'+video].find(candidate => html.includes(candidate));
   assert.ok(sourceNeedle,"Gallery video source retained: "+video);
   const videoMatchIndex = html.indexOf(sourceNeedle);
   const opening = html.lastIndexOf("<video",videoMatchIndex);
@@ -184,7 +184,7 @@ has(html,'./assets/club-case.js?v=20261123-video-manager-1');
 has(html,'data-club-audio');
 has(fs.readFileSync('assets/club-case.js','utf8'),'intervalMs = 6500');
 assert.equal(occurrences(html,'edit-shot-02.webp'),0,'the editing mockup omits the B-roll insert');
-for(const file of ['ugc-beauty.mp4','silo-ugc-sin-subtitulos.mp4','hyperreal-portrait.mp4'])has(html,'./optimized_mobile/assets/videos/'+file);
+for(const file of ['ugc-beauty.mp4','silo-ugc-sin-subtitulos.mp4','hyperreal-portrait.mp4'])has(html,'./assets/videos/'+file);
 for(const phrase of ['Uso realista, sin perder naturalidad.','Detalle que resiste el primer plano.','Avatar de moda aplicado a una campaña.'])assert.equal(occurrences(html,phrase),0,'gallery video copy removed: '+phrase);
 assert.equal(occurrences(html,'./assets/umbral-compact.css'),0,'obsolete UMBRAL presentation stylesheet is no longer loaded');
 assert.equal(occurrences(js,'function umbralAutoSequence()'),0,'obsolete UMBRAL playback code removed');
@@ -220,13 +220,13 @@ assert.equal(curatedVideoTags.length,2,"Two curated video tags exist");
 for(const videoTag of curatedVideoTags){
   assert.ok(!videoTag.includes(" autoplay"),"Featured reels must not bypass viewport observer via autoplay attribute");
   assert.ok(videoTag.includes('preload="metadata"')||videoTag.includes('preload="none"'),"Featured reel defers network preload");
-  assert.ok(videoTag.includes('poster="./optimized_mobile/assets/videos/')||videoTag.includes('poster="./assets/images/'),"Featured reel retains real poster");
+  assert.ok(videoTag.includes('poster="./assets/images/'),"Featured reel retains real poster");
 }
 const heroTag=videoTags.find(tag=>tag.includes('class="hero-video"'));
 assert.ok(heroTag && heroTag.includes('data-autoplay-managed="true"'),"First-screen showreel uses shared autoplay controller");
 assert.ok(heroTag.includes('muted') && heroTag.includes('playsinline') && heroTag.includes('preload="metadata"'),"Hero starts muted and inline with metadata-only preload");
-assert.ok(heroTag.includes('poster="./optimized_mobile/assets/videos/hero-showreel-mobile-compatible.webp')||heroTag.includes('poster="./assets/images/hero-showreel-poster.svg"'),"Hero video has browser-native poster fallback");
-assert.ok(html.includes('data-hero-mobile-poster src="./optimized_mobile/assets/videos/hero-showreel-mobile-compatible.webp')||html.includes('data-hero-mobile-poster src="./assets/images/hero-showreel-poster.svg"'),"Hero retains separate visible image fallback");
+assert.ok(heroTag.includes('poster="./assets/images/hero-showreel-mobile-compatible.webp'),"Hero video has browser-native poster fallback");
+assert.ok(html.includes('data-hero-mobile-poster src="./assets/images/hero-showreel-mobile-compatible.webp'),"Hero retains separate visible image fallback");
 assert.ok(fs.existsSync("assets/images/hero-showreel-poster.svg"),"Hero fallback asset exists");
 assert.ok(fs.readFileSync("assets/images/hero-showreel-poster.svg","utf8").startsWith("<svg"),"Hero fallback is a lightweight local SVG");
 has(mobileHeroFallback,"requestVideoFrameCallback","Video reveal waits for a decoded frame");
@@ -263,8 +263,8 @@ has(html,'Dos lenguajes para un mismo objetivo: una campaña sensorial de produc
 has(html,'Del detalle de los frascos al cierre de marca');
 has(html,'id="marianaCaseTitle"');
 has(html,'Del omelette al anuncio UGC.');
-has(html,'./optimized_mobile/assets/videos/mariana-omelette-ugc.mp4');
-has(html,'./optimized_mobile/assets/videos/mariana-omelette-ugc.webp');
+has(html,'./assets/videos/mariana-omelette-ugc.mp4');
+has(html,'./assets/images/mariana-omelette-ugc.webp');
 assert.ok(fs.statSync('assets/videos/mariana-omelette-ugc.mp4').size > 2_000_000,"Mariana web video is not a stub");
 assert.ok(fs.statSync('assets/images/mariana-omelette-ugc.webp').size > 10_000,"Mariana poster exists");
 assert.equal(occurrences(html,'id="marianaCaseTitle"'),1,"single Mariana case heading");
@@ -367,8 +367,8 @@ has(premiumCss,'@media(prefers-reduced-motion:reduce)');
 
 
 assert.equal(occurrences(html,'WORKFLOW'),0,"no WORKFLOW badges remain on any video");
-assert.equal(occurrences(html,'./optimized_mobile/assets/videos/silo-campana-producto-recortado.mp4'),1,"first SILO ad appears in featured case");
-assert.equal(occurrences(html,'./optimized_mobile/assets/videos/silo-ugc-sin-subtitulos.mp4'),1,"second SILO ad appears in campaign gallery");
+assert.equal(occurrences(html,'./assets/videos/silo-campana-producto-recortado.mp4'),1,"first SILO ad appears in featured case");
+assert.equal(occurrences(html,'./assets/videos/silo-ugc-sin-subtitulos.mp4'),1,"second SILO ad appears in campaign gallery");
 const vmJs=fs.readFileSync('assets/video-manager.js','utf8');
 has(vmJs,'MAX_LOADED = 2');
 has(vmJs,'ROOT_MARGIN = "120px 0px"');

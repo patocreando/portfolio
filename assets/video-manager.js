@@ -137,6 +137,8 @@
   function hideFallback(video) {
     var state = stateFor(video);
     video.classList.remove("is-blocked");
+    video.controls = false;
+    video.removeAttribute("controls");
     var host = hostFor(video);
     if (host) host.classList.remove("is-blocked");
     if (state.fallback) state.fallback.hidden = true;
@@ -147,6 +149,7 @@
     var state = stateFor(video);
     if (blocked) {
       video.classList.add("is-blocked");
+      video.controls = true;
       var host = hostFor(video);
       if (host) host.classList.add("is-blocked");
     }
