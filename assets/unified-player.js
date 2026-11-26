@@ -11,6 +11,20 @@
     ) || slot.parentElement;
   }
 
+  function clearAncestorTransforms(slot) {
+    var node = slot;
+    var section = slot.closest("section");
+    while (node && node !== document.body) {
+      if (node.style) {
+        node.style.transform = "";
+        node.style.webkitTransform = "";
+        node.style.filter = "";
+      }
+      if (node === section) break;
+      node = node.parentElement;
+    }
+  }
+
   function releaseVideo(video) {
     if (!video) return;
     try { video.pause(); } catch (err) {}
@@ -83,6 +97,8 @@
     if (slot.classList.contains("is-playing") && slot.querySelector("video.up-video")) {
       return;
     }
+
+    clearAncestorTransforms(slot);
 
     var video = document.createElement("video");
     video.className = "up-video";

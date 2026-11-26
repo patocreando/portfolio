@@ -1,26 +1,64 @@
-/* Unified on-demand video player: 0 initial decoders, max 1 active <video> in DOM. */
+/* Unified on-demand video player + CRO 2026 polish (loaded last in <head>). */
 .up-slot {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
   min-height: 360px;
   aspect-ratio: 9 / 16;
-  overflow: hidden;
-  background: #080a0c;
+  overflow: hidden !important;
+  background: #080a0c !important;
   border-radius: inherit;
+  isolation: auto !important;
+  contain: none !important;
 }
 
 .up-poster {
-  display: block;
-  width: 100%;
-  height: 100%;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
   min-height: 360px;
-  object-fit: cover;
-  object-position: center;
-  opacity: 1;
-  visibility: visible;
+  object-fit: cover !important;
+  object-position: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
   background: #080a0c;
+  pointer-events: none;
+}
+
+/* Keep .up-poster in layout flow (visibility:hidden, NOT display:none) so the 9:16 box height NEVER collapses on older Android browsers when <video> is injected! */
+.up-slot.is-playing .up-poster {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.up-slot.is-playing .up-play-btn {
+  display: none !important;
+}
+
+.up-video {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  z-index: 6 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: #000000 !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  pointer-events: auto !important;
 }
 
 .up-play-btn {
@@ -33,13 +71,13 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-width: 48px;
-  min-height: 48px;
-  max-width: calc(100% - 28px);
-  padding: 10px 18px;
+  min-width: 52px;
+  min-height: 50px;
+  max-width: calc(100% - 24px);
+  padding: 10px 18px 10px 14px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.28);
-  background: rgba(10, 12, 16, 0.88);
+  background: rgba(10, 12, 16, 0.90);
   color: #f6f7f5;
   font: inherit;
   font-size: 13px;
@@ -48,21 +86,26 @@
   text-align: left;
   cursor: pointer;
   touch-action: manipulation;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
-  transition: background 0.18s ease, border-color 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.52);
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.14s ease;
 }
 
 .up-play-btn:hover,
 .up-play-btn:focus-visible {
-  background: rgba(18, 22, 28, 0.96);
-  border-color: rgba(207, 230, 90, 0.72);
+  background: rgba(18, 22, 28, 0.98);
+  border-color: rgba(207, 230, 90, 0.8);
   outline: none;
+}
+
+.up-play-btn:active {
+  transform: translateX(-50%) scale(0.97);
 }
 
 .up-play-icon {
   flex: 0 0 auto;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
@@ -71,6 +114,7 @@
   color: #0b0e11;
   font-size: 11px;
   padding-left: 2px;
+  box-shadow: 0 0 16px rgba(207, 230, 90, 0.35);
 }
 
 .up-play-copy {
@@ -86,6 +130,8 @@
   letter-spacing: 0.02em;
   color: #ffffff;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .up-play-copy small {
@@ -96,22 +142,12 @@
   white-space: nowrap;
 }
 
-.up-video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: 360px;
-  object-fit: cover;
-  object-position: center;
-  opacity: 1 !important;
-  visibility: visible !important;
-  background: #000000;
-}
-
-/* Playing state: strip GPU transforms/filters/backdrop-filters so Exynos/Mali chips never render a black layer. */
+/* Playing state: strip ALL GPU transforms/filters/backdrop-filters & decorative overlays on Hero and cards so Mali/Exynos GPUs never render a black surface. */
 .up-slot.is-playing,
-.up-slot.is-playing .up-video,
 .is-playing-host,
+.is-playing-host .hero-device-stage,
+.is-playing-host .hero-audio-stack,
+.is-playing-host #heroPhone,
 .is-playing-host .hero-phone-shell,
 .is-playing-host .hero-phone-screen,
 .is-playing-host .phone-shell,
@@ -127,21 +163,175 @@
   -webkit-backdrop-filter: none !important;
   transform-style: flat !important;
   -webkit-transform-style: flat !important;
+  perspective: none !important;
+  -webkit-perspective: none !important;
+  will-change: auto !important;
+  clip-path: none !important;
+  -webkit-clip-path: none !important;
 }
 
-.up-slot.is-playing .up-poster,
-.up-slot.is-playing .up-play-btn {
+.is-playing-host .hero-phone-shell::before,
+.is-playing-host .hero-phone-shell::after,
+.is-playing-host .hero-phone-screen::before,
+.is-playing-host .hero-phone-screen::after,
+.is-playing-host .hero-phone-island,
+.is-playing-host .hero-phone-buttons,
+.is-playing-host .hero-phone-vignette,
+.is-playing-host .editorial-media::after {
   display: none !important;
+  pointer-events: none !important;
+}
+
+/* Surgical Hero mobile layout: make #heroPhone structurally identical to SILO (.editorial-media) in normal flow without 4 nested absolute wrappers. */
+@media (max-width: 767px) {
+  #top .hero-device-wrap,
+  #top #heroDeviceStage,
+  #top .hero-audio-stack {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 360px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: auto !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    will-change: auto !important;
+    perspective: none !important;
+  }
+
+  #top #heroPhone,
+  #top .hero-phone-shell {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: min(100%, 340px) !important;
+    max-width: 340px !important;
+    height: auto !important;
+    min-height: 360px !important;
+    aspect-ratio: 9 / 16 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    background: #080a0c !important;
+    overflow: hidden !important;
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.45) !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    transform-style: flat !important;
+    will-change: auto !important;
+  }
+
+  #top #heroPhone::before,
+  #top #heroPhone::after,
+  #top .hero-phone-island,
+  #top .hero-phone-buttons,
+  #top .hero-device-glow {
+    display: none !important;
+  }
+
+  #top .hero-phone-screen {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 360px !important;
+    border-radius: inherit !important;
+    overflow: hidden !important;
+    background: #080a0c !important;
+  }
+
+  #top .hero-phone-screen .up-slot {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 360px !important;
+    aspect-ratio: 9 / 16 !important;
+  }
 }
 
 .up-slot--club[hidden] {
   display: none !important;
 }
 
-/* Quick comparison block */
+/* Hero CTAs & proof pills */
+.pc-hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.pc-hero-pills span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #d6dfdc;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.pc-hero-pills span::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #cfe65a;
+}
+
+.pc-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 20px;
+  margin-top: 22px;
+}
+
+.pc-hero-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: #cfe65a;
+  color: #0b0e11;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  touch-action: manipulation;
+  box-shadow: 0 12px 32px rgba(207, 230, 90, 0.22);
+  transition: transform 0.15s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.pc-hero-btn-primary:hover {
+  background: #daf06b;
+  box-shadow: 0 14px 36px rgba(207, 230, 90, 0.32);
+}
+
+.pc-hero-btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* 1:1 Advantage + Quick Comparison Section (#compare) */
 .pc-compare {
-  padding: 56px 0 44px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 76px 0 68px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: radial-gradient(ellipse 65% 45% at 50% 0%, rgba(207, 230, 90, 0.045), transparent 70%);
 }
 
 .pc-compare-head {
@@ -150,27 +340,72 @@
   justify-content: space-between;
   align-items: flex-end;
   gap: 16px 32px;
-  margin-bottom: 26px;
+  margin-bottom: 32px;
 }
 
 .pc-compare-kicker {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #cfe65a;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .pc-compare-title {
-  font-size: clamp(1.9rem, 4vw, 3.1rem);
+  font-size: clamp(2rem, 4.2vw, 3.35rem);
   line-height: 1.02;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
   font-weight: 600;
 }
 
 .pc-compare-title span {
-  color: #7c8784;
+  color: #85918d;
+}
+
+.pc-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.pc-pillar-card {
+  border-radius: 16px;
+  padding: 20px 20px 22px;
+  background: rgba(14, 18, 22, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.pc-pillar-card:hover {
+  border-color: rgba(207, 230, 90, 0.30);
+}
+
+.pc-pillar-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #cfe65a;
+}
+
+.pc-pillar-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.pc-pillar-card p {
+  font-size: 13.5px;
+  line-height: 1.52;
+  color: #b4c0bc;
+  margin: 0;
 }
 
 .pc-compare-grid {
@@ -180,22 +415,26 @@
 }
 
 .pc-compare-card {
-  border-radius: 16px;
-  padding: 22px 24px;
+  border-radius: 18px;
+  padding: 24px 26px;
   border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(14, 18, 22, 0.72);
+  background: rgba(12, 15, 19, 0.76);
 }
 
 .pc-compare-card--pato {
-  border-color: rgba(207, 230, 90, 0.34);
-  background: linear-gradient(160deg, rgba(22, 28, 22, 0.86), rgba(10, 13, 15, 0.92));
+  border-color: rgba(207, 230, 90, 0.42);
+  background: linear-gradient(155deg, rgba(24, 31, 22, 0.90), rgba(10, 13, 15, 0.95));
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(207, 230, 90, 0.16);
 }
 
 .pc-compare-card h3 {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .pc-compare-card--old h3 {
@@ -207,16 +446,16 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 11px;
+  gap: 13px;
 }
 
 .pc-compare-list li {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   font-size: 13.5px;
-  line-height: 1.4;
-  color: #d4ddd9;
+  line-height: 1.45;
+  color: #dce4e1;
 }
 
 .pc-compare-card--old .pc-compare-list li {
@@ -224,8 +463,8 @@
 }
 
 .pc-compare-list strong {
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #cfe65a;
 }
@@ -234,8 +473,65 @@
   color: #6b7471;
 }
 
-@media (max-width: 767px) {
+/* Pricing Pack visual hierarchy: highlight Campaña (ARS 175.000) as best ROI for Ads */
+#launchOffer .pricing-pack-campaign-best {
+  position: relative;
+  border-color: rgba(207, 230, 90, 0.55) !important;
+  background: linear-gradient(165deg, rgba(25, 32, 22, 0.92), rgba(11, 14, 17, 0.96)) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(207, 230, 90, 0.18) !important;
+}
+
+.pc-pack-recommended-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin-bottom: 10px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(207, 230, 90, 0.16);
+  border: 1px solid rgba(207, 230, 90, 0.48);
+  color: #dff279;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#launchOffer .pricing-pack-cta {
+  min-height: 48px;
+  touch-action: manipulation;
+}
+
+@media (max-width: 1023px) {
+  .pc-pillars-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 719px) {
+  .pc-compare {
+    padding: 52px 0 48px;
+  }
+
+  .pc-pillars-grid,
   .pc-compare-grid {
     grid-template-columns: 1fr;
+  }
+
+  .pc-pillar-card,
+  .pc-compare-card {
+    text-align: left !important;
+  }
+
+  .pc-pillar-card h3,
+  .pc-compare-card h3 {
+    text-align: left !important;
+    margin-inline: 0 !important;
+  }
+
+  .pc-hero-pills,
+  .pc-hero-actions {
+    justify-content: center;
   }
 }

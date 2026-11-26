@@ -242,6 +242,10 @@
 
       if (heroDeviceStage && heroPhone && finePointer && !reduceMotion) {
         heroDeviceStage.addEventListener("pointermove", function (event) {
+          if (heroPhone.querySelector(".is-playing")) {
+            heroPhone.style.transform = "";
+            return;
+          }
           var rect = heroDeviceStage.getBoundingClientRect();
           var px = (event.clientX - rect.left) / rect.width;
           var py = (event.clientY - rect.top) / rect.height;
@@ -661,7 +665,8 @@
           y: 24,
           duration: .9,
           stagger: .08,
-          ease: "power3.out"
+          ease: "power3.out",
+          clearProps: "transform,opacity,visibility"
         });
 
         // Coordinated reveal system: title + supporting copy + cards

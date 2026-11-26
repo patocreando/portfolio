@@ -92,9 +92,11 @@ for (const [ref,price,count] of [["w60952078","ARS 50.000",4],["w60952216","ARS 
 }
 assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed");
 // Commercial copy: preserve base scope and the three fixed plan amounts.
-has(html,'La producción mensual de tu marca,');
-has(html,'lista en una semana.');
+has(html,'Frená la fatiga creativa.');
+has(html,'La producción del mes, en una semana.');
 has(html,'Trato directo conmigo');
+has(html,'¿Por qué trabajar 1:1 conmigo?');
+has(html,'pc-pack-recommended-tag');
 has(html,'<h4 class="display">Una idea, cuatro salidas.</h4>');
 assert.equal(occurrences(html,'Empiezo a generar recién cuando aprobás la propuesta y el presupuesto.'),1,"Preproduction validation stated once");
 has(html,'Los planes Inicio y Multiformato no incluyen copy ni subtítulos; el plan Campaña incluye subtítulos dinámicos de alta retención.');
@@ -157,7 +159,7 @@ assert.equal(occurrences(html,'Perfumería de nicho'),0,"removed conceptual perf
 assert.equal(occurrences(html,'SPEC AD · FICTICIO'),0,"Unlicensed spec ads never shipped");
 assert.equal(occurrences(html,'project-item-piero'),0,"Piero media excluded from public build");
 assert.equal(occurrences(html,'editorial-case-ls2'),0,"LS2 media excluded from public build");
-has(html,'./assets/lote-02.css?v=20261027-club-case-3');
+has(html,'./assets/lote-02.css?v=20261126-3');
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
@@ -178,8 +180,8 @@ has(html,'CASO DE ESTUDIO');
 has(html,'./assets/cases/club-del-coctel-01/character-sheet.webp');
 has(html,'./assets/cases/club-del-coctel-01/generated-scene.mp4');
 has(html,'./assets/videos/club-del-coctel.mp4');
-has(html,'./assets/club-case.css?v=20261030-scroll-story-1');
-has(html,'./assets/club-case.js?v=20261126-2');
+has(html,'./assets/club-case.css?v=20261126-3');
+has(html,'./assets/club-case.js?v=20261126-3');
 has(fs.readFileSync('assets/club-case.js','utf8'),'intervalMs = 6500');
 assert.equal(occurrences(html,'edit-shot-02.webp'),0,'the editing mockup omits the B-roll insert');
 for(const file of ['ugc-beauty.mp4','silo-ugc-sin-subtitulos.mp4','hyperreal-portrait.mp4'])has(html,'./assets/videos/'+file);
@@ -353,7 +355,7 @@ has(premiumCss,'@media(prefers-reduced-motion:reduce)');
 assert.equal(occurrences(html,'WORKFLOW'),0,"no WORKFLOW badges remain on any video");
 assert.equal(occurrences(html,'./assets/videos/silo-campana-producto-recortado.mp4'),1,"first SILO ad appears in featured case");
 assert.equal(occurrences(html,'./assets/videos/silo-ugc-sin-subtitulos.mp4'),1,"second SILO ad appears in campaign gallery");
-for (const v of ['unified-player.css?v=20261126-2','site.css?v=20261126-2','premium-lab.css?v=20261126-2','unified-player.js?v=20261126-2','site.js?v=20261126-2','premium-lab.js?v=20261126-2','club-case.js?v=20261126-2']) {
+for (const v of ['unified-player.css?v=20261126-3','site.css?v=20261126-3','premium-lab.css?v=20261126-3','unified-player.js?v=20261126-3','site.js?v=20261126-3','premium-lab.js?v=20261126-3','club-case.js?v=20261126-3']) {
   has(html, v, 'Cache-busted asset: ' + v);
 }
 assert.equal(occurrences(html,'./assets/images/pato-creando-ia-content-v4.png'),1,"redesigned logo appears only in navigation");
