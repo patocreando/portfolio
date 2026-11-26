@@ -365,6 +365,8 @@
     video.setAttribute("playsinline", "");
     video.setAttribute("webkit-playsinline", "");
     activeVideo = video;
+    var host = hostFor(video);
+    if (host) host.classList.add("is-video-ready");
 
     /* Keep a real tap target visible until this source has presented a frame. */
     if (state.framePresented) hideFallback(video);
