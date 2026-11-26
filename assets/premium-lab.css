@@ -422,7 +422,6 @@ html { scroll-padding-top: 78px; }
 #system .tool-app-logo img {display:block;width:31px;height:31px;max-width:none;object-fit:contain;}
 #system .tool-app-logo--mono img {filter:brightness(0) invert(1);opacity:.91;}
 #system .tool-app-logo--color {background:rgba(255,255,255,.045);}
-#system .tool-app-logo--color img[src$="higgsfield.svg"] {border-radius:7px;}
 #system .studio-system-toolgrid .tool-app-name {display:block;min-width:0;max-width:100%;margin:0;
   color:#d5dfda;font-size:clamp(10px,.83vw,12px);font-weight:600;letter-spacing:-.01em;text-align:center;
   line-height:1.35;overflow-wrap:normal;hyphens:none;text-transform:none;}
