@@ -14,7 +14,7 @@
        as soon as a meaningful part of their frame enters the screen. */
     return mobileViewport.matches && video.dataset.videoRole === "content" ? 0.18 : ACTIVE_THRESHOLD;
   }
-  var MAX_LOADED = 2;
+  var MAX_LOADED = 1;
   var allVideos = [];
   var states = new WeakMap();
   var observer = null;
@@ -105,6 +105,11 @@
         if (!source.getAttribute("data-src")) source.setAttribute("data-src", childSrc);
         source.removeAttribute("src");
       }
+    });
+
+    /* Strictly 1 active decoder: release any other loaded video BEFORE assigning src. */
+    allVideos.forEach(function (other) {
+      if (other !== video && stateFor(other).loaded) releaseSource(other);
     });
 
     if (changed) video.setAttribute("src", direct);
@@ -244,6 +249,20 @@
     if (audioVideo !== except) audioVideo = null;
     if (activeVideo !== except) activeVideo = null;
     window.__PATO_SOUND_ACTIVE_VIDEO__ = audioVideo;
+  }
+
+  function bindFallbackTap(video) {
+    var host = hostFor(video);
+    if (!host || host.dataset.vmTapBound === "1") return;
+    host.dataset.vmTapBound = "1";
+    host.addEventListener("click", function (event) {
+      if (event.target && event.target.closest("button, a, summary, [data-video-audio-prompt], [data-club-audio]")) return;
+      if (isAmbient(video)) return;
+      var state = stateFor(video);
+      if (video.paused || !state.loaded) {
+        playMuted(video, true);
+      }
+    });
   }
 
   function releaseSource(video) {

@@ -370,7 +370,7 @@ assert.equal(occurrences(html,'WORKFLOW'),0,"no WORKFLOW badges remain on any vi
 assert.equal(occurrences(html,'./assets/videos/silo-campana-producto-recortado.mp4'),1,"first SILO ad appears in featured case");
 assert.equal(occurrences(html,'./assets/videos/silo-ugc-sin-subtitulos.mp4'),1,"second SILO ad appears in campaign gallery");
 const vmJs=fs.readFileSync('assets/video-manager.js','utf8');
-has(vmJs,'MAX_LOADED = 2');
+has(vmJs,'MAX_LOADED = 1');
 has(vmJs,'ROOT_MARGIN = "120px 0px"');
 has(vmJs,'deviceMemory');
 has(vmJs,'is-blocked');
