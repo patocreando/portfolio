@@ -5,7 +5,7 @@
   if (window.VideoManager && window.VideoManager.__patoVideoManager) return;
 
   var SELECTOR = "video[data-video-managed]";
-  var ROOT_MARGIN = "200px 0px";
+  var ROOT_MARGIN = "120px 0px";
   var ACTIVE_THRESHOLD = 0.6;
   var mobileViewport = window.matchMedia ? window.matchMedia("(max-width: 719px)") : { matches: false };
 
@@ -14,7 +14,7 @@
        as soon as a meaningful part of their frame enters the screen. */
     return mobileViewport.matches && video.dataset.videoRole === "content" ? 0.18 : ACTIVE_THRESHOLD;
   }
-  var MAX_LOADED = 3;
+  var MAX_LOADED = 2;
   var allVideos = [];
   var states = new WeakMap();
   var observer = null;
@@ -25,6 +25,8 @@
   var reducedMotion = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
   var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   var saveData = Boolean(connection && connection.saveData);
+  var lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 3;
+  var disableAmbient = saveData || lowMemory || reducedMotion.matches;
 
   function stateFor(video) {
     var state = states.get(video);
@@ -134,12 +136,20 @@
 
   function hideFallback(video) {
     var state = stateFor(video);
+    video.classList.remove("is-blocked");
+    var host = hostFor(video);
+    if (host) host.classList.remove("is-blocked");
     if (state.fallback) state.fallback.hidden = true;
     if (state.heroButton) state.heroButton.hidden = true;
   }
 
-  function showFallback(video, label) {
+  function showFallback(video, label, blocked) {
     var state = stateFor(video);
+    if (blocked) {
+      video.classList.add("is-blocked");
+      var host = hostFor(video);
+      if (host) host.classList.add("is-blocked");
+    }
     var button = state.heroButton || state.fallback;
     if (!button) return;
     button.hidden = false;
@@ -296,8 +306,11 @@
     var state = stateFor(video);
     if (!userGesture && state.blocked) return null;
     if (userGesture) state.blocked = false;
+    if (!userGesture && isAmbient(video) && disableAmbient) {
+      return null;
+    }
     if (!userGesture && (document.hidden || reducedMotion.matches || saveData)) {
-      showFallback(video, "Reproducir video");
+      showFallback(video, "Reproducir video", true);
       return null;
     }
     /* Stop the previous decoder before assigning a new source. */
@@ -323,7 +336,7 @@
       result = video.play();
     } catch (error) {
       state.blocked = true;
-      showFallback(video, "Reintentar reproducción");
+      showFallback(video, "Reproducir", true);
       return null;
     }
 

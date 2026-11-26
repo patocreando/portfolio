@@ -127,7 +127,7 @@ assert.equal(brandedPng.readUInt32BE(16),1550,"Social image width matches declar
 assert.equal(brandedPng.readUInt32BE(20),600,"Social image height matches declared metadata");
 assert.ok(brandedPng.length < 100_000,"Share image remains under 100 KB");
 for (const video of ["ugc-beauty.mp4","silo-ugc-sin-subtitulos.mp4","hyperreal-portrait.mp4"]) {
-  const sourceNeedle = ['src="./optimized_mobile/assets/videos/'+video, '<source src="./assets/videos/'+video, '<source data-src="./assets/videos/'+video].find(candidate => html.includes(candidate));
+  const sourceNeedle = ['data-src="./optimized_mobile/assets/videos/'+video, 'src="./optimized_mobile/assets/videos/'+video, '<source src="./assets/videos/'+video, '<source data-src="./assets/videos/'+video].find(candidate => html.includes(candidate));
   assert.ok(sourceNeedle,"Gallery video source retained: "+video);
   const videoMatchIndex = html.indexOf(sourceNeedle);
   const opening = html.lastIndexOf("<video",videoMatchIndex);
@@ -369,6 +369,11 @@ has(premiumCss,'@media(prefers-reduced-motion:reduce)');
 assert.equal(occurrences(html,'WORKFLOW'),0,"no WORKFLOW badges remain on any video");
 assert.equal(occurrences(html,'./optimized_mobile/assets/videos/silo-campana-producto-recortado.mp4'),1,"first SILO ad appears in featured case");
 assert.equal(occurrences(html,'./optimized_mobile/assets/videos/silo-ugc-sin-subtitulos.mp4'),1,"second SILO ad appears in campaign gallery");
+const vmJs=fs.readFileSync('assets/video-manager.js','utf8');
+has(vmJs,'MAX_LOADED = 2');
+has(vmJs,'ROOT_MARGIN = "120px 0px"');
+has(vmJs,'deviceMemory');
+has(vmJs,'is-blocked');
 assert.equal(occurrences(html,'./assets/images/pato-creando-ia-content-v4.png'),1,"redesigned logo appears only in navigation");
 assert.equal(occurrences(html,'hero-brandmark'),0,"hero logo removed");
 assert.ok(fs.existsSync('assets/images/pato-creando-ia-content-v4.png'),"redesigned logo asset exists");
