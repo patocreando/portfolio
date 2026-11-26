@@ -58,8 +58,8 @@
       var projectCarouselIndex = 0;
       var activeProjectCategory = "ugc";
       var categoryCopy = {
-        ugc: "Avatares y producto en verticales con estética nativa.",
-        product: "Productos IA con control de forma, escala y materiales."
+        ugc: "Ángulos con diálogo natural frente a cámara pensados para retención y prueba social en pauta.",
+        product: "Demostraciones sensoriales con fidelidad de envase, materiales e iluminación de estudio."
       };
 
       function getVisibleProjectItems() {
@@ -130,6 +130,7 @@
           ScrollTrigger.refresh();
         }
         if (window.UnifiedPlayer) window.UnifiedPlayer.stopAll(null);
+        if (window.ScrollRevealer) window.ScrollRevealer.syncSnapMeters();
       }
 
       if (projectPrev) {
@@ -669,8 +670,9 @@
           clearProps: "transform,opacity,visibility"
         });
 
-        // Coordinated reveal system: title + supporting copy + cards
+        // Coordinated reveal system: delegated to ScrollRevealer when loaded so transforms are strictly cleaned up
         var fastMobile = window.matchMedia("(max-width: 639px)").matches;
+        if (!window.ScrollRevealer) {
 
         var majorTitles = gsap.utils.toArray([
           "#top .hero-lockup-title",
@@ -775,6 +777,7 @@
             clearProps: "transform"
           });
         });
+        }
 
         gsap.utils.toArray("[data-orb]").forEach(function (orb, index) {
           gsap.to(orb, {

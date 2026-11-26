@@ -1,0 +1,354 @@
+/* Dual-Viewport Editorial Elevation (Desktop Studio Bento/Sticky + Mobile Native Scroll-Snap)
+   + Progressive Scroll Choreography. GPU-safe: never applies transform/filter to video slots. */
+
+/* 1. Top reading progress bar & active navigation state */
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 1100;
+  background: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+#scrollProgress {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #cfe65a 0%, #9be15d 100%);
+  box-shadow: 0 0 10px rgba(207, 230, 90, 0.45);
+  transition: width 0.08s linear;
+}
+
+#portfolioHeader .portfolio-nav-links a {
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+#portfolioHeader .portfolio-nav-links a.is-active-nav {
+  color: #f5f8f2 !important;
+}
+
+#portfolioHeader .portfolio-nav-links a.is-active-nav::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 2px;
+  border-radius: 999px;
+  background: #cfe65a;
+}
+
+/* 2. Progressive Scroll Reveal (GPU-cleaned on completion via .sr-done) */
+html.sr-ready .sr-item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.62s cubic-bezier(0.22, 1, 0.36, 1) var(--sr-delay, 0ms),
+    transform 0.62s cubic-bezier(0.22, 1, 0.36, 1) var(--sr-delay, 0ms);
+}
+
+html.sr-ready .sr-item.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+html.sr-ready .sr-item.sr-done {
+  opacity: 1 !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  transition: none !important;
+  will-change: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.sr-ready .sr-item {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* 3. Scarcity Badge ("Máx. 5 marcas/mes") & Editorial Case Tags */
+.hero-status--scarcity {
+  border-color: rgba(207, 230, 90, 0.32) !important;
+  background: rgba(207, 230, 90, 0.075) !important;
+  color: #e6f2b8 !important;
+  font-weight: 600;
+}
+
+.pc-case-role-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin-bottom: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.035);
+  color: #cfe65a;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pc-scarcity-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(207, 230, 90, 0.26);
+  background: linear-gradient(90deg, rgba(207, 230, 90, 0.08), rgba(14, 18, 22, 0.72));
+  color: #d7e0dc;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.pc-scarcity-banner strong {
+  color: #f4f8ec;
+  font-weight: 700;
+}
+
+.pc-scarcity-dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cfe65a;
+  box-shadow: 0 0 12px rgba(207, 230, 90, 0.8);
+}
+
+/* 4. Desktop (>= 1024px) Editorial Studio Layout: Asymmetric 5fr/7fr & Sticky Left Columns */
+@media (min-width: 1024px) {
+  .pc-compare-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr);
+    gap: 48px;
+    align-items: start;
+  }
+
+  .pc-compare-sticky {
+    position: sticky;
+    top: 112px;
+    padding-right: 12px;
+  }
+
+  .pc-compare-main .pc-pillars-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  #caseMyWay .club-workflow {
+    align-items: start;
+  }
+
+  #caseMyWay .club-workflow-stage {
+    position: sticky;
+    top: 106px;
+  }
+
+  #method .pc-method-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 4.4fr) minmax(0, 7.6fr);
+    gap: 48px;
+    align-items: start;
+  }
+
+  #method .pc-method-heading {
+    position: sticky;
+    top: 112px;
+    margin-bottom: 0 !important;
+    text-align: left !important;
+  }
+
+  #method .pc-method-track {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+}
+
+.pc-compare-sticky-note {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 13px;
+  line-height: 1.55;
+  color: #9aa6a2;
+}
+
+.pc-compare-sticky-note strong {
+  color: #e9f0ed;
+  font-weight: 600;
+}
+
+/* 5. Mobile Snap Meters (hidden on desktop, interactive on mobile) */
+.pc-snap-meter {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  /* Thumb-friendly compact mobile header: show Hablemos pill next to menu toggle */
+  #portfolioHeader .portfolio-nav-layout {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+  }
+
+  #portfolioHeader .portfolio-nav-contact {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    margin-left: auto !important;
+    margin-right: 6px !important;
+    padding: 7px 12px !important;
+    min-height: 36px !important;
+    border-radius: 999px !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    background: rgba(207, 230, 90, 0.14) !important;
+    border: 1px solid rgba(207, 230, 90, 0.38) !important;
+    color: #eaf5a6 !important;
+    white-space: nowrap !important;
+  }
+
+  #portfolioHeader .portfolio-nav-home span:last-child {
+    display: none !important;
+  }
+
+  /* Snap meter bar */
+  .pc-snap-meter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 14px 0 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.075);
+  }
+
+  .pc-snap-pills {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+  }
+
+  .pc-snap-pills button {
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #95a19d;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    min-height: 30px;
+    border-radius: 999px;
+    white-space: nowrap;
+    touch-action: manipulation;
+  }
+
+  .pc-snap-pills button.is-active {
+    background: rgba(207, 230, 90, 0.18);
+    border-color: rgba(207, 230, 90, 0.45);
+    color: #eef8b8;
+  }
+
+  .pc-snap-count {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #cfe65a;
+    padding-right: 4px;
+    white-space: nowrap;
+  }
+
+  /* Horizontal Scroll-Snap for Project Gallery (#projectGrid) on mobile */
+  #projects #projectViewport {
+    overflow: visible !important;
+  }
+
+  #projects #projectGrid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    margin: 14px -12px 0 !important;
+    padding: 4px 12px 14px !important;
+    width: calc(100% + 24px) !important;
+    max-width: none !important;
+    scrollbar-width: none;
+  }
+
+  #projects #projectGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  #projects #projectGrid > .project-item:not(.is-hidden) {
+    flex: 0 0 82vw !important;
+    width: 82vw !important;
+    max-width: 330px !important;
+    margin: 0 !important;
+    scroll-snap-align: center !important;
+    scroll-snap-stop: always;
+  }
+
+  /* Horizontal Scroll-Snap for Pricing Plans (#pricingPackRail) on mobile */
+  #launchOffer #pricingPackRail {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 14px !important;
+    margin-inline: -12px !important;
+    padding: 6px 12px 16px !important;
+    width: calc(100% + 24px) !important;
+    scrollbar-width: none;
+  }
+
+  #launchOffer #pricingPackRail::-webkit-scrollbar {
+    display: none;
+  }
+
+  #launchOffer #pricingPackRail > .pricing-pack {
+    flex: 0 0 85vw !important;
+    width: 85vw !important;
+    max-width: 350px !important;
+    scroll-snap-align: center !important;
+    scroll-snap-stop: always;
+  }
+
+  .pricing-packs-mobile-hint {
+    display: none !important;
+  }
+
+  .pc-compare-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .pc-scarcity-banner {
+    align-items: flex-start;
+    text-align: left !important;
+  }
+}
