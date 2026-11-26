@@ -265,6 +265,23 @@
     });
   }
 
+  function initDebugBanner() {
+    if (window.location.search.indexOf("debug=1") === -1) return;
+    var box = document.createElement("div");
+    box.id = "vmDebugBanner";
+    box.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(0,0,0,.9);color:#0f0;font:11px/1.35 monospace;padding:6px 8px;pointer-events:none;word-break:break-all;";
+    document.body.appendChild(box);
+    function update() {
+      var hero = document.querySelector(".hero-video");
+      var dim = hero ? (hero.offsetWidth + "x" + hero.offsetHeight) : "no-hero";
+      var rs = hero ? hero.readyState : "-";
+      var err = (hero && hero.error) ? ("err=" + hero.error.code) : "ok";
+      box.textContent = "UA:" + navigator.userAgent.slice(0, 65) + " | vids:" + allVideos.length + " | hero:" + dim + " rs=" + rs + " " + err;
+    }
+    update();
+    window.setInterval(update, 1000);
+  }
+
   function releaseSource(video) {
     if (!video || isHero(video) && stateFor(video).near) return;
     var state = stateFor(video);
