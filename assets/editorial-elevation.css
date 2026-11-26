@@ -1,7 +1,12 @@
-/* Dual-Viewport Editorial Elevation (Desktop Studio Bento/Sticky + Mobile Native Scroll-Snap)
-   + Progressive Scroll Choreography. GPU-safe: never applies transform/filter to video slots. */
+/* Editorial Elevation 2026:
+   - Redesigned FLUJO PROPIO / 01—03 & AVATARES / IDENTIDAD DE MARCA (zero tool names)
+   - Segmented Monthly Capacity Meter (3/5 assigned · 2 available)
+   - Scroll-connected step trackers & GPU-safe reveal
+   - 4 Dedicated Device Profiles: Desktop (>=1024px), Tablet (768-1023px), Android, iOS Safari */
 
-/* 1. Top reading progress bar & active navigation state */
+/* ==========================================================================
+   1. READING PROGRESS BAR & ACTIVE NAVIGATION
+   ========================================================================== */
 .progress {
   position: fixed;
   top: 0;
@@ -43,7 +48,9 @@
   background: #cfe65a;
 }
 
-/* 2. Progressive Scroll Reveal (GPU-cleaned on completion via .sr-done) */
+/* ==========================================================================
+   2. PROGRESSIVE SCROLL REVEAL (GPU-CLEANED VIA .sr-done)
+   ========================================================================== */
 html.sr-ready .sr-item {
   opacity: 0;
   transform: translateY(20px);
@@ -73,10 +80,12 @@ html.sr-ready .sr-item.sr-done {
   }
 }
 
-/* 3. Scarcity Badge ("Máx. 5 marcas/mes") & Editorial Case Tags */
+/* ==========================================================================
+   3. SEGMENTED MONTHLY CAPACITY METER (CLEAN VISUAL SCARCITY)
+   ========================================================================== */
 .hero-status--scarcity {
-  border-color: rgba(207, 230, 90, 0.32) !important;
-  background: rgba(207, 230, 90, 0.075) !important;
+  border-color: rgba(207, 230, 90, 0.30) !important;
+  background: rgba(207, 230, 90, 0.07) !important;
   color: #e6f2b8 !important;
   font-weight: 600;
 }
@@ -98,35 +107,440 @@ html.sr-ready .sr-item.sr-done {
   text-transform: uppercase;
 }
 
-.pc-scarcity-banner {
+.pc-capacity-meter {
+  margin: 0 0 26px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(135deg, rgba(16, 21, 24, 0.88), rgba(10, 13, 16, 0.94));
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 12px;
-  margin: 0 0 24px;
-  padding: 14px 18px;
-  border-radius: 14px;
-  border: 1px solid rgba(207, 230, 90, 0.26);
-  background: linear-gradient(90deg, rgba(207, 230, 90, 0.08), rgba(14, 18, 22, 0.72));
-  color: #d7e0dc;
-  font-size: 13px;
-  line-height: 1.5;
 }
 
-.pc-scarcity-banner strong {
-  color: #f4f8ec;
+.pc-capacity-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+}
+
+.pc-capacity-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #aeb9b5;
 }
 
-.pc-scarcity-dot {
-  flex: 0 0 auto;
-  width: 8px;
-  height: 8px;
+.pc-capacity-label b {
+  color: #cfe65a;
+  font-weight: 800;
+}
+
+.pc-capacity-pulse {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #cfe65a;
-  box-shadow: 0 0 12px rgba(207, 230, 90, 0.8);
+  box-shadow: 0 0 10px rgba(207, 230, 90, 0.85);
 }
 
-/* 4. Desktop (>= 1024px) Editorial Studio Layout: Asymmetric 5fr/7fr & Sticky Left Columns */
+.pc-capacity-sub {
+  font-size: 12.5px;
+  color: #8c9894;
+}
+
+.pc-capacity-segments {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pc-capacity-segments span {
+  position: relative;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.pc-capacity-segments span.is-filled::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #98ad3c, #cfe65a);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pc-capacity-meter.is-animated .pc-capacity-segments span.is-filled:nth-child(1)::after {
+  transform: scaleX(1);
+  transition-delay: 80ms;
+}
+
+.pc-capacity-meter.is-animated .pc-capacity-segments span.is-filled:nth-child(2)::after {
+  transform: scaleX(1);
+  transition-delay: 200ms;
+}
+
+.pc-capacity-meter.is-animated .pc-capacity-segments span.is-filled:nth-child(3)::after {
+  transform: scaleX(1);
+  transition-delay: 320ms;
+}
+
+.pc-capacity-segments span.is-open {
+  border-color: rgba(207, 230, 90, 0.34);
+  background: rgba(207, 230, 90, 0.07);
+}
+
+/* ==========================================================================
+   4. REDESIGNED #system: FLUJO PROPIO / 01—03 & AVATARES SHOWCASE
+   ========================================================================== */
+#system .pc-flow-editorial {
+  margin-top: 36px;
+  padding: 28px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(160deg, rgba(14, 18, 22, 0.88), rgba(8, 11, 14, 0.95));
+}
+
+.pc-flow-editorial-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 22px;
+}
+
+.pc-flow-editorial-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #cfe65a;
+  margin: 0 0 8px;
+}
+
+.pc-flow-editorial-title {
+  font-size: clamp(1.75rem, 3.2vw, 2.65rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.pc-flow-editorial-title span {
+  color: #828e8a;
+}
+
+.pc-flow-editorial-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(207, 230, 90, 0.28);
+  background: rgba(207, 230, 90, 0.08);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #dff279;
+}
+
+/* Scroll-connected progress rail across 01 — 03 */
+.pc-flow-progress-rail {
+  position: relative;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+
+.pc-flow-progress-fill {
+  height: 100%;
+  width: var(--track-progress, 33.3%);
+  border-radius: inherit;
+  background: linear-gradient(90deg, #98ad3c 0%, #cfe65a 100%);
+  box-shadow: 0 0 12px rgba(207, 230, 90, 0.5);
+  transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pc-flow-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.pc-flow-card {
+  position: relative;
+  padding: 22px 22px 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.085);
+  background: rgba(11, 15, 18, 0.78);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pc-flow-card.is-step-active {
+  border-color: rgba(207, 230, 90, 0.48);
+  background: linear-gradient(155deg, rgba(22, 29, 21, 0.88), rgba(11, 14, 17, 0.94));
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(207, 230, 90, 0.16);
+}
+
+.pc-flow-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pc-flow-card-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #aeb9b5;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.pc-flow-card.is-step-active .pc-flow-card-num {
+  background: #cfe65a;
+  border-color: #cfe65a;
+  color: #0b0e11;
+}
+
+.pc-flow-card-kicker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #889490;
+}
+
+.pc-flow-card.is-step-active .pc-flow-card-kicker {
+  color: #cfe65a;
+}
+
+.pc-flow-card h4 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  margin: 2px 0 0;
+  line-height: 1.22;
+}
+
+.pc-flow-card p {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #b4c0bc;
+  margin: 0;
+}
+
+.pc-flow-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.pc-flow-card-tags span {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cfd8d5;
+}
+
+/* Elevated AVATARES / IDENTIDAD DE MARCA Feature Card */
+#system .pc-avatar-showcase {
+  margin-top: 24px !important;
+  padding: 32px !important;
+  border-radius: 24px !important;
+  border: 1px solid rgba(207, 230, 90, 0.34) !important;
+  background:
+    radial-gradient(ellipse 60% 80% at 0% 0%, rgba(207, 230, 90, 0.10), transparent 65%),
+    linear-gradient(150deg, rgba(18, 24, 21, 0.94), rgba(9, 12, 15, 0.98)) !important;
+  box-shadow: 0 26px 64px rgba(0, 0, 0, 0.42) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr) !important;
+  gap: 28px 36px !important;
+  align-items: center !important;
+}
+
+.pc-avatar-lead {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.pc-avatar-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(207, 230, 90, 0.13);
+  border: 1px solid rgba(207, 230, 90, 0.38);
+  color: #dff279;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pc-avatar-lead h3 {
+  font-size: clamp(1.65rem, 3vw, 2.35rem) !important;
+  line-height: 1.06 !important;
+  letter-spacing: -0.035em !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+.pc-avatar-lead h3 em {
+  font-style: normal;
+  color: #cfe65a;
+  display: block;
+}
+
+.pc-avatar-lead p {
+  font-size: 14px !important;
+  line-height: 1.58 !important;
+  color: #b7c3bf !important;
+  margin: 0 !important;
+}
+
+.pc-avatar-cta {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  margin-top: 6px !important;
+  min-height: 46px !important;
+  padding: 11px 20px !important;
+  border-radius: 999px !important;
+  background: #cfe65a !important;
+  color: #0b0e11 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  touch-action: manipulation;
+  transition: background 0.18s ease, transform 0.14s ease !important;
+}
+
+.pc-avatar-cta:hover {
+  background: #dcf16d !important;
+}
+
+.pc-avatar-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pc-avatar-pillar {
+  padding: 18px 16px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pc-avatar-pillar span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #cfe65a;
+}
+
+.pc-avatar-pillar strong {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+}
+
+.pc-avatar-pillar p {
+  font-size: 12.5px;
+  line-height: 1.48;
+  color: #a9b5b1;
+  margin: 0;
+}
+
+/* ==========================================================================
+   5. SCROLL-CONNECTED COLABORACIÓN / 01—03 SPINE (#method)
+   ========================================================================== */
+#method .pc-method-track {
+  position: relative;
+}
+
+#method .pc-method-track > article {
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+#method .pc-method-track > article.is-step-active {
+  border-color: rgba(207, 230, 90, 0.42) !important;
+  background: rgba(20, 26, 22, 0.76) !important;
+}
+
+#method .pc-method-track > article.is-step-active > span {
+  color: #0b0e11 !important;
+  background: #cfe65a !important;
+  border-color: #cfe65a !important;
+}
+
+.pc-compare-sticky-note {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 13px;
+  line-height: 1.55;
+  color: #9aa6a2;
+}
+
+.pc-compare-sticky-note strong {
+  color: #e9f0ed;
+  font-weight: 600;
+}
+
+.pc-snap-meter {
+  display: none;
+}
+
+/* ==========================================================================
+   6. FOUR DEDICATED DEVICE PROFILES
+   ========================================================================== */
+
+/* PROFILE 1: DESKTOP (>= 1024px) — Editorial Studio Bento & Sticky Columns */
 @media (min-width: 1024px) {
   .pc-compare-layout {
     display: grid;
@@ -173,30 +587,131 @@ html.sr-ready .sr-item.sr-done {
   #method .pc-method-track {
     grid-template-columns: 1fr !important;
     gap: 14px !important;
+    padding-left: 18px;
+  }
+
+  #method .pc-method-track::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  #method .pc-method-track::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 2px;
+    height: calc((100% - 24px) * var(--method-progress, 33%) / 100);
+    max-height: calc(100% - 24px);
+    border-radius: 999px;
+    background: #cfe65a;
+    box-shadow: 0 0 10px rgba(207, 230, 90, 0.5);
+    transition: height 0.22s ease;
   }
 }
 
-.pc-compare-sticky-note {
-  margin-top: 20px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 13px;
-  line-height: 1.55;
-  color: #9aa6a2;
+@media (hover: hover) and (pointer: fine) {
+  .pc-flow-card:hover {
+    border-color: rgba(207, 230, 90, 0.36);
+  }
+
+  .pc-avatar-pillar:hover {
+    border-color: rgba(207, 230, 90, 0.28);
+    background: rgba(255, 255, 255, 0.055);
+  }
 }
 
-.pc-compare-sticky-note strong {
-  color: #e9f0ed;
-  font-weight: 600;
+/* PROFILE 2: TABLET (768px – 1023px) — Dedicated Balanced 2-Column Editorial Grids */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .site-shell {
+    width: calc(100% - 64px) !important;
+    max-width: 960px !important;
+    margin-inline: auto !important;
+  }
+
+  #top > .site-shell {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr) !important;
+    gap: 32px !important;
+    align-items: center !important;
+  }
+
+  #top #heroPhone,
+  #projects .editorial-media,
+  #projects .phone-shell,
+  #projects .clean-media-frame {
+    max-width: 340px !important;
+    margin-inline: auto !important;
+  }
+
+  #projects #projectGrid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 24px !important;
+    transform: none !important;
+  }
+
+  .pc-compare-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .pc-pillars-grid,
+  .pc-compare-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+
+  #services .services-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+  }
+
+  #services .services-grid > article:last-child {
+    grid-column: 1 / -1;
+  }
+
+  #launchOffer #pricingPackRail {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+  }
+
+  #launchOffer #pricingPackRail > .pricing-pack-campaign-best {
+    grid-column: 1 / -1;
+  }
+
+  .pc-flow-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pc-flow-cards-grid > .pc-flow-card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  #system .pc-avatar-showcase {
+    grid-template-columns: 1fr !important;
+    padding: 28px !important;
+  }
+
+  .pc-avatar-pillars {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
-/* 5. Mobile Snap Meters (hidden on desktop, interactive on mobile) */
-.pc-snap-meter {
-  display: none;
-}
-
+/* PROFILE 3 & 4: MOBILE (<= 767px) — Native Touch, Scroll-Snap, Android GPU & iOS Safe-Area */
 @media (max-width: 767px) {
-  /* Thumb-friendly compact mobile header: show Hablemos pill next to menu toggle */
+  #portfolioHeader {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
   #portfolioHeader .portfolio-nav-layout {
     display: flex !important;
     align-items: center !important;
@@ -225,7 +740,6 @@ html.sr-ready .sr-item.sr-done {
     display: none !important;
   }
 
-  /* Snap meter bar */
   .pc-snap-meter {
     display: flex;
     align-items: center;
@@ -275,7 +789,6 @@ html.sr-ready .sr-item.sr-done {
     white-space: nowrap;
   }
 
-  /* Horizontal Scroll-Snap for Project Gallery (#projectGrid) on mobile */
   #projects #projectViewport {
     overflow: visible !important;
   }
@@ -309,7 +822,6 @@ html.sr-ready .sr-item.sr-done {
     scroll-snap-stop: always;
   }
 
-  /* Horizontal Scroll-Snap for Pricing Plans (#pricingPackRail) on mobile */
   #launchOffer #pricingPackRail {
     display: flex !important;
     flex-direction: row !important;
@@ -347,8 +859,79 @@ html.sr-ready .sr-item.sr-done {
     gap: 24px;
   }
 
-  .pc-scarcity-banner {
-    align-items: flex-start;
+  #system .pc-flow-editorial {
+    padding: 20px 16px;
+  }
+
+  .pc-flow-cards-grid,
+  .pc-avatar-pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .pc-flow-card,
+  .pc-avatar-pillar,
+  .pc-avatar-lead {
     text-align: left !important;
+  }
+
+  .pc-flow-card h4,
+  .pc-avatar-lead h3 {
+    text-align: left !important;
+    margin-inline: 0 !important;
+  }
+
+  #system .pc-avatar-showcase {
+    grid-template-columns: 1fr !important;
+    padding: 22px 18px !important;
+    gap: 20px !important;
+  }
+
+  .pc-avatar-cta {
+    width: 100%;
+  }
+
+  .pc-capacity-meter {
+    padding: 14px 16px;
+    text-align: left !important;
+  }
+
+  /* Prevent accidental zoom on form focus in iOS Safari & mobile browsers */
+  #contactForm input,
+  #contactForm textarea,
+  #contactForm select {
+    font-size: 16px !important;
+  }
+
+  #contact footer {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* PROFILE 3 SPECIFIC: Android low/mid-range fluidity — avoid expensive backdrop blurs on large containers */
+html.is-android .glass,
+html.is-android .studio-system-board,
+html.is-android .pc-flow-editorial,
+html.is-android .pc-avatar-showcase,
+html.is-android .service-card,
+html.is-android .pricing-pack {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* PROFILE 4 SPECIFIC: iOS Safari (@supports (-webkit-touch-callout: none)) — 100dvh, clip & safe areas */
+@supports (-webkit-touch-callout: none) {
+  html,
+  body {
+    overflow-x: clip !important;
+  }
+
+  #top {
+    min-height: 100dvh;
+  }
+
+  @media (max-width: 767px) {
+    #top {
+      min-height: auto !important;
+    }
   }
 }

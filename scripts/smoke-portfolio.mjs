@@ -94,8 +94,10 @@ assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed"
 // Commercial copy: preserve base scope and the three fixed plan amounts.
 has(html,'La producción mensual de tu marca,');
 has(html,'lista en una semana.');
-has(html,'Máx. 5 marcas/mes');
-has(html,'máximo de 5 marcas por mes');
+has(html,'data-capacity-meter');
+has(html,'3/5 CUPOS ASIGNADOS');
+assert.equal(occurrences(html,'class="is-filled"'),3,"three filled capacity segments");
+assert.equal(occurrences(html,'class="is-open"'),2,"two open capacity segments");
 has(html,'¿Por qué trabajar 1:1 conmigo?');
 has(html,'pc-pack-recommended-tag');
 has(html,'<h4 class="display">Una idea, cuatro salidas.</h4>');
@@ -160,7 +162,7 @@ assert.equal(occurrences(html,'Perfumería de nicho'),0,"removed conceptual perf
 assert.equal(occurrences(html,'SPEC AD · FICTICIO'),0,"Unlicensed spec ads never shipped");
 assert.equal(occurrences(html,'project-item-piero'),0,"Piero media excluded from public build");
 assert.equal(occurrences(html,'editorial-case-ls2'),0,"LS2 media excluded from public build");
-has(html,'./assets/lote-02.css?v=20261126-4');
+has(html,'./assets/lote-02.css?v=20261126-5');
 assert.ok(fs.existsSync('assets/lote-02.css'),"Lote 02 CSS exists");
 
 assert.ok(!html.includes('10 cupos'),"no artificial scarcity");
@@ -181,8 +183,8 @@ has(html,'CASO DE ESTUDIO');
 has(html,'./assets/cases/club-del-coctel-01/character-sheet.webp');
 has(html,'./assets/cases/club-del-coctel-01/generated-scene.mp4');
 has(html,'./assets/videos/club-del-coctel.mp4');
-has(html,'./assets/club-case.css?v=20261126-4');
-has(html,'./assets/club-case.js?v=20261126-4');
+has(html,'./assets/club-case.css?v=20261126-5');
+has(html,'./assets/club-case.js?v=20261126-5');
 has(fs.readFileSync('assets/club-case.js','utf8'),'intervalMs = 6500');
 assert.equal(occurrences(html,'edit-shot-02.webp'),0,'the editing mockup omits the B-roll insert');
 for(const file of ['ugc-beauty.mp4','silo-ugc-sin-subtitulos.mp4','hyperreal-portrait.mp4'])has(html,'./assets/videos/'+file);
@@ -285,7 +287,7 @@ assert.equal(occurrences(html, 'data-category="workflow"'),0,"no workflow galler
 assert.equal(occurrences(html, 'data-filter="workflow"'),0,"only UGC and product remain");
 assert.equal(occurrences(html, 'id="system"'),1,"system presentation is standalone");
 assert.equal(occurrences(html, 'class="studio-system-conversion'),1,"one contextual conversion call to action");
-has(html,'href="#contact">Contame el proyecto');
+has(html,'href="#contact">Consultar por un avatar propio');
 has(premiumCss,'.studio-system-map');
 has(premiumCss,'.studio-system-toolgrid');
 assert.equal(occurrences(html,'href="#system"'),2,"desktop and mobile navigation to system");
@@ -329,28 +331,12 @@ has(premiumCss,'@keyframes studio-system-atmosphere');
 has(premiumCss,'opacity:.78');
 
 
-assert.equal(occurrences(html,'data-pc-flow-tab="'),3,"one tab for each stage of production");
-assert.equal(occurrences(html,'class="pc-flow-panel"'),3,"three flow panels");
+assert.equal(occurrences(html,'data-flow-step="'),3,"three proprietary flow stages");
 assert.equal(occurrences(html,'role="listitem"'),3,"three accessible method cards");
-for(const name of ["Google Flow","Veo 3.1","Nano Banana Pro","Python + FFmpeg","Canva","CapCut"])has(html,name);
-const toolsBase="assets/tool-icons/";
-const toolFiles=[...html.matchAll(/src="\.\/assets\/tool-icons\/([a-z-]+\.svg)"/g)].map(x=>x[1]);
-assert.equal(toolFiles.length,6,"six icon placements with local assets");
-for(const icon of new Set(toolFiles)){
-  assert.ok(fs.existsSync(toolsBase+icon),"tool icon exists: "+icon);
-  const source=fs.readFileSync(toolsBase+icon,"utf8");
-  assert.ok(source.startsWith("<svg")&&source.includes("</svg>"),"valid SVG: "+icon);
-  assert.ok(!/<script|<foreignObject|onload\s*=|javascript:/i.test(source),"no active SVG content: "+icon);
+for(const stageTitle of ["Dirección y Anclas","Generación y Continuidad","Ritmo y Acabado Ads","Identidad consistente","Escenarios ilimitados","Uso comercial libre"])has(html,stageTitle);
+for(const forbiddenTool of ["Google Flow","Veo 3.1","Nano Banana Pro","FFmpeg","Canva","CapCut","Higgsfield","Seedance","Seedream"]){
+  assert.ok(!html.includes(forbiddenTool),"no tool name tied to brand in HTML: "+forbiddenTool);
 }
-has(premiumCss,'@keyframes tool-pipeline-border-wave');
-has(premiumCss,'#system .tool-pipeline-generation .tool-apps--two');
-for(const icon of ['gemini.svg','veo.svg','nanobanana.svg','python.svg','canva-initial.svg','capcut.svg']){
- const src=fs.readFileSync(toolsBase+icon,'utf8');
- assert.ok(src.includes('<path')||src.includes('<polygon')||src.includes('<circle'), 'source-accurate vector exists for '+icon);
-}
-has(html,'./assets/tool-icons/veo.svg');
-has(premiumCss,'@keyframes tool-pipeline-sweep');
-has(premiumCss,'@media(prefers-reduced-motion:reduce)');
 
 
 assert.equal(occurrences(html,'WORKFLOW'),0,"no WORKFLOW badges remain on any video");
@@ -362,7 +348,10 @@ has(scrollRevealJs, "transitionend");
 has(scrollRevealJs, "isVideoUnsafe");
 has(editorialCss, "scroll-snap-type: x mandatory");
 has(editorialCss, "position: sticky");
-for (const v of ['editorial-elevation.css?v=20261126-4','unified-player.css?v=20261126-4','site.css?v=20261126-4','premium-lab.css?v=20261126-4','unified-player.js?v=20261126-4','scroll-reveal.js?v=20261126-4','site.js?v=20261126-4','premium-lab.js?v=20261126-4','club-case.js?v=20261126-4']) {
+has(editorialCss, "@media (min-width: 768px) and (max-width: 1023px)");
+has(editorialCss, "html.is-android");
+has(editorialCss, "@supports (-webkit-touch-callout: none)");
+for (const v of ['editorial-elevation.css?v=20261126-5','unified-player.css?v=20261126-5','site.css?v=20261126-5','premium-lab.css?v=20261126-5','unified-player.js?v=20261126-5','scroll-reveal.js?v=20261126-5','site.js?v=20261126-5','premium-lab.js?v=20261126-5','club-case.js?v=20261126-5']) {
   has(html, v, 'Cache-busted asset: ' + v);
 }
 assert.equal(occurrences(html,'./assets/images/pato-creando-ia-content-v4.png'),1,"redesigned logo appears only in navigation");

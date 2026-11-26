@@ -1,11 +1,22 @@
-/* Progressive scroll choreography, reading progress, active nav & mobile scroll-snap meters.
+/* Progressive scroll choreography, scroll-connected step trackers (Flujo 01-03 & Colaboración 01-03),
+   animated capacity meter, platform detection (Android / iOS) & mobile scroll-snap meters.
    GPU-safe: never touches .up-slot, #heroPhone or video hosts, and clears transform on transitionend. */
 (function (window, document) {
   "use strict";
 
+  var ua = navigator.userAgent || "";
+  var isAndroid = /Android/i.test(ua);
+  var isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (isAndroid) document.documentElement.classList.add("is-android");
+  if (isIOS) document.documentElement.classList.add("is-ios");
+
   var reducedMotion = window.matchMedia
     ? window.matchMedia("(prefers-reduced-motion: reduce)")
     : { matches: false };
+
+  function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
+  }
 
   function isVideoUnsafe(el) {
     if (!el) return true;
@@ -33,13 +44,13 @@
       "#services .services-intro",
       "#services .service-card",
       "#launchOffer .pricing-packs-head",
+      "#launchOffer .pc-capacity-meter",
       "#launchOffer .pricing-preproduction",
-      "#launchOffer .pc-scarcity-banner",
       "#launchOffer .pricing-pack",
       "#system .studio-system-head",
       "#system .studio-system-panel",
-      "#system .pc-flow",
-      "#system .pc-avatar-brief",
+      "#system .pc-flow-card",
+      "#system .pc-avatar-showcase",
       "#method .pc-method-heading",
       "#method .pc-method-track > article",
       "#method .pc-method-bottom",
@@ -66,80 +77,179 @@
 
   function initScrollReveal() {
     var targets = collectTargets();
-    if (!targets.length) return;
+    var capacityMeters = document.querySelectorAll("[data-capacity-meter]");
 
     if (reducedMotion.matches || !("IntersectionObserver" in window)) {
-      for (var i = 0; i < targets.length; i += 1) {
-        finalizeElement(targets[i]);
-      }
+      for (var i = 0; i < targets.length; i += 1) finalizeElement(targets[i]);
+      for (var c = 0; c < capacityMeters.length; c += 1) capacityMeters[c].classList.add("is-animated");
       return;
     }
 
-    document.documentElement.classList.add("sr-ready");
+    if (targets.length) {
+      document.documentElement.classList.add("sr-ready");
+      var parentCounts = new WeakMap();
+      for (var j = 0; j < targets.length; j += 1) {
+        var el = targets[j];
+        el.classList.add("sr-item");
+        var parent = el.parentElement;
+        var idx = parent ? (parentCounts.get(parent) || 0) : 0;
+        if (parent) parentCounts.set(parent, idx + 1);
+        var delayMs = Math.min(idx % 4, 3) * 75;
+        if (delayMs > 0) el.style.setProperty("--sr-delay", delayMs + "ms");
 
-    /* Assign subtle 75ms stagger among sibling cards in the same parent grid. */
-    var parentCounts = new WeakMap();
-    for (var j = 0; j < targets.length; j += 1) {
-      var el = targets[j];
-      el.classList.add("sr-item");
-      var parent = el.parentElement;
-      var idx = parent ? (parentCounts.get(parent) || 0) : 0;
-      if (parent) parentCounts.set(parent, idx + 1);
-      var delayMs = Math.min(idx % 4, 3) * 75;
-      if (delayMs > 0) el.style.setProperty("--sr-delay", delayMs + "ms");
+        el.addEventListener("transitionend", function onEnd(event) {
+          if (event.target !== this) return;
+          this.removeEventListener("transitionend", onEnd);
+          finalizeElement(this);
+        });
+      }
 
-      el.addEventListener("transitionend", function onEnd(event) {
-        if (event.target !== this) return;
-        this.removeEventListener("transitionend", onEnd);
-        finalizeElement(this);
-      });
+      var observer = new IntersectionObserver(function (entries) {
+        for (var k = 0; k < entries.length; k += 1) {
+          var entry = entries[k];
+          if (!entry.isIntersecting) continue;
+          var item = entry.target;
+          observer.unobserve(item);
+          item.classList.add("is-visible");
+          if (item.hasAttribute("data-capacity-meter")) {
+            item.classList.add("is-animated");
+          }
+          (function (node) {
+            window.setTimeout(function () {
+              finalizeElement(node);
+            }, 920);
+          })(item);
+        }
+      }, { rootMargin: "0px 0px -6% 0px", threshold: 0.08 });
+
+      for (var m = 0; m < targets.length; m += 1) {
+        observer.observe(targets[m]);
+      }
     }
 
-    var observer = new IntersectionObserver(function (entries) {
-      for (var k = 0; k < entries.length; k += 1) {
-        var entry = entries[k];
-        if (!entry.isIntersecting) continue;
-        var item = entry.target;
-        observer.unobserve(item);
-        item.classList.add("is-visible");
-        /* Guaranteed transform cleanup even if transitionend is skipped in background tab. */
-        (function (node) {
-          window.setTimeout(function () {
-            finalizeElement(node);
-          }, 920);
-        })(item);
+    if (capacityMeters.length) {
+      var capObs = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i += 1) {
+          if (entries[i].isIntersecting) {
+            entries[i].target.classList.add("is-animated");
+            capObs.unobserve(entries[i].target);
+          }
+        }
+      }, { threshold: 0.25 });
+      for (var cm = 0; cm < capacityMeters.length; cm += 1) {
+        capObs.observe(capacityMeters[cm]);
       }
-    }, { rootMargin: "0px 0px -6% 0px", threshold: 0.08 });
-
-    for (var m = 0; m < targets.length; m += 1) {
-      observer.observe(targets[m]);
     }
   }
 
-  function initProgressAndActiveNav() {
+  /* Scroll-connected step progression for FLUJO PROPIO / 01-03 & COLABORACIÓN / 01-03 + subtle safe orb parallax */
+  function initScrollAccompaniment() {
     var bar = document.getElementById("scrollProgress");
-    var navLinks = Array.prototype.slice.call(
-      document.querySelectorAll(".portfolio-nav-links a[href^='#'], .portfolio-mobile-menu-links a[href^='#']")
-    );
-    var rafPending = false;
+    var flowTrack = document.querySelector("[data-flow-track]");
+    var flowCards = flowTrack
+      ? Array.prototype.slice.call(flowTrack.querySelectorAll("[data-flow-step]"))
+      : [];
+    var flowStatus = document.querySelector("[data-flow-active-index]");
+    var manualFlowIdx = -1;
 
-    function updateProgress() {
+    var methodTrack = document.querySelector("#method .pc-method-track");
+    var methodCards = methodTrack
+      ? Array.prototype.slice.call(methodTrack.querySelectorAll("article"))
+      : [];
+
+    var decorativeOrbs = (!reducedMotion.matches && !isAndroid)
+      ? Array.prototype.slice.call(document.querySelectorAll(".hero-orb-a, .hero-orb-b, .services-orb-a"))
+      : [];
+
+    function setFlowActive(idx, progressPct) {
+      if (!flowTrack || !flowCards.length) return;
+      for (var i = 0; i < flowCards.length; i += 1) {
+        flowCards[i].classList.toggle("is-step-active", i === idx);
+      }
+      if (flowStatus) flowStatus.textContent = "0" + (idx + 1) + " / 03";
+      flowTrack.style.setProperty("--track-progress", progressPct.toFixed(1) + "%");
+    }
+
+    for (var f = 0; f < flowCards.length; f += 1) {
+      (function (idx) {
+        flowCards[idx].addEventListener("click", function () {
+          manualFlowIdx = idx;
+          setFlowActive(idx, ((idx + 1) / flowCards.length) * 100);
+        });
+        flowCards[idx].addEventListener("mouseenter", function () {
+          if (window.innerWidth >= 1024) {
+            manualFlowIdx = idx;
+            setFlowActive(idx, ((idx + 1) / flowCards.length) * 100);
+          }
+        });
+      })(f);
+    }
+
+    var rafPending = false;
+    function onFrame() {
       rafPending = false;
-      if (!bar) return;
-      var doc = document.documentElement;
-      var max = Math.max(1, doc.scrollHeight - window.innerHeight);
-      var pct = Math.min(100, Math.max(0, (window.scrollY / max) * 100));
-      bar.style.width = pct.toFixed(2) + "%";
+      var vh = Math.max(1, window.innerHeight);
+
+      if (bar) {
+        var doc = document.documentElement;
+        var max = Math.max(1, doc.scrollHeight - vh);
+        var pct = clamp((window.scrollY / max) * 100, 0, 100);
+        bar.style.width = pct.toFixed(2) + "%";
+      }
+
+      /* Scroll-driven step highlight for FLUJO PROPIO / 01-03 */
+      if (flowTrack && flowCards.length === 3) {
+        var fRect = flowTrack.getBoundingClientRect();
+        if (fRect.bottom < 0 || fRect.top > vh) {
+          manualFlowIdx = -1;
+        } else if (manualFlowIdx < 0) {
+          var fRatio = clamp((vh * 0.68 - fRect.top) / Math.max(1, fRect.height * 0.85), 0, 1);
+          var fIdx = fRatio < 0.36 ? 0 : (fRatio < 0.72 ? 1 : 2);
+          var fPct = clamp(fRatio * 100, 18, 100);
+          setFlowActive(fIdx, fPct);
+        }
+      }
+
+      /* Scroll-driven step highlight & connector line for COLABORACIÓN / 01-03 */
+      if (methodTrack && methodCards.length === 3) {
+        var mRect = methodTrack.getBoundingClientRect();
+        var mRatio = clamp((vh * 0.66 - mRect.top) / Math.max(1, mRect.height * 0.88), 0, 1);
+        var mIdx = mRatio < 0.35 ? 0 : (mRatio < 0.70 ? 1 : 2);
+        methodTrack.style.setProperty("--method-progress", (mRatio * 100).toFixed(1) + "%");
+        for (var m = 0; m < methodCards.length; m += 1) {
+          methodCards[m].classList.toggle("is-step-active", m === mIdx);
+        }
+      }
+
+      /* Subtle parallax ONLY on purely decorative background orbs (desktop/tablet/iOS) */
+      if (decorativeOrbs.length && window.innerWidth >= 768) {
+        var sy = window.scrollY;
+        for (var o = 0; o < decorativeOrbs.length; o += 1) {
+          var speed = o % 2 === 0 ? 0.035 : -0.028;
+          var dy = clamp(sy * speed, -42, 42);
+          decorativeOrbs[o].style.transform = "translate3d(0," + dy.toFixed(1) + "px,0)";
+        }
+      }
     }
 
     window.addEventListener("scroll", function () {
       if (!rafPending) {
         rafPending = true;
-        window.requestAnimationFrame(updateProgress);
+        window.requestAnimationFrame(onFrame);
       }
     }, { passive: true });
-    updateProgress();
+    window.addEventListener("resize", function () {
+      if (!rafPending) {
+        rafPending = true;
+        window.requestAnimationFrame(onFrame);
+      }
+    }, { passive: true });
+    onFrame();
 
+    /* Active nav section highlighting */
+    var navLinks = Array.prototype.slice.call(
+      document.querySelectorAll(".portfolio-nav-links a[href^='#'], .portfolio-mobile-menu-links a[href^='#']")
+    );
     if (!("IntersectionObserver" in window) || !navLinks.length) return;
 
     var sectionToNav = {
@@ -275,8 +385,6 @@
       null
     );
 
-    /* Start mobile pricing carousel centered on Campaña (index 2, recommended) or Multiformato?
-       Starting on Campaña gives immediate visibility to the highest-ROI pack while letting users swipe left! */
     if (pricingRail && window.innerWidth <= 767) {
       window.requestAnimationFrame(function () {
         var packs = pricingRail.querySelectorAll(".pricing-pack");
@@ -291,7 +399,7 @@
 
   function boot() {
     initScrollReveal();
-    initProgressAndActiveNav();
+    initScrollAccompaniment();
     initMobileSnapRails();
   }
 
