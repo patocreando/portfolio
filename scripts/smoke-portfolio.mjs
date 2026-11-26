@@ -8,8 +8,8 @@ const css = fs.readFileSync("assets/site.css", "utf8");
 const js = fs.readFileSync("assets/site.js", "utf8");
 const premiumCss = fs.readFileSync("assets/premium-lab.css", "utf8");
 const premiumJs = fs.readFileSync("assets/premium-lab.js", "utf8");
-const mobileHeroFallback = fs.readFileSync("assets/mobile-hero-fallback.js", "utf8");
-const videoManager = fs.readFileSync("assets/video-manager.js", "utf8");
+const unifiedPlayerJs = fs.readFileSync("assets/unified-player.js", "utf8");
+const unifiedPlayerCss = fs.readFileSync("assets/unified-player.css", "utf8");
 const responsiveVideoCss = fs.readFileSync("assets/responsive-video-fix.css", "utf8");
 const pagesScript = fs.readFileSync("scripts/stage-pages.mjs", "utf8");
 const has = (text, needle, context) => assert.ok(text.includes(needle), context || needle);
@@ -17,9 +17,9 @@ const occurrences = (text, needle) => text.split(needle).length - 1;
 const links = text => new Set([...text.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)].map(match => match[1]));
 const sectionIds = [...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(match => match[1]);
 
-assert.deepEqual(sectionIds, ["top","projects","caseMyWay","services","launchOffer","system","method","contact"], "section order");
+assert.deepEqual(sectionIds, ["top","projects","caseMyWay","compare","services","launchOffer","system","method","contact"], "section order");
 assert.ok(css.length > 260000, "extracted CSS must not lose original rules");
-assert.ok(js.length > 64000, "Core JS controllers must remain intact after removing the carousel");
+assert.ok(js.length > 35000, "Core JS controllers must remain intact after removing legacy video managers");
 assert.ok(!js.includes("workflowCodeCanvas"),"unused typewriter removed");
 has(css, ".case-study-wrap");
 has(css, ".hero-cta-primary");
@@ -50,16 +50,14 @@ assert.equal(occurrences(html,'href="#projects"'),2,"main navigation to projects
 assert.equal(occurrences(headerMarkup,'href="#launchOffer"'),2,"desktop and mobile packs link in header");
 assert.equal(occurrences(html,'href="#launchOffer"'),3,"header navigation (desktop + mobile) plus hero discrete CTA to packs");
 has(html,'class="hero-cta-packs inline-flex items-center gap-2 text-[13px] font-semibold text-zinc-300 hover:text-butter transition-colors"',"hero discrete CTA element is present with exact styling classes");
-has(html,'<span>Ver planes de trabajo</span>',"hero discrete CTA label is present");
+has(html,'<span>Ver planes desde ARS 50.000</span>',"hero discrete CTA label is present");
 const methodScopeMatch=html.match(/<details class="pc-method-details">([\s\S]*?)<\/details>/);
 assert.ok(methodScopeMatch,"current method conditions disclosure exists");
 assert.ok(methodScopeMatch[1].includes("<strong>Alcance, revisiones y plazos</strong>"),"scope, reviews and timelines are disclosed");
 assert.ok(methodScopeMatch[1].includes("<strong>Modalidad de reserva:</strong>"),"reservation payment terms are disclosed");
 assert.ok(methodScopeMatch[1].includes("50% de adelanto") && methodScopeMatch[1].includes("50% restante contra la entrega final"),"both payment milestones are disclosed");
-assert.equal(occurrences(html,'class="studio-system-ambient"'),1,"one decorative production background");
 assert.equal(occurrences(html,'class="studio-system-board section-reveal"'),1,"production card remains unique");
 assert.equal(occurrences(html,'class="studio-system-sequence"'),1,"retain four system steps");
-assert.equal(occurrences(html,"https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/8ece9361-a363-477c-8a2e-e6d221cdc562.mp4"),1,"one shared method background media source");
 has(premiumCss,'.studio-system-board::before');
 has(premiumJs,'systemBackgroundPlayback');
 has(premiumJs,'prefers-reduced-motion: reduce');
@@ -88,14 +86,15 @@ for(const label of ["Propuesta visual","Producción","Edición","Archivo final"]
 for(const kind of ['data-kind="proposal"','data-kind="edit"'])has(html,kind,"Club stage kind: "+kind);
 has(fs.readFileSync("assets/club-case.css","utf8"),"@media(prefers-reduced-motion:reduce)","reduced-motion interactive case");
 
-for (const [ref,price,count] of [["w60952078","ARS 50.000",2],["w60952216","ARS 100.000",1],["w60952262","ARS 175.000",1]]) {
+for (const [ref,price,count] of [["w60952078","ARS 50.000",4],["w60952216","ARS 100.000",1],["w60952262","ARS 175.000",1]]) {
   assert.equal(occurrences(html, ref), 1, "Manychat ref: "+ref);
   assert.equal(occurrences(html, price), count, "pack price and base disclosures: "+price);
 }
 assert.equal(occurrences(html,'ARS 150.000'),0,"obsolete campaign price removed");
 // Commercial copy: preserve base scope and the three fixed plan amounts.
-has(html,'<strong>Anuncios de producto, UGC y campañas visuales con IA.</strong>');
-has(html,'De la idea al video final: dirección creativa, generación realista y postproducción');
+has(html,'La producción mensual de tu marca,');
+has(html,'lista en una semana.');
+has(html,'Trato directo conmigo');
 has(html,'<h4 class="display">Una idea, cuatro salidas.</h4>');
 assert.equal(occurrences(html,'Empiezo a generar recién cuando aprobás la propuesta y el presupuesto.'),1,"Preproduction validation stated once");
 has(html,'Los planes Inicio y Multiformato no incluyen copy ni subtítulos; el plan Campaña incluye subtítulos dinámicos de alta retención.');
@@ -127,15 +126,15 @@ assert.equal(brandedPng.readUInt32BE(16),1550,"Social image width matches declar
 assert.equal(brandedPng.readUInt32BE(20),600,"Social image height matches declared metadata");
 assert.ok(brandedPng.length < 100_000,"Share image remains under 100 KB");
 for (const video of ["ugc-beauty.mp4","silo-ugc-sin-subtitulos.mp4","hyperreal-portrait.mp4"]) {
-  const sourceNeedle = ['data-src="./assets/videos/'+video, 'src="./assets/videos/'+video, '<source src="./assets/videos/'+video, '<source data-src="./assets/videos/'+video].find(candidate => html.includes(candidate));
-  assert.ok(sourceNeedle,"Gallery video source retained: "+video);
-  const videoMatchIndex = html.indexOf(sourceNeedle);
-  const opening = html.lastIndexOf("<video",videoMatchIndex);
-  const closing = html.indexOf(">",videoMatchIndex);
-  assert.ok(opening >= 0 && opening > html.lastIndexOf("</video>",videoMatchIndex));
-  assert.ok(html.slice(opening,closing).includes('aria-label="'),"Gallery video has descriptive accessible name: "+video);
+  const sourceNeedle = 'data-src="./assets/videos/' + video;
+  assert.ok(html.includes(sourceNeedle), "Gallery video slot retained: " + video);
+  const idx = html.indexOf(sourceNeedle);
+  const opening = html.lastIndexOf("<div", idx);
+  const closing = html.indexOf(">", idx);
+  assert.ok(opening >= 0);
+  assert.ok(html.slice(opening, closing).includes('data-video-aria="'), "Gallery video has descriptive accessible name: " + video);
 }
-assert.ok(/<video[^>]*class="hero-video"[^>]*aria-label="[^"]+"[^>]*>/.test(html),"Hero showreel has descriptive name");
+assert.ok(html.includes('class="up-slot up-slot--hero"') && html.includes('data-video-aria="Showreel de Pato Creando'), "Hero showreel slot has descriptive name");
 
 has(html,'class="pricing-secondary-contact section-reveal"');
 has(html,'href="#contact" aria-label="Ir al formulario de contacto para enviar tu consulta"');
@@ -170,7 +169,7 @@ assert.equal(occurrences(html,'class="service-chips"'),0,'remove service badges 
 assert.equal(occurrences(html,'class="pricing-pack-badge"'),0,'remove floating tag above the plan video');
 assert.equal(occurrences(html,'class="service-kicker"'),3,'retain the three current service card kickers');
 assert.equal(occurrences(html,'data-umbral-reel'),0,'legacy UMBRAL showcase removed');
-assert.equal(occurrences(html,'class="club-workflow-video"'),1,'one video player is reused across the interactive stages');
+assert.equal(occurrences(html,'data-club-slot'),1,'one unified slot is reused across the interactive Club stages');
 assert.equal(occurrences(html,'data-club-step'),4,'four interactive Club stages');
 assert.equal(occurrences(html,'Una lámpara que no existe.'),0,'replaced the UMBRAL project copy');
 assert.equal(occurrences(html,'UMBRAL / 01'),0,'no UMBRAL project heading remains');
@@ -180,8 +179,7 @@ has(html,'./assets/cases/club-del-coctel-01/character-sheet.webp');
 has(html,'./assets/cases/club-del-coctel-01/generated-scene.mp4');
 has(html,'./assets/videos/club-del-coctel.mp4');
 has(html,'./assets/club-case.css?v=20261030-scroll-story-1');
-has(html,'./assets/club-case.js?v=20261123-video-manager-1');
-has(html,'data-club-audio');
+has(html,'./assets/club-case.js?v=20261126-2');
 has(fs.readFileSync('assets/club-case.js','utf8'),'intervalMs = 6500');
 assert.equal(occurrences(html,'edit-shot-02.webp'),0,'the editing mockup omits the B-roll insert');
 for(const file of ['ugc-beauty.mp4','silo-ugc-sin-subtitulos.mp4','hyperreal-portrait.mp4'])has(html,'./assets/videos/'+file);
@@ -192,51 +190,38 @@ assert.equal(occurrences(html,'03 / PRODUCTO IA · PERFUMERÍA'),0,'old case rep
 assert.ok(!js.includes("pricingPackMobileLoop"), "pricing carousel should be manual");
 assert.ok(!js.includes("mobileHorizontalCarouselLoops"), "mobile cards should not autoplay");
 assert.ok(!js.includes("document.addEventListener(eventName, handleGesture"), "hero sound must be explicit");
-has(videoManager, 'var heroScreen = video.closest(".hero-phone-screen");');
-has(videoManager, 'state.heroButton = heroScreen ? heroScreen.querySelector("[data-hero-mobile-play]") : null;');
-has(videoManager, 'showFallback(video, "Reproducir video")');
-has(videoManager, 'function markFrameReady(video)');
-has(js, 'else if (!window.VideoManager && !video.paused)');
-has(js, 'if (window.VideoManager) return;');
-has(js, 'button.addEventListener("keydown"');
+assert.ok(!fs.existsSync("assets/mobile-hero-fallback.js"), "obsolete mobile-hero-fallback.js removed");
+assert.ok(!fs.existsSync("assets/video-manager.js"), "obsolete video-manager.js removed");
+assert.ok(!fs.existsSync("assets/video-manager.css"), "obsolete video-manager.css removed");
+has(unifiedPlayerJs, 'stopAll');
+has(unifiedPlayerJs, 'video.controls = true');
+has(unifiedPlayerJs, 'video.playsInline = true');
+has(unifiedPlayerCss, '.up-slot.is-playing');
 assert.equal(occurrences(html,'<script src="./assets/site.js?') ,1,"one versioned core site script");
 assert.equal(occurrences(html,'<link rel="stylesheet" href="./assets/site.css?'),1,"one versioned core site stylesheet");
 // Compare against main as ground truth for preservation.
 try {
   const baseline = execFileSync("git", ["show", "origin/main:index.html"], {encoding:"utf8"});
-  const intentionallyRemovedUrls = new Set(["https://www.instagram.com/p/Dd24xgrOr5e/?hl=en","https://d2ol7oe51mr4n9.cloudfront.net/user_3GsQoyBuAJ7X4awqyulGWND0DzD/cc882a72-3df6-41a3-8398-619e1e7ba9a9.mp4"]);
-  const missing = [...links(baseline)].filter(url => !intentionallyRemovedUrls.has(url) && !links(html).has(url));
+  const intentionallyRemoved = url =>
+    url === "https://www.instagram.com/p/Dd24xgrOr5e/?hl=en" ||
+    url.startsWith("https://d2ol7oe51mr4n9.cloudfront.net/");
+  const missing = [...links(baseline)].filter(url => !intentionallyRemoved(url) && !links(html).has(url));
   assert.deepEqual(missing, [], "Original external media/link URLs were dropped");
 } catch (error) {
   if (!["ENOENT","EPERM"].includes(error?.code)) throw error;
   console.warn("Git unavailable: external URL baseline check omitted.");
 }
-assert.equal(occurrences(html,'data-editorial-reel'),2,"SILO and Mariana each have one curated video");
-
-// Below-fold media loads on visibility; the hero intentionally retains immediate playback.
-const videoTags=html.split("<video ").slice(1).map(chunk=>"<video "+chunk.split(">")[0]+">");
-const curatedVideoTags=videoTags.filter(tag=>tag.includes("data-editorial-reel"));
-assert.equal(curatedVideoTags.length,2,"Two curated video tags exist");
-for(const videoTag of curatedVideoTags){
-  assert.ok(!videoTag.includes(" autoplay"),"Featured reels must not bypass viewport observer via autoplay attribute");
-  assert.ok(videoTag.includes('preload="metadata"')||videoTag.includes('preload="none"'),"Featured reel defers network preload");
-  assert.ok(videoTag.includes('poster="./assets/images/'),"Featured reel retains real poster");
+assert.equal(occurrences(html,'<video'),0,"Zero <video> elements in initial HTML (strict on-demand loading)");
+const slots = [...html.matchAll(/<div\s[^>]*data-up-slot[^>]*>/g)].map(m => m[0]);
+assert.equal(slots.length, 8, "Eight unified video slots exist (Hero, SILO, Mariana, 4 gallery, Club)");
+for (const slot of slots) {
+  const srcMatch = slot.match(/data-src="\.\/([^"?]+)/);
+  const posterMatch = slot.match(/data-poster="\.\/([^"?]+)/);
+  assert.ok(srcMatch && fs.existsSync(srcMatch[1]), "Valid slot video on disk: " + (srcMatch && srcMatch[1]));
+  assert.ok(posterMatch && fs.existsSync(posterMatch[1]), "Valid slot poster on disk: " + (posterMatch && posterMatch[1]));
 }
-const heroTag=videoTags.find(tag=>tag.includes('class="hero-video"'));
-assert.ok(heroTag && heroTag.includes('data-autoplay-managed="true"'),"First-screen showreel uses shared autoplay controller");
-assert.ok(heroTag.includes('muted') && heroTag.includes('playsinline') && heroTag.includes('preload="metadata"'),"Hero starts muted and inline with metadata-only preload");
-assert.ok(heroTag.includes('poster="./assets/images/hero-showreel-mobile-compatible.webp'),"Hero video has browser-native poster fallback");
-assert.ok(html.includes('data-hero-mobile-poster src="./assets/images/hero-showreel-mobile-compatible.webp'),"Hero retains separate visible image fallback");
-assert.ok(fs.existsSync("assets/images/hero-showreel-poster.svg"),"Hero fallback asset exists");
-assert.ok(fs.readFileSync("assets/images/hero-showreel-poster.svg","utf8").startsWith("<svg"),"Hero fallback is a lightweight local SVG");
-has(mobileHeroFallback,"requestVideoFrameCallback","Video reveal waits for a decoded frame");
-has(mobileHeroFallback,"if(frameReady&&!video.paused)","Duplicate resume events cannot leave the loading button visible after playback starts");
-has(mobileHeroFallback,"prefers-reduced-motion","Autoplay respects reduced motion");
-has(mobileHeroFallback,"saveData","Autoplay respects data-saving mode");
-has(js,"navigator.connection || navigator.mozConnection || navigator.webkitConnection","Mobile preloader respects data-saving mode");
-has(mobileHeroFallback,'["error","abort","stalled"]',"Playback failures retain poster and expose retry");
 const clubImages=html.split("<img ").slice(1).map(chunk=>"<img "+chunk.split(">")[0]+">").filter(tag=>tag.includes("./assets/cases/club-del-coctel-01/"));
-assert.equal(clubImages.length,5,"Five existing case-study images retained");
+assert.equal(clubImages.length,6,"Six existing case-study images retained (including Club slot poster)");
 for(const img of clubImages){
   assert.ok(img.includes('loading="lazy"') && img.includes('decoding="async"'),"Offscreen case study image is lazy and async");
 }
@@ -247,7 +232,7 @@ assert.equal(archivedProjects.length,4,"archive contains four unique project car
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="ugc"')).length,2,"two unique UGC cards");
 assert.equal(archivedProjects.filter(card=>card.includes('data-category="product"')).length,2,"two unique campaign cards");
 assert.equal(occurrences(html,"silo-campana-producto-recortado.mp4"),1,"SILO reel appears once");
-assert.equal(occurrences(html,"club-del-coctel.mp4"),1,"Club reel appears once in its interactive walkthrough");
+assert.equal(occurrences(html,"club-del-coctel.mp4"),2,"Club reel appears in slot and stage tab");
 for (const name of ["silo-campana-producto-recortado.mp4","club-del-coctel.mp4"])
   assert.ok(!archivedProjects.some(card=>card.includes(name)),"archive must not repeat featured video: "+name);
 assert.ok(fs.existsSync("assets/videos/club-del-coctel.mp4"), "Club del Cóctel reel asset exists");
@@ -310,11 +295,10 @@ has(html,'aria-labelledby="clubWorkflowTitle"');
 has(premiumCss,'.editorial-showcase');
 assert.equal(occurrences(premiumCss,'.editorial-media-note'),0,'no floating caption style over featured videos');
 has(premiumJs,'IntersectionObserver');
-has(premiumJs,'video.dataset.userUnmuted');
-has(premiumJs,'window.__PATO_ACTIVATE_VIDEO_AUDIO__=activate');
+has(unifiedPlayerJs,'data-up-slot');
+has(unifiedPlayerJs,'releaseVideo');
 assert.equal(occurrences(html,'editorial-campaign-tag'),0,'video copy is not injected as an HTML badge');
 assert.equal(occurrences(html,'editorial-play-control'),0,'video pause/play buttons are removed');
-assert.ok(occurrences(html,'data-audio-available="true"')>=4,'original-audio videos expose their audio');
 assert.equal(occurrences(html,'data-umbral-audio'),0,'no obsolete UMBRAL audio UI remains');
 assert.equal(occurrences(html,'href="./assets/premium-lab.css'),1);
 assert.equal(occurrences(html,'href="./assets/lote-02.css'),1);
@@ -369,11 +353,9 @@ has(premiumCss,'@media(prefers-reduced-motion:reduce)');
 assert.equal(occurrences(html,'WORKFLOW'),0,"no WORKFLOW badges remain on any video");
 assert.equal(occurrences(html,'./assets/videos/silo-campana-producto-recortado.mp4'),1,"first SILO ad appears in featured case");
 assert.equal(occurrences(html,'./assets/videos/silo-ugc-sin-subtitulos.mp4'),1,"second SILO ad appears in campaign gallery");
-const vmJs=fs.readFileSync('assets/video-manager.js','utf8');
-has(vmJs,'MAX_LOADED = 1');
-has(vmJs,'ROOT_MARGIN = "120px 0px"');
-has(vmJs,'deviceMemory');
-has(vmJs,'is-blocked');
+for (const v of ['unified-player.css?v=20261126-2','site.css?v=20261126-2','premium-lab.css?v=20261126-2','unified-player.js?v=20261126-2','site.js?v=20261126-2','premium-lab.js?v=20261126-2','club-case.js?v=20261126-2']) {
+  has(html, v, 'Cache-busted asset: ' + v);
+}
 assert.equal(occurrences(html,'./assets/images/pato-creando-ia-content-v4.png'),1,"redesigned logo appears only in navigation");
 assert.equal(occurrences(html,'hero-brandmark'),0,"hero logo removed");
 assert.ok(fs.existsSync('assets/images/pato-creando-ia-content-v4.png'),"redesigned logo asset exists");
